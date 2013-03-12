@@ -1,6 +1,10 @@
 node-schema-object
 ==================
 
+This module is designed to allow you to create a Javascript object in Node with validated, transformed & typecasted values defined by a schema. Includes support for nested object, arrays, tranformation and validation.
+
+The original intention was to allow for a specific definition of values within objects being populated from a flat file and being passed to a RESTful API service.
+
 Documentation of behavior can be found in unit tests.
 
 ```
