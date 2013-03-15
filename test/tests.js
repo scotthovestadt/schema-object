@@ -281,7 +281,7 @@ describe('Object', function() {
       profile: Profile
     });
 
-    it('should enforce schema', function() {
+    it('should allow nested schemas', function() {
       var o = new SO();
 
       o.profile.firstName = 123;
@@ -357,6 +357,25 @@ describe('any type', function() {
       o.value = 'HELLO';
       o.value.should.be.a('string');
       o.value.should.equal('hello');
+    });
+  });
+
+  describe('default', function() {
+    it('default as function + readOnly to combine properties into single readOnly property', function() {
+      var SO = new SchemaObject({
+        firstName: String,
+        lastName: String,
+        name: {type: String, readOnly: true, default: function() {
+          var name = (this.firstName ? this.firstName + ' ' : '') + (this.lastName ? this.lastName : '');
+          return name ? name : undefined;
+        }}
+      });
+
+      var o = new SO();
+      o.firstName = 'Scott';
+      o.lastName = 'Hovestadt';
+      o.name.should.be.a('string');
+      o.name.should.equal('Scott Hovestadt');
     });
   });
 });
