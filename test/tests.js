@@ -331,6 +331,78 @@ describe('Array', function() {
   });
 });
 
+describe('Date', function() {
+  describe('typecasting', function() {
+    var SO = new SchemaObject({
+      date: Date
+    });
+
+    it('should typecast string "June 21, 1989" to date', function() {
+      var o = new SO();
+
+      o.date = 'June 21, 1988';
+      o.date.should.be.an.instanceof(Date);
+      o.date.getMonth().should.equal(5);
+      o.date.getDate().should.equal(21);
+      o.date.getFullYear().should.equal(1988);
+    });
+
+    it('should reject nonsense strings', function() {
+      var o = new SO();
+
+      o.date = 'not a date';
+      should.not.exist(o.date);
+    });
+
+    it('should typecast integer timestamp seconds to date', function() {
+      var o = new SO();
+
+      o.date = 582879600;
+      o.date.should.be.an.instanceof(Date);
+      o.date.getTime().should.equal(582879600000);
+      o.date.getMonth().should.equal(5);
+      o.date.getDate().should.equal(21);
+      o.date.getFullYear().should.equal(1988);
+    });
+
+    it('should typecast integer timestamp milliseconds to date', function() {
+      var o = new SO();
+
+      o.date = 582879600000;
+      o.date.should.be.an.instanceof(Date);
+      o.date.getTime().should.equal(582879600000);
+      o.date.getMonth().should.equal(5);
+      o.date.getDate().should.equal(21);
+      o.date.getFullYear().should.equal(1988);
+    });
+
+    it('should reject boolean', function() {
+      var o = new SO();
+
+      o.date = true;
+      should.not.exist(o.date);
+
+      o.date = false;
+      should.not.exist(o.date);
+    });
+
+    it('should reject array', function() {
+      var o = new SO();
+
+      o.date = ['h', 'e', 'l', 'l', 'o'];
+      should.not.exist(o.date);
+    });
+
+    it('should reject object', function() {
+      var o = new SO();
+
+      o.date = {0: 'h', 1: 'e', 2: 'l', 3: 'l', 4: 'o'};
+      should.not.exist(o.date);
+    });
+  });
+});
+
+
 describe('any type', function() {
   describe('transform', function() {
     var SO = new SchemaObject({
