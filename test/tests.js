@@ -32,16 +32,14 @@ describe('String', function() {
       var o = new SO();
 
       o.string = ['h', 'e', 'l', 'l', 'o'];
-      o.string.should.be.a('string');
-      o.string.should.equal('hello');
+      should.not.exist(o.string);
     });
 
-    it('should join object into string', function() {
+    it('should reject object', function() {
       var o = new SO();
 
       o.string = {0: 'h', 1: 'e', 2: 'l', 3: 'l', 4: 'o'};
-      o.string.should.be.a('string');
-      o.string.should.equal('hello');
+      should.not.exist(o.string);
     });
   });
 
@@ -110,7 +108,7 @@ describe('String', function() {
       string: {
         type: String,
         stringTransform: function(string) {
-          return string.toLowerCase();
+          return string.toUpperCase();
         }
       }
     });
@@ -118,8 +116,8 @@ describe('String', function() {
     it('should return lowercase', function() {
       var o = new SO();
 
-      o.string = 'HELLO';
-      o.string.should.equal('hello');
+      o.string = 'hello';
+      o.string.should.equal('HELLO');
     });
 
     it('should always be passed a String object and not called if undefined or null', function() {
@@ -128,8 +126,8 @@ describe('String', function() {
       o.string = 123;
       o.string.should.equal('123');
 
-      o.string = ['H', 'I'];
-      o.string.should.equal('hi');
+      o.string = false;
+      o.string.should.equal('FALSE');
 
       o.string = undefined;
       should.not.exist(o.string);
