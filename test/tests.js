@@ -430,7 +430,6 @@ describe('Date', function() {
   });
 });
 
-
 describe('any type', function() {
   describe('transform', function() {
     var SO = new SchemaObject({
@@ -474,6 +473,37 @@ describe('any type', function() {
       o.lastName = 'Hovestadt';
       o.name.should.be.a('string');
       o.name.should.equal('Scott Hovestadt');
+    });
+  });
+
+  describe('alias', function() {
+    var SO = new SchemaObject({
+      state: String,
+      region: {type: 'alias', index: 'state'},
+      regionTransform: {type: 'alias', index: 'state', transform: function(value) {
+        if(value === 'test') {
+          value = value.toUpperCase();
+        }
+        return value;
+      }}
+    });
+
+    it('should allow alias to be used to set values', function() {
+      var o = new SO();
+      o.region = 'CA';
+      o.region.should.be.a('string');
+      o.region.should.equal('CA');
+      o.state.should.be.a('string');
+      o.state.should.equal('CA');
+    });
+
+    it('should allow alias to pre-transform values', function() {
+      var o = new SO();
+      o.regionTransform = 'test';
+      o.regionTransform.should.be.a('string');
+      o.regionTransform.should.equal('TEST');
+      o.state.should.be.a('string');
+      o.state.should.equal('TEST');
     });
   });
 });
