@@ -164,11 +164,12 @@ describe('String', function() {
 });
 
 describe('Number', function() {
-  describe('typecasting', function() {
-    var SO = new SchemaObject({
-      number: Number
-    });
+  var SO = new SchemaObject({
+    number: Number,
+    minMax: {type: Number, min: 100, max: 200}
+  });
 
+  describe('typecasting', function() {
     it('should typecast string to number', function() {
       var o = new SO();
 
@@ -190,6 +191,33 @@ describe('Number', function() {
       o.number = true;
       o.number.should.be.a('number');
       o.number.should.equal(1);
+    });
+  });
+
+  describe('min', function() {
+    it('should reject values below min', function() {
+      var o = new SO();
+
+      o.minMax = 0;
+      should.not.exist(o.minMax);
+
+      o.minMax = 100;
+      o.minMax.should.equal(100);
+
+      o.minMax = 150;
+      o.minMax.should.equal(150);
+    });
+  });
+
+  describe('max', function() {
+    it('should reject values above max', function() {
+      var o = new SO();
+
+      o.minMax = 300;
+      should.not.exist(o.minMax);
+
+      o.minMax = 200;
+      o.minMax.should.equal(200);
     });
   });
 });
