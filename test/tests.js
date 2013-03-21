@@ -2,6 +2,103 @@ var should = require('should'),
     _ = require('underscore'),
     SchemaObject = require('../lib/schemaobject');
 
+describe('any type', function() {
+  describe('transform', function() {
+    var SO = new SchemaObject({
+      value: {
+        type: null,
+        transform: function(value) {
+          if(_.isString(value)) {
+            return value.toLowerCase();
+          }
+          return value;
+        }
+      }
+    });
+
+    it('should turn any string to lowercase but not touch other values', function() {
+      var o = new SO();
+
+      o.value = 123;
+      o.value.should.be.a('number');
+      o.value.should.equal(123);
+
+      o.value = 'HELLO';
+      o.value.should.be.a('string');
+      o.value.should.equal('hello');
+    });
+  });
+
+  describe('default', function() {
+    it('default as function + readOnly to combine properties into single readOnly property', function() {
+      var SO = new SchemaObject({
+        firstName: String,
+        lastName: String,
+        name: {type: String, readOnly: true, default: function() {
+          var name = (this.firstName ? this.firstName + ' ' : '') + (this.lastName ? this.lastName : '');
+          return name ? name : undefined;
+        }}
+      });
+
+      var o = new SO();
+      o.firstName = 'Scott';
+      o.lastName = 'Hovestadt';
+      o.name.should.be.a('string');
+      o.name.should.equal('Scott Hovestadt');
+    });
+  });
+
+  describe('alias', function() {
+    var SO = new SchemaObject({
+      state: String,
+      region: {type: 'alias', index: 'state'},
+      regionTransform: {type: 'alias', index: 'state', transform: function(value) {
+        if(value === 'test') {
+          value = value.toUpperCase();
+        }
+        return value;
+      }}
+    });
+
+    it('should allow alias to be used to set values', function() {
+      var o = new SO();
+      o.region = 'CA';
+      o.region.should.be.a('string');
+      o.region.should.equal('CA');
+      o.state.should.be.a('string');
+      o.state.should.equal('CA');
+    });
+
+    it('should allow alias to pre-transform values', function() {
+      var o = new SO();
+      o.regionTransform = 'test';
+      o.regionTransform.should.be.a('string');
+      o.regionTransform.should.equal('TEST');
+      o.state.should.be.a('string');
+      o.state.should.equal('TEST');
+    });
+  });
+
+  describe('readOnly', function() {
+    it('should not allow you to modify value', function() {
+      var SO = new SchemaObject({
+        firstName: String,
+        lastName: String,
+        name: {type: String, readOnly: true, default: function() {
+          var name = (this.firstName ? this.firstName + ' ' : '') + (this.lastName ? this.lastName : '');
+          return name ? name : undefined;
+        }}
+      });
+
+      var o = new SO();
+      o.firstName = 'Scott';
+      o.lastName = 'Hovestadt';
+      o.name = 'John Smith';
+      o.name.should.equal('Scott Hovestadt');
+    });
+  });
+});
+
 describe('String', function() {
   describe('typecasting', function() {
     var SO = new SchemaObject({
@@ -462,95 +559,28 @@ describe('Date', function() {
   });
 });
 
-describe('any type', function() {
-  describe('transform', function() {
-    var SO = new SchemaObject({
-      value: {
-        type: null,
-        transform: function(value) {
-          if(_.isString(value)) {
-            return value.toLowerCase();
-          }
-          return value;
-        }
-      }
-    });
-
-    it('should turn any string to lowercase but not touch other values', function() {
-      var o = new SO();
-
-      o.value = 123;
-      o.value.should.be.a('number');
-      o.value.should.equal(123);
-
-      o.value = 'HELLO';
-      o.value.should.be.a('string');
-      o.value.should.equal('hello');
-    });
-  });
-
-  describe('default', function() {
-    it('default as function + readOnly to combine properties into single readOnly property', function() {
-      var SO = new SchemaObject({
-        firstName: String,
-        lastName: String,
-        name: {type: String, readOnly: true, default: function() {
-          var name = (this.firstName ? this.firstName + ' ' : '') + (this.lastName ? this.lastName : '');
-          return name ? name : undefined;
-        }}
-      });
-
-      var o = new SO();
-      o.firstName = 'Scott';
-      o.lastName = 'Hovestadt';
-      o.name.should.be.a('string');
-      o.name.should.equal('Scott Hovestadt');
-    });
-  });
-
-  describe('alias', function() {
-    var SO = new SchemaObject({
-      state: String,
-      region: {type: 'alias', index: 'state'},
-      regionTransform: {type: 'alias', index: 'state', transform: function(value) {
-        if(value === 'test') {
-          value = value.toUpperCase();
-        }
-        return value;
-      }}
-    });
-
-    it('should allow alias to be used to set values', function() {
-      var o = new SO();
-      o.region = 'CA';
-      o.region.should.be.a('string');
-      o.region.should.equal('CA');
-      o.state.should.be.a('string');
-      o.state.should.equal('CA');
-    });
-
-    it('should allow alias to pre-transform values', function() {
-      var o = new SO();
-      o.regionTransform = 'test';
-      o.regionTransform.should.be.a('string');
-      o.regionTransform.should.equal('TEST');
-      o.state.should.be.a('string');
-      o.state.should.equal('TEST');
-    });
-  });
-});
-
-describe('converting schemaobject to plain object', function() {
+describe('toObject()', function() {
   var SO = new SchemaObject({
-    string: String
+    string: String,
+    invisible: {type: String, invisible: true}
   });
 
-  it('should have index string with value "hello"', function() {
+  it('should have index "string" with value "hello"', function() {
     var o = new SO();
 
     o.string = 'hello';
     var obj = o.toObject();
     obj.string.should.be.a('string');
     obj.string.should.equal('hello');
+  });
+
+  describe('invisible', function() {
+    var o = new SO();
+
+    o.invisible = 'hello';
+    o.invisible.should.be.a('string');
+    o.invisible.should.equal('hello');
+    var obj = o.toObject();
+    should.not.exist(obj.invisible);
   });
 });
