@@ -103,11 +103,11 @@ fullName: {type: String, readOnly: true, default: function(value) {
 }}
 ```
 
-###writeOnly
-If true, the value can be written to but cannot be read and is not outputted when toObject() is called. This can be useful for creating aliases that redirect to other indexes but aren't actually present on the object.
+###invisible
+If true, the value can be written to but isn't outputted as an index when toObject() is called. This can be useful for creating aliases that redirect to other indexes but aren't actually present on the object.
 ```
 zip: String,
-postalCode: {type: 'alias', writeOnly: true, alias: 'zip'}
+postalCode: {type: 'alias', invisible: true, alias: 'zip'}
 // this.postalCode = 12345 -> this.toObject() -> {zip: '12345'}
 ```
 
