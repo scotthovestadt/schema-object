@@ -365,10 +365,30 @@ describe('Date', function() {
       date: Date
     });
 
-    it('should typecast string "June 21, 1989" to date', function() {
+    it('should typecast string "June 21, 1988" to date', function() {
       var o = new SO();
 
       o.date = 'June 21, 1988';
+      o.date.should.be.an.instanceof(Date);
+      o.date.getMonth().should.equal(5);
+      o.date.getDate().should.equal(21);
+      o.date.getFullYear().should.equal(1988);
+    });
+
+    it('should typecast string "06/21/1988" to date', function() {
+      var o = new SO();
+
+      o.date = '06/21/1988';
+      o.date.should.be.an.instanceof(Date);
+      o.date.getMonth().should.equal(5);
+      o.date.getDate().should.equal(21);
+      o.date.getFullYear().should.equal(1988);
+    });
+
+    it('should typecast string "6/21/1988" to date', function() {
+      var o = new SO();
+
+      o.date = '6/21/1988';
       o.date.should.be.an.instanceof(Date);
       o.date.getMonth().should.equal(5);
       o.date.getDate().should.equal(21);
@@ -402,6 +422,18 @@ describe('Date', function() {
       o.date.getMonth().should.equal(5);
       o.date.getDate().should.equal(21);
       o.date.getFullYear().should.equal(1988);
+    });
+
+    it('should return Date object within index when toObject() is called', function() {
+      var o = new SO();
+
+      o.date = 582879600000;
+      var obj = o.toObject();
+      obj.date.should.be.an.instanceof(Date);
+      obj.date.getTime().should.equal(582879600000);
+      obj.date.getMonth().should.equal(5);
+      obj.date.getDate().should.equal(21);
+      obj.date.getFullYear().should.equal(1988);
     });
 
     it('should reject boolean', function() {
