@@ -45,7 +45,7 @@ var User = new SchemaObject({
   // Create field which reflects other values but can't be directly modified
   fullName: {type: String, readOnly: true, default: function() {
     return (this.firstName + ' ' + this.lastName).trim();
-  }
+  }}
 });
 
 // Initialize a new instance of the User with a value
