@@ -9,6 +9,8 @@ npm install node-schema-object
 
 #Very basic usage example
 ```
+var SchemaObject = require('node-schema-object');
+
 // Create User schema
 var User = new SchemaObject({
   firstName: String,
@@ -25,6 +27,8 @@ console.log(user.toObject());
 
 #Advanced example
 ```
+var SchemaObject = require('node-schema-object');
+
 // Create custom basic type
 var NotEmptyString = {type: String, minLength: 1};
 
