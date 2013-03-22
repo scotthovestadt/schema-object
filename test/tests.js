@@ -458,11 +458,26 @@ describe('Array', function() {
       var o = new SO();
 
       o.profiles.push({
-        firstName: 'Scott'
+        firstName: 4321
       });
       o.profiles.should.have.lengthOf(1);
       o.profiles[0].firstName.should.be.a('string');
-      o.profiles[0].firstName.should.equal('Scott');
+      o.profiles[0].firstName.should.equal('4321');
+    });
+
+    it('should enforce types on existing array elements', function() {
+      var o = new SO();
+
+      o.profiles.push({
+        firstName: 4321
+      });
+      o.profiles.should.have.lengthOf(1);
+      o.profiles[0].firstName.should.be.a('string');
+      o.profiles[0].firstName.should.equal('4321');
+
+      o.profiles[0].firstName = 1234;
+      o.profiles[0].firstName.should.be.a('string');
+      o.profiles[0].firstName.should.equal('1234');
     });
   });
 });
