@@ -453,6 +453,17 @@ describe('Array', function() {
       o.transformedStrings[0].should.be.a('string');
       o.transformedStrings[0].should.equal('hello');
     });
+
+    it('should allow you to push() in new schema objects', function() {
+      var o = new SO();
+
+      o.profiles.push({
+        firstName: 'Scott'
+      });
+      o.profiles.should.have.lengthOf(1);
+      o.profiles[0].firstName.should.be.a('string');
+      o.profiles[0].firstName.should.equal('Scott');
+    });
   });
 });
 
