@@ -19,10 +19,13 @@ var User = new SchemaObject({
 });
 
 // Initialize instance of user
-var user = new User({firstName: 'Scott'});
-
-// Prints {firstName: 'Scott', lastName: undefined, birthDate: undefined}
+var user = new User({firstName: 'Scott', lastName: 'Hovestadt', birthDate: 'June 21, 1988'});
 console.log(user.toObject());
+
+// Prints:
+{ firstName: 'Scott',
+  lastName: 'Hovestadt',
+  birthDate: Tue Jun 21 1988 00:00:00 GMT-0700 (PDT) }
 ```
 
 #Advanced example
@@ -34,17 +37,25 @@ var NotEmptyString = {type: String, minLength: 1};
 
 // Create sub-schema for user's Company
 var Company = new SchemaObject({
-  name: NotEmptyString,
-  dateEstablished: Date
+  startDate: Date,
+  endDate: Date,
+  name: NotEmptyString
 });
 
 // Create User schema
 var User = new SchemaObject({
-  // Basic user information
+  // Basic user information using custom type
   firstName: NotEmptyString,
   lastName: NotEmptyString,
+  
+  // String with only possible values as 'm' or 'f'
   gender: {type: String, enum: ['m', 'f']},
+  
+  // Index with sub-schema
   company: Company,
+  
+  // An array of Objects with an enforced type
+  workHistory: [Company],
   
   // Create field which reflects other values but can't be directly modified
   fullName: {type: String, readOnly: true, default: function() {
@@ -58,8 +69,31 @@ var user = new User({firstName: 'Scott', lastName: 'Hovestadt', gender: 'm'});
 // Set company name
 user.company.name = 'My Company';
 
-// Prints {firstName: 'Scott', lastName: 'Hovestadt', gender: 'm', company: {name: 'My Company', dateEstablished: undefined}, fullName: 'Scott Hovestadt'}
+// The date is automatically typecast from String
+user.company.startDate = 'June 1, 2010';
+
+// Add company to work history
+user.workHistory.push({
+  name: 'Old Company',
+  startDate: '01/12/2005',
+  endDate: '01/20/2010'
+});
+
 console.log(user.toObject());
+
+// Prints:
+{ firstName: 'Scott',
+  lastName: 'Hovestadt',
+  gender: 'm',
+  company: 
+   { startDate: Tue Jun 01 2010 00:00:00 GMT-0700 (PDT),
+     endDate: undefined,
+     name: 'My Company' },
+  workHistory: 
+   [ { startDate: Wed Jan 12 2005 00:00:00 GMT-0800 (PST),
+       endDate: Wed Jan 20 2010 00:00:00 GMT-0800 (PST),
+       name: 'Old Company' } ],
+  fullName: 'Scott Hovestadt' }
 ```
 
 #Types
@@ -92,7 +126,7 @@ name: {type: String, transform: function(value) {
 ###default
 Provide default value. You may pass value directly or pass a function which will be executed when the value is retrieved. The function is executed in the context of the object and can use "this" to access other properties.
 ```
-country: {type: String, default: "USA"}
+country: {type: String, default: 'USA'}
 ```
 
 ###readOnly
@@ -160,6 +194,20 @@ positive: {type: Number, min: 0}
 Number must be < max attribute or it's rejected.
 ```
 negative: {type: Number, max: 0}
+```
+
+
+##Array
+
+###arrayProperties
+Elements within the array will be typed to the attributes defined within arrayProperties.
+```
+aliases: {type: Array, arrayProperties: {type: String, minLength: 1}}
+```
+
+An alternative shorthand version is also available -- wrap the properties within array brackets.
+```
+aliases: [{type: String, minLength: 1}]
 ```
 
 
