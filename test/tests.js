@@ -547,18 +547,6 @@ describe('Date', function() {
       o.date.getFullYear().should.equal(1988);
     });
 
-    it('should return Date object within index when toObject() is called', function() {
-      var o = new SO();
-
-      o.date = 582879600000;
-      var obj = o.toObject();
-      obj.date.should.be.an.instanceof(Date);
-      obj.date.getTime().should.equal(582879600000);
-      obj.date.getMonth().should.equal(5);
-      obj.date.getDate().should.equal(21);
-      obj.date.getFullYear().should.equal(1988);
-    });
-
     it('should reject boolean', function() {
       var o = new SO();
 
@@ -588,19 +576,60 @@ describe('Date', function() {
 describe('toObject()', function() {
   var SO = new SchemaObject({
     string: String,
-    invisible: {type: String, invisible: true}
+    date: Date,
+    invisible: {type: String, invisible: true},
+    schemaObject: {
+      string: String
+    },
+    schemaObjects: [{
+      string: String
+    }]
   });
 
-  it('should have index "string" with value "hello"', function() {
+  it('should have index "string" with value "1234"', function() {
     var o = new SO();
 
-    o.string = 'hello';
+    o.string = 1234;
     var obj = o.toObject();
     obj.string.should.be.a('string');
-    obj.string.should.equal('hello');
+    obj.string.should.equal('1234');
   });
 
-  describe('invisible', function() {
+  it('should write Date object for Date type', function() {
+    var o = new SO();
+
+    o.date = 582879600000;
+    var obj = o.toObject();
+    obj.date.should.be.an.instanceof(Date);
+    obj.date.getTime().should.equal(582879600000);
+    obj.date.getMonth().should.equal(5);
+    obj.date.getDate().should.equal(21);
+    obj.date.getFullYear().should.equal(1988);
+  });
+
+  it('should converted nested SchemaObjects to primitive Object', function() {
+    var o = new SO();
+
+    o.schemaObject.string = 1234;
+    var obj = o.toObject();
+    obj.schemaObject.string.should.be.a('string');
+    obj.schemaObject.string.should.equal('1234');
+    obj.schemaObject.should.be.a('object');
+    obj.schemaObject.should.should.not.have.property('toObject');
+  });
+
+  it('should converted SchemaObjects nested within Arrays to primitive Objects', function() {
+    var o = new SO();
+
+    o.schemaObjects.push({string: 1234});
+    var obj = o.toObject();
+    obj.schemaObjects[0].string.should.be.a('string');
+    obj.schemaObjects[0].string.should.equal('1234');
+    obj.schemaObjects[0].should.be.a('object');
+    obj.schemaObjects[0].should.not.have.property('toObject');
+  });
+
+  it('should not write invisible indexes', function() {
     var o = new SO();
 
     o.invisible = 'hello';
