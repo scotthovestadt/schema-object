@@ -199,15 +199,32 @@ negative: {type: Number, max: 0}
 
 ##Array
 
-###arrayProperties
-Elements within the array will be typed to the attributes defined within arrayProperties.
+###arrayType
+Elements within the array will be typed to the attributes defined.
 ```
-aliases: {type: Array, arrayProperties: {type: String, minLength: 1}}
+aliases: {type: Array, arrayType: {type: String, minLength: 1}}
 ```
 
 An alternative shorthand version is also available -- wrap the properties within array brackets.
 ```
 aliases: [{type: String, minLength: 1}]
+```
+
+
+##Object
+###objectType
+Allows you to define a typed object.
+```
+company: {type: Object, objectType: {
+  name: String
+}}
+```
+
+An alternative shorthand version is also available -- simply pass an instance of SchemaObject or a schema.
+```
+company: {
+  name: String
+}
 ```
 
 
