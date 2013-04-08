@@ -188,6 +188,12 @@ Enforces maximum string length.
 stateAbbrev: {type: String, maxLength: 2}
 ```
 
+###clip
+If true, clips string to maximum string length instead of rejecting string.
+```
+bio: {type: String, maxLength: 255, clip: true}
+```
+
 
 ##Number
 
