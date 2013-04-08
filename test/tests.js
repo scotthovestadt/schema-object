@@ -401,7 +401,12 @@ describe('Object', function() {
       notEmptyString: {type: String, minLength: 1}
     });
     var SO = new SchemaObject({
-      profile: Profile
+      profile: Profile,
+      shorthandProfile: {
+        firstName: String,
+        age: Number,
+        notEmptyString: {type: String, minLength: 1}
+      }
     });
 
     it('should allow nested schemas', function() {
@@ -417,6 +422,21 @@ describe('Object', function() {
 
       o.profile.notEmptyString = '';
       should.not.exist(o.profile.notEmptyString);
+    });
+
+    it('should allow shorthand declaration', function() {
+      var o = new SO();
+
+      o.shorthandProfile.firstName = 123;
+      o.shorthandProfile.firstName.should.be.a('string');
+      o.shorthandProfile.firstName.should.equal('123');
+
+      o.shorthandProfile.age = '23';
+      o.shorthandProfile.age.should.be.a('number');
+      o.shorthandProfile.age.should.equal(23);
+
+      o.shorthandProfile.notEmptyString = '';
+      should.not.exist(o.shorthandProfile.notEmptyString);
     });
   });
 });
@@ -637,5 +657,23 @@ describe('toObject()', function() {
     o.invisible.should.equal('hello');
     var obj = o.toObject();
     should.not.exist(obj.invisible);
+  });
+});
+
+describe('type definition', function() {
+  it('should allow custom type using an object with properties in "type" property and merge properties together', function() {
+    var MyString = {type: String, minLength: 5, maxLength: 10};
+    var SO = new SchemaObject({
+      customString: {type: MyString, maxLength: 15}
+    });
+
+    var o = new SO();
+    o.customString = '1234';
+    should.not.exist(o.customString);
+    o.customString = '12345';
+    o.customString.should.equal('12345');
+
+    o.customString = '12345678901';
+    o.customString.should.equal('12345678901');
   });
 });
