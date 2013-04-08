@@ -256,6 +256,34 @@ describe('String', function() {
       var o = new SO();
       o.notEmptyString = '';
       should.not.exist(o.notEmptyString);
+      o.notEmptyString = '1';
+      o.notEmptyString.should.equal('1');
+    });
+  });
+
+  describe('maxLength', function() {
+    var SO = new SchemaObject({
+      shortString: {type: String, maxLength: 5}
+    });
+
+    it('should allow a max of 5 characters', function() {
+      var o = new SO();
+      o.shortString = '123456';
+      should.not.exist(o.shortString);
+      o.shortString = '1';
+      o.shortString.should.equal('1');
+    });
+  });
+
+  describe('maxLength + clip', function() {
+    var SO = new SchemaObject({
+      clippedString: {type: String, maxLength: 5, clip: true}
+    });
+
+    it('should clip string to 5 characters', function() {
+      var o = new SO();
+      o.clippedString = '123456';
+      o.clippedString.should.equal('12345');
     });
   });
 });
@@ -674,6 +702,9 @@ describe('type definition', function() {
     o.customString.should.equal('12345');
 
     o.customString = '12345678901';
+    o.customString.should.equal('12345678901');
+
+    o.customString = '12345678901234567890';
     o.customString.should.equal('12345678901');
   });
 });
