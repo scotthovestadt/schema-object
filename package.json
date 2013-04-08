@@ -1,0 +1,28 @@
+{
+  "name": "node-schema-object",
+  "version": "0.6.5",
+  "description": "Node object with validated, transformed & typecasted schema.",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:scotthovestadt/node-schema-object.git"
+  },
+  "keywords": [
+    "schema"
+  ],
+  "dependencies": {
+    "underscore": "1.4.x"
+  },
+  "devDependencies": {
+    "should": "*"
+  },
+  "author": "Scott Hovestadt",
+  "license": "BSD",
+  "readmeFilename": "README.md",
+}
