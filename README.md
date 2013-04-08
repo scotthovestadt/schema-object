@@ -33,6 +33,7 @@ console.log(user.toObject());
 var SchemaObject = require('node-schema-object');
 
 // Create custom basic type
+// Type can be extended with more properties when defined
 var NotEmptyString = {type: String, minLength: 1};
 
 // Create sub-schema for user's Company
@@ -48,8 +49,8 @@ var User = new SchemaObject({
   firstName: NotEmptyString,
   lastName: NotEmptyString,
   
-  // String with only possible values as 'm' or 'f'
-  gender: {type: String, enum: ['m', 'f']},
+  // "NotEmptyString" with only possible values as 'm' or 'f'
+  gender: {type: NotEmptyString, enum: ['m', 'f']},
   
   // Index with sub-schema
   company: Company,
@@ -111,6 +112,12 @@ Supported types:
 When a type is specified, it will be enforced. Typecasting is enforced on all types. If a value cannot be typecasted to the correct type, the original value will remain untouched.
 
 Types can be extended with a variety of attributes. Some attributes are type-specific and some apply to all types.
+
+Custom types can be created by defining an object with type properties.
+```
+var NotEmptyString = {type: String, minLength: 1};
+country: {type: NotEmptyString, default: 'USA'}
+```
 
 ##General attributes
 
