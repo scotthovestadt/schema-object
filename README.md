@@ -212,6 +212,12 @@ negative: {type: Number, max: 0}
 
 ##Array
 
+###unique
+Ensures duplicate-free array, using === to test object equality.
+```
+emails: {type: Array, unique: true, arrayType: String}
+```
+
 ###arrayType
 Elements within the array will be typed to the attributes defined.
 ```
@@ -253,74 +259,94 @@ postalCode: {type: 'alias', alias: 'zip'}
 
 #Unit tests
 ```
-String
-  typecasting
-    ✓ should typecast integer to string 
-    ✓ should typecast boolean to string 
-    ✓ should join array into string 
-    ✓ should reject object 
-  regex
-    ✓ should only allow values that match regex ^([A-Z]{4})$ 
-  enum
-    ✓ should allow values in enum 
-    ✓ value should remain untouched when non-enum is passed 
-    ✓ default must be in enum or is rejected 
-    ✓ default should be set when in enum 
-  stringTransform
-    ✓ should return lowercase 
-    ✓ should always be passed a String object and not called if undefined or null 
-  read only
-    ✓ should always be default value 
-  minLength
-    ✓ should not allow empty strings 
+  any type
+    transform
+      ✓ should turn any string to lowercase but not touch other values 
+    default
+      ◦ default as function + readOnly to combine properties into single readOnl      ✓ default as function + readOnly to combine properties into single readOnly property 
+    alias
+      ✓ should allow alias to be used to set values 
+      ✓ should allow alias to pre-transform values 
+    readOnly
+      ✓ should not allow you to modify value 
 
-Number
-  typecasting
-    ✓ should typecast string to number 
-    ✓ should typecast boolean to number 
-  min
-    ✓ should reject values below min 
-  max
-    ✓ should reject values above max 
+  String
+    typecasting
+      ✓ should typecast integer to string 
+      ✓ should typecast boolean to string 
+      ✓ should join array into string 
+      ✓ should reject object 
+    regex
+      ✓ should only allow values that match regex ^([A-Z]{4})$ 
+    enum
+      ✓ should allow values in enum 
+      ✓ value should remain untouched when non-enum is passed 
+      ✓ default must be in enum or is rejected 
+      ✓ default should be set when in enum 
+    stringTransform
+      ✓ should return lowercase 
+      ◦ should always be passed a String object and not called if undefined or n      ✓ should always be passed a String object and not called if undefined or null 
+    read only
+      ✓ should always be default value 
+    minLength
+      ✓ should not allow empty strings 
+    maxLength
+      ✓ should allow a max of 5 characters 
+    maxLength + clip
+      ✓ should clip string to 5 characters 
 
-Boolean
-  typecasting
-    ✓ should typecast string to boolean 
-    ✓ should typecast number to boolean 
+  Number
+    typecasting
+      ✓ should typecast string to number 
+      ✓ should typecast boolean to number 
+    min
+      ✓ should reject values below min 
+    max
+      ✓ should reject values above max 
 
-Object
-  accessing properties
-    ✓ should set properties without initializing object 
-  schema
-    ✓ should allow nested schemas 
+  Boolean
+    typecasting
+      ✓ should typecast string to boolean 
+      ✓ should typecast number to boolean 
 
-Array
-  typecasting
-    ✓ should typecast all array elements to string 
-    ✓ should transform all strings to lowercase 
+  Object
+    accessing properties
+      ✓ should set properties without initializing object 
+    schema
+      ✓ should allow nested schemas 
+      ✓ should allow shorthand declaration 
 
-Date
-  typecasting
-    ✓ should typecast string "June 21, 1988" to date 
-    ✓ should typecast string "06/21/1988" to date 
-    ✓ should typecast string "6/21/1988" to date 
-    ✓ should reject nonsense strings 
-    ✓ should typecast integer timestamp seconds to date 
-    ✓ should typecast integer timestamp milliseconds to date 
-    ✓ should return Date object within index when toObject() is called 
-    ✓ should reject boolean 
-    ✓ should reject array 
-    ✓ should reject object 
+  Array
+    typecasting
+      ✓ should typecast all array elements to string 
+      ✓ should transform all strings to lowercase 
+      ✓ should allow you to push() in new schema objects 
+      ✓ should enforce types on existing array elements 
+    unique
+      ✓ should enforce unique values within array with typecasting 
+      ✓ should enforce unique values within array without typecasting 
+    toArray
+      ✓ should return native Array 
 
-any type
-  transform
-    ✓ should turn any string to lowercase but not touch other values 
-  default
-    ✓ default as function + readOnly to combine properties into single readOnly property 
-  alias
-    ✓ should allow alias to be used to set values 
-    ✓ should allow alias to pre-transform values 
+  Date
+    typecasting
+      ✓ should typecast string "June 21, 1988" to date 
+      ✓ should typecast string "06/21/1988" to date 
+      ✓ should typecast string "6/21/1988" to date 
+      ✓ should reject nonsense strings 
+      ✓ should typecast integer timestamp seconds to date 
+      ✓ should typecast integer timestamp milliseconds to date 
+      ✓ should reject boolean 
+      ✓ should reject array 
+      ✓ should reject object 
 
-converting schemaobject to plain object
-  ✓ should have index string with value "hello" 
+  toObject()
+    ✓ should have index "string" with value "1234" 
+    ✓ should write Date object for Date type 
+    ✓ should converted nested SchemaObjects to primitive Object 
+    ✓ should converted SchemaObjects nested within Arrays to primitive Objects 
+    ✓ should not write invisible indexes 
+
+  type definition
+    ✓ should allow custom type using an object with properties in "type" property and merge properties together 
 ```

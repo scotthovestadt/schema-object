@@ -528,6 +528,51 @@ describe('Array', function() {
       o.profiles[0].firstName.should.equal('1234');
     });
   });
+
+  describe('unique', function() {
+    var SO = new SchemaObject({
+      uniqueStrings: {type: Array, unique: true, arrayType: String},
+      unique: {type: Array, unique: true}
+    });
+
+    it('should enforce unique values within array with typecasting', function() {
+      var o = new SO();
+
+      o.uniqueStrings.push(1234);
+      o.uniqueStrings.should.have.lengthOf(1);
+      o.uniqueStrings.push('1234');
+      o.uniqueStrings.should.have.lengthOf(1);
+      o.uniqueStrings.push('12345');
+      o.uniqueStrings.should.have.lengthOf(2);
+    });
+
+    it('should enforce unique values within array without typecasting', function() {
+      var o = new SO();
+
+      o.unique.push('scott');
+      o.unique.should.have.lengthOf(1);
+      o.unique.push('scott');
+      o.unique.should.have.lengthOf(1);
+      o.unique.push('Scott');
+      o.unique.should.have.lengthOf(2);
+    });
+  });
+
+  describe('toArray', function() {
+    var SO = new SchemaObject({
+      strings: {type: Array, unique: true, arrayType: String}
+    });
+
+    it('should return native Array', function() {
+      var o = new SO();
+
+      o.strings.push(1234);
+      var array = o.strings.toArray();
+      array.should.be.an.instanceOf(Array);
+      array.should.not.have.property('toArray');
+      array[0].should.be.equal('1234');
+    });
+  });
 });
 
 describe('Date', function() {
