@@ -581,6 +581,17 @@ describe('Date', function() {
       date: Date
     });
 
+    it('should accept Date type', function() {
+      var o = new SO();
+
+      var now = new Date();
+      o.date = now;
+      o.date.should.be.an.instanceof(Date);
+      o.date.getMonth().should.equal(now.getMonth());
+      o.date.getDate().should.equal(now.getDate());
+      o.date.getFullYear().should.equal(now.getFullYear());
+    });
+
     it('should typecast string "June 21, 1988" to date', function() {
       var o = new SO();
 
