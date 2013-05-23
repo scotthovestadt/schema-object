@@ -674,6 +674,16 @@ describe('Date', function() {
       o.date = {0: 'h', 1: 'e', 2: 'l', 3: 'l', 4: 'o'};
       should.not.exist(o.date);
     });
+
+    // https://github.com/scotthovestadt/node-schema-object/issues/5
+    it('should correctly parse dates before 1970', function() {
+      var o = new SO();
+
+      o.date = '03/02/1959';
+      o.date.getMonth().should.equal(2);
+      o.date.getDate().should.equal(2);
+      o.date.getFullYear().should.equal(1959);
+    });
   });
 });
 
