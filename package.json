@@ -20,7 +20,8 @@
     "underscore": "1.4.x"
   },
   "devDependencies": {
-    "should": "*"
+    "should": "*",
+    "mocha": "*"
   },
   "author": "Scott Hovestadt",
   "license": "BSD",
