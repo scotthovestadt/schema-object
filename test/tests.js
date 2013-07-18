@@ -752,6 +752,18 @@ describe('toObject()', function() {
     var obj = o.toObject();
     should.not.exist(obj.invisible);
   });
+
+  it('should be called for serializing an object to JSON', function() {
+    var o = new SO();
+    o.string = 'hello';
+    o.date = new Date();
+    o.schemaObject.string = 'test';
+    o.schemaObjects.push({string: 1234});
+
+    var obj = JSON.stringify(o.toObject());
+    var jsonObject = JSON.stringify(o);
+    obj.should.equal(jsonObject);
+  });
 });
 
 describe('type definition', function() {
