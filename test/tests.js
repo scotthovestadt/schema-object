@@ -493,6 +493,17 @@ describe('Array', function() {
       o.strings[0].should.equal('123');
     });
 
+    it('should typecast Array when set to instance of existing array', function() {
+      var o = new SO();
+      o.strings = [123, 321];
+
+      o.strings.should.be.an.instanceof(Array);
+      o.strings[0].should.be.a('string');
+      o.strings[0].should.equal('123');
+      o.strings[1].should.be.a('string');
+      o.strings[1].should.equal('321');
+    });
+
     it('should transform all strings to lowercase', function() {
       var o = new SO();
 
@@ -697,7 +708,8 @@ describe('toObject()', function() {
     },
     schemaObjects: [{
       string: String
-    }]
+    }],
+    arrayOfStrings: [String]
   });
 
   it('should have index "string" with value "1234"', function() {
@@ -719,6 +731,16 @@ describe('toObject()', function() {
     obj.date.getMonth().should.equal(5);
     obj.date.getDate().should.equal(21);
     obj.date.getFullYear().should.equal(1988);
+  });
+
+  it('should write Arrays for Array type', function() {
+    var o = new SO();
+    o.arrayOfStrings = ['hello', 'world'];
+
+    var obj = o.toObject();
+    obj.arrayOfStrings.should.be.an.instanceof(Array);
+    obj.arrayOfStrings[0].should.equal('hello');
+    obj.arrayOfStrings[1].should.equal('world');
   });
 
   it('should converted nested SchemaObjects to primitive Object', function() {
