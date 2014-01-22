@@ -20,11 +20,11 @@ describe('any type', function() {
       var o = new SO();
 
       o.value = 123;
-      o.value.should.be.a('number');
+      o.value.should.be.a.Number;
       o.value.should.equal(123);
 
       o.value = 'HELLO';
-      o.value.should.be.a('string');
+      o.value.should.be.a.String;
       o.value.should.equal('hello');
     });
   });
@@ -43,7 +43,7 @@ describe('any type', function() {
       var o = new SO();
       o.firstName = 'Scott';
       o.lastName = 'Hovestadt';
-      o.name.should.be.a('string');
+      o.name.should.be.a.String;
       o.name.should.equal('Scott Hovestadt');
     });
   });
@@ -63,18 +63,18 @@ describe('any type', function() {
     it('should allow alias to be used to set values', function() {
       var o = new SO();
       o.region = 'CA';
-      o.region.should.be.a('string');
+      o.region.should.be.a.String;
       o.region.should.equal('CA');
-      o.state.should.be.a('string');
+      o.state.should.be.a.String;
       o.state.should.equal('CA');
     });
 
     it('should allow alias to pre-transform values', function() {
       var o = new SO();
       o.regionTransform = 'test';
-      o.regionTransform.should.be.a('string');
+      o.regionTransform.should.be.a.String;
       o.regionTransform.should.equal('TEST');
-      o.state.should.be.a('string');
+      o.state.should.be.a.String;
       o.state.should.equal('TEST');
     });
   });
@@ -109,7 +109,7 @@ describe('String', function() {
       var o = new SO();
 
       o.string = 123;
-      o.string.should.be.a('string');
+      o.string.should.be.a.String;
       o.string.should.equal('123');
     });
 
@@ -117,11 +117,11 @@ describe('String', function() {
       var o = new SO();
 
       o.string = true;
-      o.string.should.be.a('string');
+      o.string.should.be.a.String;
       o.string.should.equal('true');
 
       o.string = false;
-      o.string.should.be.a('string');
+      o.string.should.be.a.String;
       o.string.should.equal('false');
     });
 
@@ -299,7 +299,7 @@ describe('Number', function() {
       var o = new SO();
 
       o.number = '123';
-      o.number.should.be.a('number');
+      o.number.should.be.a.Number;
       o.number.should.equal(123);
 
       o.number = o.number + 1;
@@ -310,11 +310,11 @@ describe('Number', function() {
       var o = new SO();
 
       o.number = false;
-      o.number.should.be.a('number');
+      o.number.should.be.a.Number;
       o.number.should.equal(0);
 
       o.number = true;
-      o.number.should.be.a('number');
+      o.number.should.be.a.Number;
       o.number.should.equal(1);
     });
   });
@@ -357,31 +357,31 @@ describe('Boolean', function() {
       var o = new SO();
 
       o.boolean = '123';
-      o.boolean.should.be.a('boolean');
+      o.boolean.should.be.a.Boolean;
       o.boolean.should.equal(true);
 
       o.boolean = 'true';
-      o.boolean.should.be.a('boolean');
+      o.boolean.should.be.a.Boolean;
       o.boolean.should.equal(true);
 
       o.boolean = '1';
-      o.boolean.should.be.a('boolean');
+      o.boolean.should.be.a.Boolean;
       o.boolean.should.equal(true);
 
       o.boolean = '';
-      o.boolean.should.be.a('boolean');
+      o.boolean.should.be.a.Boolean;
       o.boolean.should.equal(false);
 
       o.boolean = 'false';
-      o.boolean.should.be.a('boolean');
+      o.boolean.should.be.a.Boolean;
       o.boolean.should.equal(false);
 
       o.boolean = '0';
-      o.boolean.should.be.a('boolean');
+      o.boolean.should.be.a.Boolean;
       o.boolean.should.equal(false);
 
       o.boolean = '-1';
-      o.boolean.should.be.a('boolean');
+      o.boolean.should.be.a.Boolean;
       o.boolean.should.equal(false);
     });
 
@@ -389,19 +389,19 @@ describe('Boolean', function() {
       var o = new SO();
 
       o.boolean = 1;
-      o.boolean.should.be.a('boolean');
+      o.boolean.should.be.a.Boolean;
       o.boolean.should.equal(true);
 
       o.boolean = 100;
-      o.boolean.should.be.a('boolean');
+      o.boolean.should.be.a.Boolean;
       o.boolean.should.equal(true);
 
       o.boolean = 0;
-      o.boolean.should.be.a('boolean');
+      o.boolean.should.be.a.Boolean;
       o.boolean.should.equal(false);
 
       o.boolean = -1;
-      o.boolean.should.be.a('boolean');
+      o.boolean.should.be.a.Boolean;
       o.boolean.should.equal(false);
     });
   });
@@ -441,11 +441,11 @@ describe('Object', function() {
       var o = new SO();
 
       o.profile.firstName = 123;
-      o.profile.firstName.should.be.a('string');
+      o.profile.firstName.should.be.a.String;
       o.profile.firstName.should.equal('123');
 
       o.profile.age = '23';
-      o.profile.age.should.be.a('number');
+      o.profile.age.should.be.a.Number;
       o.profile.age.should.equal(23);
 
       o.profile.notEmptyString = '';
@@ -456,11 +456,11 @@ describe('Object', function() {
       var o = new SO();
 
       o.shorthandProfile.firstName = 123;
-      o.shorthandProfile.firstName.should.be.a('string');
+      o.shorthandProfile.firstName.should.be.a.String;
       o.shorthandProfile.firstName.should.equal('123');
 
       o.shorthandProfile.age = '23';
-      o.shorthandProfile.age.should.be.a('number');
+      o.shorthandProfile.age.should.be.a.Number;
       o.shorthandProfile.age.should.equal(23);
 
       o.shorthandProfile.notEmptyString = '';
@@ -489,7 +489,7 @@ describe('Array', function() {
 
       o.strings.push(123);
       o.strings.should.have.lengthOf(1);
-      o.strings[0].should.be.a('string');
+      o.strings[0].should.be.a.String;
       o.strings[0].should.equal('123');
     });
 
@@ -498,9 +498,9 @@ describe('Array', function() {
       o.strings = [123, 321];
 
       o.strings.should.be.an.instanceof(Array);
-      o.strings[0].should.be.a('string');
+      o.strings[0].should.be.a.String;
       o.strings[0].should.equal('123');
-      o.strings[1].should.be.a('string');
+      o.strings[1].should.be.a.String;
       o.strings[1].should.equal('321');
     });
 
@@ -509,7 +509,7 @@ describe('Array', function() {
 
       o.transformedStrings.push('HELLO');
       o.transformedStrings.should.have.lengthOf(1);
-      o.transformedStrings[0].should.be.a('string');
+      o.transformedStrings[0].should.be.a.String;
       o.transformedStrings[0].should.equal('hello');
     });
 
@@ -520,7 +520,7 @@ describe('Array', function() {
         firstName: 4321
       });
       o.profiles.should.have.lengthOf(1);
-      o.profiles[0].firstName.should.be.a('string');
+      o.profiles[0].firstName.should.be.a.String;
       o.profiles[0].firstName.should.equal('4321');
     });
 
@@ -531,11 +531,11 @@ describe('Array', function() {
         firstName: 4321
       });
       o.profiles.should.have.lengthOf(1);
-      o.profiles[0].firstName.should.be.a('string');
+      o.profiles[0].firstName.should.be.a.String;
       o.profiles[0].firstName.should.equal('4321');
 
       o.profiles[0].firstName = 1234;
-      o.profiles[0].firstName.should.be.a('string');
+      o.profiles[0].firstName.should.be.a.String;
       o.profiles[0].firstName.should.equal('1234');
     });
   });
@@ -717,7 +717,7 @@ describe('toObject()', function() {
 
     o.string = 1234;
     var obj = o.toObject();
-    obj.string.should.be.a('string');
+    obj.string.should.be.a.String;
     obj.string.should.equal('1234');
   });
 
@@ -748,9 +748,9 @@ describe('toObject()', function() {
 
     o.schemaObject.string = 1234;
     var obj = o.toObject();
-    obj.schemaObject.string.should.be.a('string');
+    obj.schemaObject.string.should.be.a.String;
     obj.schemaObject.string.should.equal('1234');
-    obj.schemaObject.should.be.a('object');
+    obj.schemaObject.should.be.an.Object;
     obj.schemaObject.should.should.not.have.property('toObject');
   });
 
@@ -759,9 +759,9 @@ describe('toObject()', function() {
 
     o.schemaObjects.push({string: 1234});
     var obj = o.toObject();
-    obj.schemaObjects[0].string.should.be.a('string');
+    obj.schemaObjects[0].string.should.be.a.String;
     obj.schemaObjects[0].string.should.equal('1234');
-    obj.schemaObjects[0].should.be.a('object');
+    obj.schemaObjects[0].should.be.an.Object;
     obj.schemaObjects[0].should.not.have.property('toObject');
   });
 
@@ -769,7 +769,7 @@ describe('toObject()', function() {
     var o = new SO();
 
     o.invisible = 'hello';
-    o.invisible.should.be.a('string');
+    o.invisible.should.be.a.String;
     o.invisible.should.equal('hello');
     var obj = o.toObject();
     should.not.exist(obj.invisible);
