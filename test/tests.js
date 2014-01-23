@@ -2,6 +2,32 @@ var should = require('should'),
     _ = require('underscore'),
     SchemaObject = require('../lib/schemaobject');
 
+describe('SchemaObject construction options', function() {
+  it('strict: true should not allow you to set any index', function() {
+    var SO = new SchemaObject({
+    }, {
+      strict: true
+    });
+
+    var o = new SO();
+    o.unknownIndex = 'a string';
+    should.not.exist(o.unknownIndex);
+  });
+
+  it('strict: false should allow you to set any index (but behave normally for schema-fields)', function() {
+    var SO = new SchemaObject({
+      aNumber: Number
+    }, {
+      strict: false
+    });
+
+    var o = new SO();
+    o.unknownIndex = 'a string';
+    o.unknownIndex.should.be.a.String;
+    o.unknownIndex.should.equal('a string');
+  });
+});
+
 describe('any type', function() {
   describe('transform', function() {
     var SO = new SchemaObject({
@@ -410,15 +436,15 @@ describe('Boolean', function() {
 describe('Object', function() {
   describe('accessing properties', function() {
     var SO = new SchemaObject({
-      objects: {}
+      anObject: {}
     });
 
     it('should set properties without initializing object', function() {
       var o = new SO();
 
-      o.prop = 123;
-      should.exist(o.prop);
-      o.prop.should.equal(123);
+      o.anObject.prop = 123;
+      should.exist(o.anObject.prop);
+      o.anObject.prop.should.equal(123);
     });
   });
 
@@ -785,6 +811,18 @@ describe('toObject()', function() {
     var obj = JSON.stringify(o.toObject());
     var jsonObject = JSON.stringify(o);
     obj.should.equal(jsonObject);
+  });
+
+  it('should write non-schema indexes when strict mode is off', function() {
+    var SO = new SchemaObject({
+    }, {
+      strict: false
+    });
+
+    var o = new SO();
+    o.randomIndex = 123;
+    var obj = o.toObject();
+    obj.randomIndex.should.equal(123);
   });
 });
 

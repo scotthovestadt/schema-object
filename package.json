@@ -1,13 +1,13 @@
 {
   "name": "node-schema-object",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "Node object with validated, transformed & typecasted schema.",
   "main": "index.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha --harmony"
   },
   "repository": {
     "type": "git",
@@ -17,7 +17,8 @@
     "schema"
   ],
   "dependencies": {
-    "underscore": "1.4.x"
+    "underscore": "1.4.x",
+    "harmony-reflect": "0.0.11"
   },
   "devDependencies": {
     "should": "3.0.1",

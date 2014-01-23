@@ -7,6 +7,8 @@ Designed to enforce schema on Javascript objects. Allows you to specify type, tr
 npm install node-schema-object
 ```
 
+**For all features, run node with --harmony flag.**
+
 #Very basic usage example
 ```js
 var SchemaObject = require('node-schema-object');
@@ -97,6 +99,47 @@ console.log(user.toObject());
   fullName: 'Scott Hovestadt' }
 ```
 
+#Options
+
+When you create the SchemaObject, you may pass a set of options as a second argument. These options allow you to fine-tune the behavior of your objects for specific needs.
+
+
+## Strict
+
+Strict mode (default: true) allows you to specify what happens when an index is set on your SchemaObject that does not exist in the schema. If strict mode is on, the index will be ignored. If strict mode is off, the index will automatically be created in the schema when it's set with type "any".
+
+With strict mode on (default):
+```js
+var Profile = new SchemaObject({
+  id: String
+}, {
+  strict: true
+});
+
+var profile = new Profile();
+profile.id = "abc123";
+profile.customField = "hello";
+
+// Prints:
+{ id: 'abc123' }
+```
+
+With strict mode off:
+```js
+var Profile = new SchemaObject({
+  id: String
+}, {
+  strict: false
+});
+
+var profile = new Profile();
+profile.id = "abc123";
+profile.customField = "hello";
+
+// Prints:
+{ id: 'abc123', customField: 'hello' }
+```
+
 #Types
 
 Supported types:
@@ -107,9 +150,9 @@ Supported types:
 - Array (including types within Array)
 - Object (including typed SchemaObjects for sub-schemas)
 - 'alias'
-- undefined
+- 'any'
 
-When a type is specified, it will be enforced. Typecasting is enforced on all types. If a value cannot be typecasted to the correct type, the original value will remain untouched.
+When a type is specified, it will be enforced. Typecasting is enforced on all types except 'any'. If a value cannot be typecasted to the correct type, the original value will remain untouched.
 
 Types can be extended with a variety of attributes. Some attributes are type-specific and some apply to all types.
 
@@ -255,98 +298,4 @@ The index key of the property being aliased.
 zip: String,
 postalCode: {type: 'alias', alias: 'zip'}
 // this.postalCode = 12345 -> this.toObject() -> {zip: '12345'}
-```
-
-#Unit tests
-```
-  any type
-    transform
-      ✓ should turn any string to lowercase but not touch other values 
-    default
-      ◦ default as function + readOnly to combine properties into single readOnl      ✓ default as function + readOnly to combine properties into single readOnly property 
-    alias
-      ✓ should allow alias to be used to set values 
-      ✓ should allow alias to pre-transform values 
-    readOnly
-      ✓ should not allow you to modify value 
-
-  String
-    typecasting
-      ✓ should typecast integer to string 
-      ✓ should typecast boolean to string 
-      ✓ should join array into string 
-      ✓ should reject object 
-    regex
-      ✓ should only allow values that match regex ^([A-Z]{4})$ 
-    enum
-      ✓ should allow values in enum 
-      ✓ value should remain untouched when non-enum is passed 
-      ✓ default must be in enum or is rejected 
-      ✓ default should be set when in enum 
-    stringTransform
-      ✓ should return lowercase 
-      ◦ should always be passed a String object and not called if undefined or n      ✓ should always be passed a String object and not called if undefined or null 
-    read only
-      ✓ should always be default value 
-    minLength
-      ✓ should not allow empty strings 
-    maxLength
-      ✓ should allow a max of 5 characters 
-    maxLength + clip
-      ✓ should clip string to 5 characters 
-
-  Number
-    typecasting
-      ✓ should typecast string to number 
-      ✓ should typecast boolean to number 
-    min
-      ✓ should reject values below min 
-    max
-      ✓ should reject values above max 
-
-  Boolean
-    typecasting
-      ✓ should typecast string to boolean 
-      ✓ should typecast number to boolean 
-
-  Object
-    accessing properties
-      ✓ should set properties without initializing object 
-    schema
-      ✓ should allow nested schemas 
-      ✓ should allow shorthand declaration 
-
-  Array
-    typecasting
-      ✓ should typecast all array elements to string 
-      ✓ should transform all strings to lowercase 
-      ✓ should allow you to push() in new schema objects 
-      ✓ should enforce types on existing array elements 
-    unique
-      ✓ should enforce unique values within array with typecasting 
-      ✓ should enforce unique values within array without typecasting 
-    toArray
-      ✓ should return native Array 
-
-  Date
-    typecasting
-      ✓ should typecast string "June 21, 1988" to date 
-      ✓ should typecast string "06/21/1988" to date 
-      ✓ should typecast string "6/21/1988" to date 
-      ✓ should reject nonsense strings 
-      ✓ should typecast integer timestamp seconds to date 
-      ✓ should typecast integer timestamp milliseconds to date 
-      ✓ should reject boolean 
-      ✓ should reject array 
-      ✓ should reject object 
-
-  toObject()
-    ✓ should have index "string" with value "1234" 
-    ✓ should write Date object for Date type 
-    ✓ should converted nested SchemaObjects to primitive Object 
-    ✓ should converted SchemaObjects nested within Arrays to primitive Objects 
-    ✓ should not write invisible indexes 
-
-  type definition
-    ✓ should allow custom type using an object with properties in "type" property and merge properties together 
 ```
