@@ -117,8 +117,8 @@ var Profile = new SchemaObject({
 });
 
 var profile = new Profile();
-profile.id = "abc123";
-profile.customField = "hello";
+profile.id = 'abc123';
+profile.customField = 'hello';
 
 // Prints:
 { id: 'abc123' }
@@ -133,8 +133,8 @@ var Profile = new SchemaObject({
 });
 
 var profile = new Profile();
-profile.id = "abc123";
-profile.customField = "hello";
+profile.id = 'abc123';
+profile.customField = 'hello';
 
 // Prints:
 { id: 'abc123', customField: 'hello' }
