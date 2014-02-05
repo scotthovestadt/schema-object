@@ -103,6 +103,13 @@ describe('any type', function() {
       o.state.should.be.a.String;
       o.state.should.equal('TEST');
     });
+
+    it('should typecast values set through alias', function() {
+      var o = new SO();
+      o.region = 123;
+      o.state.should.be.a.String;
+      o.state.should.equal('123');
+    });
   });
 
   describe('readOnly', function() {
