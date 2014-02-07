@@ -378,6 +378,37 @@ describe('Number', function() {
       o.minMax.should.equal(200);
     });
   });
+
+  describe('numberTransform', function() {
+    var SO = new SchemaObject({
+      number: {
+        type: Number,
+        numberTransform: function(number) {
+          return Math.round(number);
+        }
+      }
+    });
+
+    it('should always round number', function() {
+      var o = new SO();
+
+      o.number = 13.2;
+      o.number.should.equal(13);
+    });
+
+    it('should always be passed a Number object and not called if undefined or null', function() {
+      var o = new SO();
+
+      o.number = 'not a number';
+      should.not.exist(o.date);
+
+      o.number = undefined;
+      should.not.exist(o.date);
+
+      o.number = null;
+      should.not.exist(o.date);
+    });
+  });
 });
 
 describe('Boolean', function() {
@@ -435,6 +466,24 @@ describe('Boolean', function() {
 
       o.boolean = -1;
       o.boolean.should.be.a.Boolean;
+      o.boolean.should.equal(false);
+    });
+  });
+
+  describe('booleanTransform', function() {
+    var SO = new SchemaObject({
+      boolean: {
+        type: Boolean,
+        booleanTransform: function(boolean) {
+          return !boolean;
+        }
+      }
+    });
+
+    it('should always reverse boolean', function() {
+      var o = new SO();
+
+      o.boolean = true;
       o.boolean.should.equal(false);
     });
   });
@@ -727,6 +776,49 @@ describe('Date', function() {
       o.date.getMonth().should.equal(2);
       o.date.getDate().should.equal(2);
       o.date.getFullYear().should.equal(1959);
+    });
+  });
+
+  describe('dateTransform', function() {
+    var SO = new SchemaObject({
+      date: {
+        type: Date,
+        dateTransform: function(date) {
+          date.setFullYear(2000);
+          return date;
+        }
+      }
+    });
+
+    it('should always return date with year 2000 but other properties untouched', function() {
+      var o = new SO();
+
+      var date = new Date();
+      o.date = date;
+      o.date.getFullYear().should.equal(2000);
+      o.date.getMonth().should.equal(date.getMonth());
+      o.date.getDay().should.equal(date.getDay());
+
+      o.date = date.toISOString();
+      o.date.getFullYear().should.equal(2000);
+      o.date.getMonth().should.equal(date.getMonth());
+      o.date.getDay().should.equal(date.getDay());
+    });
+
+    it('should always be passed a Date object and not called if undefined or null', function() {
+      var o = new SO();
+
+      o.date = 'not a date';
+      should.not.exist(o.date);
+
+      o.date = false;
+      should.not.exist(o.date);
+
+      o.date = undefined;
+      should.not.exist(o.date);
+
+      o.date = null;
+      should.not.exist(o.date);
     });
   });
 });
