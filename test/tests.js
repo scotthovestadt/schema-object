@@ -170,6 +170,7 @@ describe('String', function() {
 
       o.string = {0: 'h', 1: 'e', 2: 'l', 3: 'l', 4: 'o'};
       should.not.exist(o.string);
+      o.getErrors().length.should.equal(1);
     });
   });
 
@@ -224,6 +225,7 @@ describe('String', function() {
       var o = new SO();
 
       should.not.exist(o.string);
+      o.getErrors().length.should.equal(1);
     });
 
     it('default should be set when in enum', function() {
@@ -358,6 +360,7 @@ describe('Number', function() {
 
       o.minMax = 0;
       should.not.exist(o.minMax);
+      o.getErrors().length.should.equal(1);
 
       o.minMax = 100;
       o.minMax.should.equal(100);
@@ -373,6 +376,7 @@ describe('Number', function() {
 
       o.minMax = 300;
       should.not.exist(o.minMax);
+      o.getErrors().length.should.equal(1);
 
       o.minMax = 200;
       o.minMax.should.equal(200);
@@ -720,6 +724,7 @@ describe('Date', function() {
 
       o.date = 'not a date';
       should.not.exist(o.date);
+      o.getErrors().length.should.equal(1);
     });
 
     it('should typecast integer timestamp seconds to date', function() {
@@ -749,9 +754,11 @@ describe('Date', function() {
 
       o.date = true;
       should.not.exist(o.date);
+      o.getErrors().length.should.equal(1);
 
       o.date = false;
       should.not.exist(o.date);
+      o.getErrors().length.should.equal(2);
     });
 
     it('should reject array', function() {
@@ -759,6 +766,7 @@ describe('Date', function() {
 
       o.date = ['h', 'e', 'l', 'l', 'o'];
       should.not.exist(o.date);
+      o.getErrors().length.should.equal(1);
     });
 
     it('should reject object', function() {
@@ -766,6 +774,7 @@ describe('Date', function() {
 
       o.date = {0: 'h', 1: 'e', 2: 'l', 3: 'l', 4: 'o'};
       should.not.exist(o.date);
+      o.getErrors().length.should.equal(1);
     });
 
     // https://github.com/scotthovestadt/node-schema-object/issues/5
@@ -922,6 +931,20 @@ describe('toObject()', function() {
     o.randomIndex = 123;
     var obj = o.toObject();
     obj.randomIndex.should.equal(123);
+  });
+});
+
+describe('clearErrors()', function() {
+  it('should remove all errors on an object', function() {
+    var SO = new SchemaObject({
+      string: {type: String, minLength: 15}
+    });
+
+    var o = new SO();
+    o.string = '1234';
+    o.getErrors().length.should.equal(1);
+    o.clearErrors();
+    o.getErrors().length.should.equal(0);
   });
 });
 
