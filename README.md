@@ -103,7 +103,6 @@ console.log(user.toObject());
 
 When you create the SchemaObject, you may pass a set of options as a second argument. These options allow you to fine-tune the behavior of your objects for specific needs.
 
-
 ## Strict
 
 Strict mode (default: true) allows you to specify what happens when an index is set on your SchemaObject that does not exist in the schema. If strict mode is on, the index will be ignored. If strict mode is off, the index will automatically be created in the schema when it's set with type "any".
@@ -139,6 +138,32 @@ profile.customField = 'hello';
 // Prints:
 { id: 'abc123', customField: 'hello' }
 ```
+
+
+# Errors
+
+When setting a value fails, an error is generated silently. Errors can be retrieved with getErrors() and cleared with clearErrors().
+
+```js
+var Profile = new SchemaObject({
+  id: {type: String, minLength: 5}
+});
+
+var profile = new Profile();
+profile.id = '1234';
+
+console.log(profile.getErrors());
+
+// Prints:
+[ { errorMessage: 'String length too short to meet minLength requirement.',
+    setValue: '1234',
+    originalValue: undefined,
+    fieldSchema: { name: 'id', type: 'string', minLength: 5 } } ]
+
+// Clear all errors.
+profile.clearErrors();
+```
+
 
 #Types
 
