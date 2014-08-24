@@ -538,6 +538,21 @@ describe('Object', function() {
       should.not.exist(o.profile.notEmptyString);
     });
 
+    it('should allow default values', function() {
+      var ModelWithDefaults = new SchemaObject({
+        profile: {
+          type: Profile,
+          default: function() {
+            return new Profile({ firstName: "Jane" });
+          }
+        }
+      });
+
+      var m = new ModelWithDefaults();
+
+      m.profile.firstName.should.equal("Jane");
+    });
+
     it('should allow shorthand declaration', function() {
       var o = new SO();
 
