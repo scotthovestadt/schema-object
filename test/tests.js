@@ -26,6 +26,23 @@ describe('SchemaObject construction options', function() {
     o.unknownIndex.should.be.a.String;
     o.unknownIndex.should.equal('a string');
   });
+
+  it('dotNotation: true should allow you to set and get deep value with dot notation ("data.stuff" = data: {stuff: value}', function() {
+    var SO = new SchemaObject({
+      profile: {
+        name: String
+      }
+    }, {
+      dotNotation: true
+    });
+
+    var o = new SO();
+    o['profile.name'] = 'Scott';
+    o.profile.name.should.be.a.String;
+    o.profile.name.should.equal('Scott');
+    o['profile.name'].should.be.a.String;
+    o['profile.name'].should.equal('Scott');
+  });
 });
 
 describe('any type', function() {

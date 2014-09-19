@@ -1,6 +1,6 @@
 {
   "name": "node-schema-object",
-  "version": "0.8.4",
+  "version": "0.8.6",
   "description": "Node object with validated, transformed & typecasted schema.",
   "main": "index.js",
   "directories": {

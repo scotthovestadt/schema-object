@@ -139,6 +139,42 @@ profile.customField = 'hello';
 { id: 'abc123', customField: 'hello' }
 ```
 
+## Dot Notation
+
+Dot notation (default: false) allows you to access deep fields in child objects using dot notation. If dot notation is on, getting or setting "profile.name" will look inside the object for a child object "profile" and then for key "name", instead of simply setting the index "profile.name" on the parent object.
+
+The following example turns off strict mode to demonstrate the differences when toggling dot notation on or off, although dot notation can be used with or without strict mode.
+
+With dot notation off (default):
+```js
+var User = new SchemaObject({
+}, {
+  dotNotation: false,
+  strict: false
+});
+
+var user = new User();
+user['profile.name'] = 'Scott';
+
+// Prints:
+{ 'profile.name': 'Scott' }
+```
+
+With dot notation on:
+```js
+var User = new SchemaObject({
+}, {
+  dotNotation: true,
+  strict: false
+});
+
+var user = new User();
+user['profile.name'] = 'Scott';
+
+// Prints:
+{ profile: { name: 'Scott' } }
+```
+
 
 # Errors
 
