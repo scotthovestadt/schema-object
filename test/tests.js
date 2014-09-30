@@ -33,7 +33,8 @@ describe('SchemaObject construction options', function() {
         name: String
       }
     }, {
-      dotNotation: true
+      dotNotation: true,
+      strict: false
     });
 
     var o = new SO();
@@ -42,6 +43,12 @@ describe('SchemaObject construction options', function() {
     o.profile.name.should.equal('Scott');
     o['profile.name'].should.be.a.String;
     o['profile.name'].should.equal('Scott');
+
+    o['notstrict.name'] = 'Scott';
+    o.notstrict.name.should.be.a.String;
+    o.notstrict.name.should.equal('Scott');
+    o['notstrict.name'].should.be.a.String;
+    o['notstrict.name'].should.equal('Scott');
   });
 });
 
@@ -963,6 +970,19 @@ describe('toObject()', function() {
     o.randomIndex = 123;
     var obj = o.toObject();
     obj.randomIndex.should.equal(123);
+  });
+
+  it('should write non-schema dot notation deep indexes when strict mode is off', function() {
+    var SO = new SchemaObject({
+    }, {
+      strict: false,
+      dotNotation: true
+    });
+
+    var o = new SO();
+    o['random.index'] = 123;
+    var obj = o.toObject();
+    obj.random.index.should.equal(123);
   });
 });
 
