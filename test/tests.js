@@ -25,6 +25,9 @@ describe('SchemaObject construction options', function() {
     o.unknownIndex = 'a string';
     o.unknownIndex.should.be.a.String;
     o.unknownIndex.should.equal('a string');
+    o.aNumber = 123;
+    o.aNumber.should.be.a.Number;
+    o.aNumber.should.equal(123);
   });
 
   it('dotNotation: true should allow you to set and get deep value with dot notation ("data.stuff" = data: {stuff: value}', function() {
@@ -49,6 +52,69 @@ describe('SchemaObject construction options', function() {
     o.notstrict.name.should.equal('Scott');
     o['notstrict.name'].should.be.a.String;
     o['notstrict.name'].should.equal('Scott');
+  });
+
+  it('onBeforeValueSet: should be notified before all write operations and cancel them with return false or exception', function() {
+    var onValueSetTriggered = {};
+
+    var SO = new SchemaObject({
+      name: String
+    }, {
+      onBeforeValueSet: function(value, key) {
+        onValueSetTriggered.value = value;
+        onValueSetTriggered.key = key;
+
+        if(value === 'Hovestadt') {
+          return false;
+        }
+        if(value === 'ErrorTest') {
+          throw 'Test error';
+        }
+      },
+      strict: false
+    });
+
+    var o = new SO();
+
+    o.name = 'Scott';
+    onValueSetTriggered.value.should.equal('Scott');
+    onValueSetTriggered.key.should.equal('name');
+    o.name.should.equal('Scott');
+
+    o.notstrict = 'Hovestadt';
+    onValueSetTriggered.value.should.equal('Hovestadt');
+    onValueSetTriggered.key.should.equal('notstrict');
+    should.not.exist(o.notstrict);
+
+    o.errortest = 'ErrorTest';
+    should.not.exist(o.errortest);
+    o.getErrors().length.should.equal(1);
+  });
+
+  it('onValueSet: should be notified of all write operations', function() {
+    var onValueSetTriggered = {};
+
+    var SO = new SchemaObject({
+      name: String
+    }, {
+      onValueSet: function(value, key) {
+        onValueSetTriggered.value = value;
+        onValueSetTriggered.key = key;
+      },
+      strict: false
+    });
+
+    var o = new SO();
+
+    o.name = 'Scott';
+    onValueSetTriggered.value.should.equal('Scott');
+    onValueSetTriggered.key.should.equal('name');
+    o.name.should.equal('Scott');
+
+    o.notstrict = 'Hovestadt';
+    onValueSetTriggered.value.should.equal('Hovestadt');
+    onValueSetTriggered.key.should.equal('notstrict');
+    o.notstrict.should.equal('Hovestadt');
   });
 });
 
@@ -113,6 +179,15 @@ describe('any type', function() {
     it('should allow alias to be used to set values', function() {
       var o = new SO();
       o.region = 'CA';
+      o.region.should.be.a.String;
+      o.region.should.equal('CA');
+      o.state.should.be.a.String;
+      o.state.should.equal('CA');
+    });
+
+    it('should see same value on alias when not set through alias', function() {
+      var o = new SO();
+      o.state = 'CA';
       o.region.should.be.a.String;
       o.region.should.equal('CA');
       o.state.should.be.a.String;

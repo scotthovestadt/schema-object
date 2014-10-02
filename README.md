@@ -175,6 +175,31 @@ user['profile.name'] = 'Scott';
 { profile: { name: 'Scott' } }
 ```
 
+## onBeforeValueSet / onValueSet (value, key)
+
+onBeforeValueSet / onValueSet allow you to bind an event handler to all write operations on an object. Currently, it will only notify of write operations on the object itself and will not notify you when child objects are written to. If you return false or throw an error within the onBeforeValueSet handler, the write operation will be cancelled. Throwing an error will add the error to the error stack.
+```js
+var User = new SchemaObject({
+  name: String
+}, {
+  onBeforeValueSet: function(value, key) {
+    if(key === 'name' && value === 'Scott') {
+      return false;
+    }
+  }
+});
+
+var user = new User();
+
+user.name = 'Scott';
+// Prints:
+{ name: undefined }
+
+user.name = 'Scott Hovestadt';
+// Prints:
+{ name: 'Scott Hovestadt' }
+```
+
 
 # Errors
 
