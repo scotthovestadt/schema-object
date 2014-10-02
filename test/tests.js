@@ -116,6 +116,29 @@ describe('SchemaObject construction options', function() {
     onValueSetTriggered.key.should.equal('notstrict');
     o.notstrict.should.equal('Hovestadt');
   });
+
+  it('toObject: if toObject is present in options array should be allowed to transform toObject method response', function() {
+    var SO = new SchemaObject({
+      string: String
+    }, {
+      toObject: function(object) {
+        _.each(object, function(value, key) {
+          if(_.isString(value)) {
+            object[key] = value.toUpperCase();
+          }
+        });
+        return object;
+      }
+    });
+
+    var o = new SO();
+    o.string = 'a string';
+    o.string.should.be.a.String;
+    o.string.should.equal('a string');
+    var toObj = o.toObject();
+    toObj.string.should.be.a.String;
+    toObj.string.should.equal('A STRING');
+  });
 });
 
 describe('any type', function() {

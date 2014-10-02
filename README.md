@@ -99,13 +99,96 @@ console.log(user.toObject());
   fullName: 'Scott Hovestadt' }
 ```
 
+#Methods
+
+## toObject
+
+toObject returns a primitive object, stripped of all magic. All values will be typecasted and transformed, but future writes to the primitive object will not. The [invisible attribute](https://github.com/scotthovestadt/node-schema-object#invisible) can be used to ensure an index stored on the SchemaObject will not be written to the primitive object. toObject is automatically called if a SchemaObject is passed to JSON.stringify.
+```js
+var User = new SchemaObject({
+  firstName: String,
+  lastName: String,
+  birthDate: Date
+});
+
+var user = new User({firstName: 'Scott', lastName: 'Hovestadt', birthDate: 'June 21, 1988'});
+console.log(user.toObject());
+
+// Prints:
+{ firstName: 'Scott',
+  lastName: 'Hovestadt',
+  birthDate: Tue Jun 21 1988 00:00:00 GMT-0700 (PDT) }
+```
+
+## clear
+
+clear removes all values.
+```js
+var User = new SchemaObject({
+  firstName: String,
+  lastName: String
+});
+
+var user = new User({firstName: 'Scott', lastName: 'Hovestadt'});
+console.log(user.toObject());
+
+// Prints:
+{ firstName: 'Scott',
+  lastName: 'Hovestadt' }
+
+user.clear();
+console.log(user.toObject());
+
+// Prints:
+{ firstName: undefined,
+  lastName: undefined }
+```
+
+## getErrors / clearErrors
+
+See documentation on [Errors](https://github.com/scotthovestadt/node-schema-object#errors).
+
+
 #Options
 
 When you create the SchemaObject, you may pass a set of options as a second argument. These options allow you to fine-tune the behavior of your objects for specific needs.
 
-## Strict
+## toObject(object)
 
-Strict mode (default: true) allows you to specify what happens when an index is set on your SchemaObject that does not exist in the schema. If strict mode is on, the index will be ignored. If strict mode is off, the index will automatically be created in the schema when it's set with type "any".
+toObject allows you to transform the response from toObject().
+
+This example shows how it could be used to ensure transform all strings to uppercase.
+```js
+var Model = new SchemaObject({
+  string: String
+}, {
+  toObject: function(object) {
+    _.each(object, function(value, key) {
+      if(_.isString(value)) {
+        object[key] = value.toUpperCase();
+      }
+    });
+    return object;
+  }
+});
+
+var model = new Model();
+model.string = 'a string';
+console.log(model.string);
+
+// Prints:
+{ 'a string' }
+
+var simpleObject = model.toObject();
+console.log(simpleObject.string);
+
+// Prints:
+{ 'A STRING' }
+```
+
+## strict
+
+strict (default: true) allows you to specify what happens when an index is set on your SchemaObject that does not exist in the schema. If strict mode is on, the index will be ignored. If strict mode is off, the index will automatically be created in the schema when it's set with type "any".
 
 With strict mode on (default):
 ```js
@@ -139,9 +222,9 @@ profile.customField = 'hello';
 { id: 'abc123', customField: 'hello' }
 ```
 
-## Dot Notation
+## dotNotation
 
-Dot notation (default: false) allows you to access deep fields in child objects using dot notation. If dot notation is on, getting or setting "profile.name" will look inside the object for a child object "profile" and then for key "name", instead of simply setting the index "profile.name" on the parent object.
+dotNotation (default: false) allows you to access deep fields in child objects using dot notation. If dot notation is on, getting or setting "profile.name" will look inside the object for a child object "profile" and then for key "name", instead of simply setting the index "profile.name" on the parent object.
 
 The following example turns off strict mode to demonstrate the differences when toggling dot notation on or off, although dot notation can be used with or without strict mode.
 
@@ -175,7 +258,7 @@ user['profile.name'] = 'Scott';
 { profile: { name: 'Scott' } }
 ```
 
-## onBeforeValueSet / onValueSet (value, key)
+## onBeforeValueSet(value, key) / onValueSet(value, key)
 
 onBeforeValueSet / onValueSet allow you to bind an event handler to all write operations on an object. Currently, it will only notify of write operations on the object itself and will not notify you when child objects are written to. If you return false or throw an error within the onBeforeValueSet handler, the write operation will be cancelled. Throwing an error will add the error to the error stack.
 ```js
