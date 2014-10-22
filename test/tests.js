@@ -1099,7 +1099,23 @@ describe('clearErrors()', function() {
 });
 
 describe('type definition', function() {
-  it('should allow custom type using an object with properties in "type" property and merge properties together', function() {
+  it('should allow custom type definition by passing SchemaObject properties', function() {
+    var MyString = {type: String, minLength: 5, maxLength: 10};
+    var SO = new SchemaObject({
+      customString: MyString
+    });
+
+    var o = new SO();
+    o.customString = '1234';
+    should.not.exist(o.customString);
+    o.customString = '12345';
+    o.customString.should.equal('12345');
+
+    o.customString = '1234567890';
+    o.customString.should.equal('1234567890');
+  });
+
+  it('should allow custom type definition using properties hash with "type" property containing SchemaObject properties and merge provided properties into SchemaObject properties', function() {
     var MyString = {type: String, minLength: 5, maxLength: 10};
     var SO = new SchemaObject({
       customString: {type: MyString, maxLength: 15}
@@ -1116,5 +1132,27 @@ describe('type definition', function() {
 
     o.customString = '12345678901234567890';
     o.customString.should.equal('12345678901');
+  });
+
+  it('should allow multiple custom type definitions with the same SchemaObject properties object', function() {
+    var MyString = {type: String, minLength: 5, maxLength: 10};
+    var SO = new SchemaObject({
+      string: MyString,
+      anotherString: MyString
+    });
+
+    var o = new SO();
+
+    should.not.exist(o.string);
+    o.string = '1234';
+    should.not.exist(o.string);
+    o.string = '12345';
+    o.string.should.equal('12345');
+
+    should.not.exist(o.anotherString);
+    o.anotherString = '4321';
+    should.not.exist(o.anotherString);
+    o.anotherString = '43210';
+    o.anotherString.should.equal('43210');
   });
 });
