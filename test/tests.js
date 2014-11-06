@@ -693,6 +693,42 @@ describe('Object', function() {
 });
 
 describe('Array', function() {
+  describe('construction', function() {
+    it('should allow you to pass an array to SchemaObject constructor for Array-type fields', function() {
+      var SO = new SchemaObject({
+        strings: [String]
+      });
+
+      var o = new SO({
+        strings: ['hello', 'world']
+      });
+      o.strings.should.have.lengthOf(2);
+      o.strings[0].should.be.a.String;
+      o.strings[0].should.equal('hello');
+      o.strings[1].should.be.a.String;
+      o.strings[1].should.equal('world');
+    });
+
+    it('should allow you to pass an array to SchemaObject constructor for Array-type fields within other objects', function() {
+      var SO = new SchemaObject({
+        obj: {
+          strings: [String]
+        }
+      });
+
+      var o = new SO({
+        obj: {
+          strings: ['hello', 'world']
+        }
+      });
+      o.obj.strings.should.have.lengthOf(2);
+      o.obj.strings[0].should.be.a.String;
+      o.obj.strings[0].should.equal('hello');
+      o.obj.strings[1].should.be.a.String;
+      o.obj.strings[1].should.equal('world');
+    });
+  });
+
   describe('typecasting', function() {
     var SO = new SchemaObject({
       strings: [String],
@@ -966,6 +1002,20 @@ describe('Date', function() {
       o.date = null;
       should.not.exist(o.date);
     });
+  });
+});
+
+describe('clear()', function() {
+  it('should return array elements to their original state, which is an empty array', function() {
+    var SO = new SchemaObject({
+      strings: [String]
+    });
+
+    var o = new SO();
+    o.strings.push('hello');
+    o.strings.should.have.lengthOf(1);
+    o.clear();
+    o.strings.should.have.lengthOf(0);
   });
 });
 
