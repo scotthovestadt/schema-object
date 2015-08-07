@@ -9,6 +9,8 @@ npm install node-schema-object
 
 **For all features, run node with --harmony flag.**
 
+Welcoming pull requests for additional features. I'll review all and help merge.
+
 #Very basic usage example
 ```js
 var SchemaObject = require('node-schema-object');
