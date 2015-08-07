@@ -7,7 +7,7 @@ Designed to enforce schema on Javascript objects. Allows you to specify type, tr
 npm install node-schema-object
 ```
 
-**For all features, run node with --harmony flag.**
+**For all features, run node with --harmony-proxies flag.**
 
 Welcoming pull requests for additional features. I'll review all and help merge.
 
