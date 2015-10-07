@@ -11,7 +11,7 @@ npm install node-schema-object
 
 Welcoming pull requests for additional features. I'll review all and help merge.
 
-#Very basic usage example
+# Very basic usage example
 ```js
 var SchemaObject = require('node-schema-object');
 
@@ -32,7 +32,7 @@ console.log(user.toObject());
   birthDate: Tue Jun 21 1988 00:00:00 GMT-0700 (PDT) }
 ```
 
-#Advanced example
+# Advanced example
 ```js
 var SchemaObject = require('node-schema-object');
 
@@ -101,7 +101,7 @@ console.log(user.toObject());
   fullName: 'Scott Hovestadt' }
 ```
 
-#Methods
+# Methods
 
 ## toObject
 
@@ -151,7 +151,7 @@ console.log(user.toObject());
 See documentation on [Errors](https://github.com/scotthovestadt/node-schema-object#errors).
 
 
-#Options
+# Options
 
 When you create the SchemaObject, you may pass a set of options as a second argument. These options allow you to fine-tune the behavior of your objects for specific needs.
 
@@ -311,7 +311,7 @@ profile.clearErrors();
 ```
 
 
-#Types
+# Types
 
 Supported types:
 - String
@@ -333,9 +333,9 @@ var NotEmptyString = {type: String, minLength: 1};
 country: {type: NotEmptyString, default: 'USA'}
 ```
 
-##General attributes
+## General attributes
 
-###transform
+### transform
 Called immediately when value is set and before any typecast is done.
 ```js
 name: {type: String, transform: function(value) {
@@ -344,13 +344,13 @@ name: {type: String, transform: function(value) {
 }}
 ```
 
-###default
+### default
 Provide default value. You may pass value directly or pass a function which will be executed when the value is retrieved. The function is executed in the context of the object and can use "this" to access other properties.
 ```js
 country: {type: String, default: 'USA'}
 ```
 
-###readOnly
+### readOnly
 If true, the value can be read but cannot be written to. This can be useful for creating fields that reflect other values.
 ```js
 fullName: {type: String, readOnly: true, default: function(value) {
@@ -358,7 +358,7 @@ fullName: {type: String, readOnly: true, default: function(value) {
 }}
 ```
 
-###invisible
+### invisible
 If true, the value can be written to but isn't outputted as an index when toObject() is called. This can be useful for creating aliases that redirect to other indexes but aren't actually present on the object.
 ```js
 zip: String,
@@ -367,9 +367,9 @@ postalCode: {type: 'alias', invisible: true, index: 'zip'}
 ```
 
 
-##String
+## String
 
-###stringTransform
+### stringTransform
 Called after value is typecast to string **if** value was successfully typecast but called before all validation.
 ```js
 postalCode: {type: String, stringTransform: function(string) {
@@ -378,61 +378,61 @@ postalCode: {type: String, stringTransform: function(string) {
 }}
 ```
 
-###regex
+### regex
 Validates string against Regular Expression. If string doesn't match, it's rejected.
 ```js
 memberCode: {type: String, regex: new RegExp('^([0-9A-Z]{4})$')}
 ```
 
-###enum
+### enum
 Validates string against array of strings. If not present, it's rejected.
 ```js
 gender: {type: String, enum: ['m', 'f']}
 ```
 
-###minLength
+### minLength
 Enforces minimum string length.
 ```js
 notEmpty: {type: String, minLength: 1}
 ```
 
-###maxLength
+### maxLength
 Enforces maximum string length.
 ```js
 stateAbbrev: {type: String, maxLength: 2}
 ```
 
-###clip
+### clip
 If true, clips string to maximum string length instead of rejecting string.
 ```js
 bio: {type: String, maxLength: 255, clip: true}
 ```
 
 
-##Number
+## Number
 
-###min
+### min
 Number must be > min attribute or it's rejected.
 ```js
 positive: {type: Number, min: 0}
 ```
 
-###max
+### max
 Number must be < max attribute or it's rejected.
 ```js
 negative: {type: Number, max: 0}
 ```
 
 
-##Array
+## Array
 
-###unique
+### unique
 Ensures duplicate-free array, using === to test object equality.
 ```js
 emails: {type: Array, unique: true, arrayType: String}
 ```
 
-###arrayType
+### arrayType
 Elements within the array will be typed to the attributes defined.
 ```js
 aliases: {type: Array, arrayType: {type: String, minLength: 1}}
@@ -444,8 +444,8 @@ aliases: [{type: String, minLength: 1}]
 ```
 
 
-##Object
-###objectType
+## Object
+### objectType
 Allows you to define a typed object.
 ```js
 company: {type: Object, objectType: {
@@ -461,9 +461,9 @@ company: {
 ```
 
 
-##Alias
+## Alias
 
-###index (required)
+### index (required)
 The index key of the property being aliased.
 ```js
 zip: String,
