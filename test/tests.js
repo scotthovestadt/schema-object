@@ -1,5 +1,5 @@
 var should = require('should'),
-    _ = require('underscore'),
+    _ = require('lodash'),
     SchemaObject = require('../lib/schemaobject');
 
 describe('SchemaObject construction options', function() {

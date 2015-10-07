@@ -18,7 +18,7 @@
   ],
   "dependencies": {
     "harmony-reflect": "1.x.x",
-    "underscore": "1.x.x"
+    "lodash": "3.10.1"
   },
   "devDependencies": {
     "mocha": "2.x.x",
