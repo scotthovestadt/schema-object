@@ -9,7 +9,7 @@ npm install node-schema-object
 
 **For all features, run node with harmony proxies and harmony collections. In NodeJS 0.10+, you need only the --harmony_proxies flag. In older versions of NodeJS, you need to use the --harmony flag.**
 
-Welcoming pull requests for additional features. I'll review all and help merge.
+I'm planning on a code overhaul to port the functionality to Babel ES6. In the meantime, I'll be adding unit tests to guarantee that the expected behavior doesn't change.
 
 # Very basic usage example
 ```js

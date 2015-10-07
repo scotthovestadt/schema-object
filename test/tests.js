@@ -1033,6 +1033,13 @@ describe('toObject()', function() {
     arrayOfStrings: [String]
   });
 
+  it('should return undefined for empty String field', function() {
+    var o = new SO();
+    var obj = o.toObject();
+
+    (obj.string === undefined).should.be.true;
+  });
+
   it('should have index "string" with value "1234"', function() {
     var o = new SO();
 
