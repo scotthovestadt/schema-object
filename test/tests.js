@@ -1,6 +1,6 @@
 var should = require('should'),
     _ = require('lodash'),
-    SchemaObject = require('../lib/schemaobject');
+    SchemaObject = require('../dist/schemaobject');
 
 describe('SchemaObject construction options', function() {
   it('strict: true should not allow you to set any index', function() {

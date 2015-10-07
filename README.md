@@ -5,6 +5,7 @@ Designed to enforce schema on Javascript objects. Allows you to specify type, tr
 
 ```
 npm install node-schema-object
+npm test
 ```
 
 **For all features, run node with harmony proxies and harmony collections. In NodeJS 0.10+, you need only the --harmony_proxies flag. In older versions of NodeJS, you need to use the --harmony flag.**
