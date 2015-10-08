@@ -12,6 +12,8 @@ npm test
 
 Built using Babel and will release limited support for browsers soon.
 
+NodeJS > 0.11 supported.
+
 
 # Very basic usage example
 ```js
