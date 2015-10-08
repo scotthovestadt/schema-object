@@ -8,11 +8,9 @@ npm install node-schema-object
 npm test
 ```
 
-**For all features, run node with harmony proxies and harmony collections. In NodeJS 0.10+, you need only the --harmony_proxies flag. In older versions of NodeJS, you need to use the --harmony flag.**
+**NodeJS >= 0.11 supported. For all features, run node with harmony proxies ````--harmony_proxies```` and harmony collections ````--harmony flag````.
 
-Built using Babel and will release limited support for browsers soon.
-
-NodeJS > 0.11 supported.
+Built using Babel ES6 and will release limited support for browsers soon.
 
 
 # Very basic usage example
