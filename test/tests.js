@@ -979,6 +979,24 @@ describe('Date', function() {
       o.getErrors().length.should.equal(1);
     });
 
+    it('should set to undefined if set with empty string, null, 0, false, or undefined', function() {
+      var o = new SO();
+
+      o.date = '6/21/1988';
+      o.date = '';
+      should.not.exist(o.date);
+
+      o.date = '6/21/1988';
+      o.date = null;
+      should.not.exist(o.date);
+
+      o.date = '6/21/1988';
+      o.date = undefined;
+      should.not.exist(o.date);
+
+      o.getErrors().length.should.equal(0);
+    });
+
     // https://github.com/scotthovestadt/node-schema-object/issues/5
     it('should correctly parse dates before 1970', function() {
       var o = new SO();
