@@ -660,6 +660,7 @@ describe('Object', function() {
       shorthandProfile: {
         firstName: String,
         age: Number,
+        name: 'string',
         notEmptyString: {type: String, minLength: 1}
       }
     });
@@ -694,7 +695,7 @@ describe('Object', function() {
       m.profile.firstName.should.equal("Jane");
     });
 
-    it('should allow shorthand declaration', function() {
+    it('should allow shorthand declaration of nested schema', function() {
       var o = new SO();
 
       o.shorthandProfile.firstName = 123;
@@ -707,6 +708,15 @@ describe('Object', function() {
 
       o.shorthandProfile.notEmptyString = '';
       should.not.exist(o.shorthandProfile.notEmptyString);
+    });
+
+    it('should allow shorthand declaration of nested schema to use "name" index', function() {
+      var o = new SO();
+
+      o.shorthandProfile.name = 123;
+      o.shorthandProfile.name.should.be.a.String;
+      o.shorthandProfile.name.should.equal('123');
+
     });
   });
 });
@@ -1090,7 +1100,7 @@ describe('toObject()', function() {
     obj.arrayOfStrings[1].should.equal('world');
   });
 
-  it('should converted nested SchemaObjects to primitive Object', function() {
+  it('should convert nested SchemaObjects to primitive Object', function() {
     var o = new SO();
 
     o.schemaObject.string = 1234;
@@ -1101,7 +1111,7 @@ describe('toObject()', function() {
     obj.schemaObject.should.should.not.have.property('toObject');
   });
 
-  it('should converted SchemaObjects nested within Arrays to primitive Objects', function() {
+  it('should convert SchemaObjects nested within Arrays to primitive Objects', function() {
     var o = new SO();
 
     o.schemaObjects.push({string: 1234});
