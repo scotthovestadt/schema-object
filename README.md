@@ -159,7 +159,7 @@ When you create the SchemaObject, you may pass a set of options as a second argu
 
 ## constructors
 
-constructors allow you to attach new constructors to your SchemaObject-created class.
+The constructors option allows you to attach new constructors to your SchemaObject-created class.
 
 ```js
 var Person = new SchemaObject({
@@ -185,7 +185,7 @@ var person = Person.fromFullName('Scott Hovestadt');
 
 ## toObject(object)
 
-toObject allows you to transform the response from toObject().
+toObject allows you to transform the model before the result of toObject() is passed back.
 
 This example shows how it could be used to ensure transform all strings to uppercase.
 ```js
