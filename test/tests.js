@@ -3,6 +3,25 @@ var _ = require('lodash');
 var SchemaObject = require('../dist/schemaobject');
 
 describe('SchemaObject construction options', function() {
+  it('custom constructors added to factory', function() {
+    var Person = new SchemaObject({
+      firstName: String,
+      lastName: String
+    }, {
+      constructors: {
+        fromFullName: function(fullName) {
+          fullName = fullName.split(' ');
+          this.firstName = fullName[0];
+          this.lastName = fullName[1];
+        }
+      }
+    });
+
+    var person = Person.fromFullName('Scott Hovestadt');
+    person.firstName.should.equal('Scott');
+    person.lastName.should.equal('Hovestadt');
+  });
+
   it('strict: true should not allow you to set any index', function() {
     var SO = new SchemaObject({
     }, {

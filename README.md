@@ -157,6 +157,32 @@ See documentation on [Errors](https://github.com/scotthovestadt/node-schema-obje
 
 When you create the SchemaObject, you may pass a set of options as a second argument. These options allow you to fine-tune the behavior of your objects for specific needs.
 
+## constructors
+
+constructors allow you to attach new constructors to your SchemaObject-created class.
+
+```js
+var Person = new SchemaObject({
+  firstName: String,
+  lastName: String
+}, {
+  constructors: {
+    fromFullName: function(fullName) {
+      fullName = fullName.split(' ');
+      this.firstName = fullName[0];
+      this.lastName = fullName[1];
+    }
+  }
+});
+
+var person = Person.fromFullName('Scott Hovestadt');
+
+// Prints:
+{ firstName: 'Scott',
+  lastName: 'Hovestadt' }
+```
+
+
 ## toObject(object)
 
 toObject allows you to transform the response from toObject().
