@@ -8,7 +8,7 @@ npm install node-schema-object
 npm test
 ```
 
-**NodeJS >= 0.11 supported. For all features, run node with harmony proxies ````--harmony_proxies```` and harmony collections ````--harmony flag````.**
+**NodeJS >= 0.11 supported. For all features, run node with the harmony proxies ````--harmony_proxies```` and harmony collections ````--harmony```` flags.**
 
 Built using Babel ES6 and will release limited support for browsers soon.
 
