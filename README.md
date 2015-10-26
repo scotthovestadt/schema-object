@@ -182,7 +182,6 @@ var person = Person.fromFullName('Scott Hovestadt');
   lastName: 'Hovestadt' }
 ```
 
-
 ## toObject(object)
 
 toObject allows you to transform the model before the result of toObject() is passed back.
@@ -215,6 +214,14 @@ console.log(simpleObject.string);
 // Prints:
 { 'A STRING' }
 ```
+
+## setUndefined
+
+setUndefined (default: false) allows you to specify if an undefined value is written to the index when toObject() is called. By default, the behavior is to not write undefined values because MongoDB automatically converts undefined to null and will overwrite existing values. Additionally, when exporting data to a JSON file the explicit undefined values can dramatically increase the file size.
+
+This value should set to true if:
+- You want MongoDB to convert undefined indexes to null and overwrite existing fields.
+- You want to write undefined values when exporting to JSON explicitly.
 
 ## strict
 
