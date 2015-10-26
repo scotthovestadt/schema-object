@@ -1186,6 +1186,24 @@ describe('toObject()', function() {
     var obj = o.toObject();
     obj.random.index.should.equal(123);
   });
+
+  it('should not write undefined values to object when option setUndefined: false (default)', function() {
+    var o = new SO();
+    var obj = o.toObject();
+    _.keys(obj).length.should.equal(3);
+  });
+
+  it('should not write undefined values to object when option setUndefined: true', function() {
+    var SO = new SchemaObject({
+      string: String
+    }, {
+      setUndefined: true
+    });
+
+    var o = new SO();
+    var obj = o.toObject();
+    _.keys(obj).length.should.equal(1);
+  });
 });
 
 describe('clearErrors()', function() {
