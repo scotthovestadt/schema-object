@@ -108,6 +108,7 @@ describe('SchemaObject construction options', function() {
     o.errortest = 'ErrorTest';
     should.not.exist(o.errortest);
     o.getErrors().length.should.equal(1);
+    o.isErrors().should.equal(true);
   });
 
   it('onValueSet: should be notified of all write operations', function() {
@@ -312,6 +313,7 @@ describe('String', function() {
       o.string = {0: 'h', 1: 'e', 2: 'l', 3: 'l', 4: 'o'};
       should.not.exist(o.string);
       o.getErrors().length.should.equal(1);
+      o.isErrors().should.equal(true);
     });
   });
 
@@ -367,6 +369,7 @@ describe('String', function() {
 
       should.not.exist(o.string);
       o.getErrors().length.should.equal(1);
+      o.isErrors().should.equal(true);
     });
 
     it('default should be set when in enum', function() {
@@ -502,6 +505,7 @@ describe('Number', function() {
       o.minMax = 0;
       should.not.exist(o.minMax);
       o.getErrors().length.should.equal(1);
+      o.isErrors().should.equal(true);
 
       o.minMax = 100;
       o.minMax.should.equal(100);
@@ -518,6 +522,7 @@ describe('Number', function() {
       o.minMax = 300;
       should.not.exist(o.minMax);
       o.getErrors().length.should.equal(1);
+      o.isErrors().should.equal(true);
 
       o.minMax = 200;
       o.minMax.should.equal(200);
@@ -927,6 +932,7 @@ describe('Date', function() {
       o.date = 'not a date';
       should.not.exist(o.date);
       o.getErrors().length.should.equal(1);
+      o.isErrors().should.equal(true);
     });
 
     it('should typecast integer timestamp seconds to date', function() {
@@ -957,10 +963,12 @@ describe('Date', function() {
       o.date = true;
       should.not.exist(o.date);
       o.getErrors().length.should.equal(1);
+      o.isErrors().should.equal(true);
 
       o.date = false;
       should.not.exist(o.date);
       o.getErrors().length.should.equal(2);
+      o.isErrors().should.equal(true);
     });
 
     it('should reject array', function() {
@@ -969,6 +977,7 @@ describe('Date', function() {
       o.date = ['h', 'e', 'l', 'l', 'o'];
       should.not.exist(o.date);
       o.getErrors().length.should.equal(1);
+      o.isErrors().should.equal(true);
     });
 
     it('should reject object', function() {
@@ -977,6 +986,7 @@ describe('Date', function() {
       o.date = {0: 'h', 1: 'e', 2: 'l', 3: 'l', 4: 'o'};
       should.not.exist(o.date);
       o.getErrors().length.should.equal(1);
+      o.isErrors().should.equal(true);
     });
 
     it('should set to undefined if set with empty string, null, 0, false, or undefined', function() {
@@ -995,6 +1005,7 @@ describe('Date', function() {
       should.not.exist(o.date);
 
       o.getErrors().length.should.equal(0);
+      o.isErrors().should.equal(false);
     });
 
     // https://github.com/scotthovestadt/node-schema-object/issues/5
@@ -1215,8 +1226,10 @@ describe('clearErrors()', function() {
     var o = new SO();
     o.string = '1234';
     o.getErrors().length.should.equal(1);
+    o.isErrors().should.equal(true);
     o.clearErrors();
     o.getErrors().length.should.equal(0);
+    o.isErrors().should.equal(false);
   });
 });
 

@@ -148,7 +148,7 @@ console.log(user.toObject());
   lastName: undefined }
 ```
 
-## getErrors / clearErrors
+## isErrors / getErrors / clearErrors
 
 See documentation on [Errors](https://github.com/scotthovestadt/node-schema-object#errors).
 
@@ -332,6 +332,11 @@ var Profile = new SchemaObject({
 
 var profile = new Profile();
 profile.id = '1234';
+
+console.log(profile.isErrors());
+
+// Prints:
+true
 
 console.log(profile.getErrors());
 
