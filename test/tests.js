@@ -1231,19 +1231,23 @@ describe('toObject()', function() {
   it('should not write undefined values to object when option setUndefined: false (default)', function() {
     var o = new SO();
     var obj = o.toObject();
-    _.keys(obj).length.should.equal(3);
+    _.keys(obj).length.should.equal(0);
   });
 
-  it('should not write undefined values to object when option setUndefined: true', function() {
+  it('should write undefined values to object when option setUndefined: true', function() {
     var SO = new SchemaObject({
-      string: String
+      string: String,
+      arr: [],
+      obj: {
+        str: String
+      }
     }, {
       setUndefined: true
     });
 
     var o = new SO();
     var obj = o.toObject();
-    _.keys(obj).length.should.equal(1);
+    _.keys(obj).length.should.equal(3);
   });
 });
 

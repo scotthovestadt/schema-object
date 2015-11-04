@@ -217,11 +217,12 @@ console.log(simpleObject.string);
 
 ## setUndefined
 
-setUndefined (default: false) allows you to specify if an undefined value is written to the index when toObject() is called. By default, the behavior is to not write undefined values because MongoDB automatically converts undefined to null and will overwrite existing values. Additionally, when exporting data to a JSON file the explicit undefined values can dramatically increase the file size.
+setUndefined (default: false) allows you to specify if an unset value is written when toObject() is called. By default, the behavior is not to write unset values. This means if there is a null/undefined primitive, an empty array, or an empty object it will not be written to the object when toObject() is called.
 
 This value should set to true if:
-- You want MongoDB to convert undefined indexes to null and overwrite existing fields.
+- You want your database (Mongo, etc) to write unset indexes and overwrite existing fields with empty values.
 - You want to write undefined values when exporting to JSON explicitly.
+- You want toObject() to contain empty arrays and objects.
 
 ## strict
 
