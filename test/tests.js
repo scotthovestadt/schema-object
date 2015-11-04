@@ -22,143 +22,169 @@ describe('SchemaObject construction options', function() {
     person.lastName.should.equal('Hovestadt');
   });
 
-  it('strict: true should not allow you to set any index', function() {
-    var SO = new SchemaObject({
-    }, {
-      strict: true
+  if(typeof(Proxy) !== 'undefined') {
+
+    it('strict: true should not allow you to set any index', function() {
+      var SO = new SchemaObject({
+      }, {
+        strict: true
+      });
+
+      var o = new SO();
+      o.unknownIndex = 'a string';
+      should.not.exist(o.unknownIndex);
     });
 
-    var o = new SO();
-    o.unknownIndex = 'a string';
-    should.not.exist(o.unknownIndex);
-  });
+    it('strict: false should allow you to set any index (but behave normally for schema-fields)', function() {
+      var SO = new SchemaObject({
+        aNumber: Number
+      }, {
+        strict: false
+      });
 
-  it('strict: false should allow you to set any index (but behave normally for schema-fields)', function() {
-    var SO = new SchemaObject({
-      aNumber: Number
-    }, {
-      strict: false
+      var o = new SO();
+      o.unknownIndex = 'a string';
+      o.unknownIndex.should.be.a.String;
+      o.unknownIndex.should.equal('a string');
+      o.aNumber = 123;
+      o.aNumber.should.be.a.Number;
+      o.aNumber.should.equal(123);
     });
 
-    var o = new SO();
-    o.unknownIndex = 'a string';
-    o.unknownIndex.should.be.a.String;
-    o.unknownIndex.should.equal('a string');
-    o.aNumber = 123;
-    o.aNumber.should.be.a.Number;
-    o.aNumber.should.equal(123);
-  });
+    it('dotNotation: true should allow you to set and get deep value with dot notation ("data.stuff" = data: {stuff: value}', function() {
+      var SO = new SchemaObject({
+        profile: {
+          name: String
+        }
+      }, {
+        dotNotation: true,
+        strict: false
+      });
 
-  it('dotNotation: true should allow you to set and get deep value with dot notation ("data.stuff" = data: {stuff: value}', function() {
-    var SO = new SchemaObject({
-      profile: {
+      var o = new SO();
+      o['profile.name'] = 'Scott';
+      o.profile.name.should.be.a.String;
+      o.profile.name.should.equal('Scott');
+      o['profile.name'].should.be.a.String;
+      o['profile.name'].should.equal('Scott');
+
+      o['notstrict.name'] = 'Scott';
+      o.notstrict.name.should.be.a.String;
+      o.notstrict.name.should.equal('Scott');
+      o['notstrict.name'].should.be.a.String;
+      o['notstrict.name'].should.equal('Scott');
+    });
+
+    it('onBeforeValueSet: should be notified before all write operations and cancel them with return false or exception', function() {
+      var onValueSetTriggered = {};
+
+      var SO = new SchemaObject({
         name: String
-      }
-    }, {
-      dotNotation: true,
-      strict: false
-    });
+      }, {
+        onBeforeValueSet: function(value, key) {
+          onValueSetTriggered.value = value;
+          onValueSetTriggered.key = key;
 
-    var o = new SO();
-    o['profile.name'] = 'Scott';
-    o.profile.name.should.be.a.String;
-    o.profile.name.should.equal('Scott');
-    o['profile.name'].should.be.a.String;
-    o['profile.name'].should.equal('Scott');
-
-    o['notstrict.name'] = 'Scott';
-    o.notstrict.name.should.be.a.String;
-    o.notstrict.name.should.equal('Scott');
-    o['notstrict.name'].should.be.a.String;
-    o['notstrict.name'].should.equal('Scott');
-  });
-
-  it('onBeforeValueSet: should be notified before all write operations and cancel them with return false or exception', function() {
-    var onValueSetTriggered = {};
-
-    var SO = new SchemaObject({
-      name: String
-    }, {
-      onBeforeValueSet: function(value, key) {
-        onValueSetTriggered.value = value;
-        onValueSetTriggered.key = key;
-
-        if(value === 'Hovestadt') {
-          return false;
-        }
-        if(value === 'ErrorTest') {
-          throw 'Test error';
-        }
-      },
-      strict: false
-    });
-
-    var o = new SO();
-
-    o.name = 'Scott';
-    onValueSetTriggered.value.should.equal('Scott');
-    onValueSetTriggered.key.should.equal('name');
-    o.name.should.equal('Scott');
-
-    o.notstrict = 'Hovestadt';
-    onValueSetTriggered.value.should.equal('Hovestadt');
-    onValueSetTriggered.key.should.equal('notstrict');
-    should.not.exist(o.notstrict);
-
-    o.errortest = 'ErrorTest';
-    should.not.exist(o.errortest);
-    o.getErrors().length.should.equal(1);
-    o.isErrors().should.equal(true);
-  });
-
-  it('onValueSet: should be notified of all write operations', function() {
-    var onValueSetTriggered = {};
-
-    var SO = new SchemaObject({
-      name: String
-    }, {
-      onValueSet: function(value, key) {
-        onValueSetTriggered.value = value;
-        onValueSetTriggered.key = key;
-      },
-      strict: false
-    });
-
-    var o = new SO();
-
-    o.name = 'Scott';
-    onValueSetTriggered.value.should.equal('Scott');
-    onValueSetTriggered.key.should.equal('name');
-    o.name.should.equal('Scott');
-
-    o.notstrict = 'Hovestadt';
-    onValueSetTriggered.value.should.equal('Hovestadt');
-    onValueSetTriggered.key.should.equal('notstrict');
-    o.notstrict.should.equal('Hovestadt');
-  });
-
-  it('toObject: if toObject is present in options array should be allowed to transform toObject method response', function() {
-    var SO = new SchemaObject({
-      string: String
-    }, {
-      toObject: function(object) {
-        _.each(object, function(value, key) {
-          if(_.isString(value)) {
-            object[key] = value.toUpperCase();
+          if(value === 'Hovestadt') {
+            return false;
           }
-        });
-        return object;
-      }
+          if(value === 'ErrorTest') {
+            throw 'Test error';
+          }
+        },
+        strict: false
+      });
+
+      var o = new SO();
+
+      o.name = 'Scott';
+      onValueSetTriggered.value.should.equal('Scott');
+      onValueSetTriggered.key.should.equal('name');
+      o.name.should.equal('Scott');
+
+      o.notstrict = 'Hovestadt';
+      onValueSetTriggered.value.should.equal('Hovestadt');
+      onValueSetTriggered.key.should.equal('notstrict');
+      should.not.exist(o.notstrict);
+
+      o.errortest = 'ErrorTest';
+      should.not.exist(o.errortest);
+      o.getErrors().length.should.equal(1);
+      o.isErrors().should.equal(true);
     });
 
-    var o = new SO();
-    o.string = 'a string';
-    o.string.should.be.a.String;
-    o.string.should.equal('a string');
-    var toObj = o.toObject();
-    toObj.string.should.be.a.String;
-    toObj.string.should.equal('A STRING');
+    it('onValueSet: should be notified of all write operations', function() {
+      var onValueSetTriggered = {};
+
+      var SO = new SchemaObject({
+        name: String
+      }, {
+        onValueSet: function(value, key) {
+          onValueSetTriggered.value = value;
+          onValueSetTriggered.key = key;
+        },
+        strict: false
+      });
+
+      var o = new SO();
+
+      o.name = 'Scott';
+      onValueSetTriggered.value.should.equal('Scott');
+      onValueSetTriggered.key.should.equal('name');
+      o.name.should.equal('Scott');
+
+      o.notstrict = 'Hovestadt';
+      onValueSetTriggered.value.should.equal('Hovestadt');
+      onValueSetTriggered.key.should.equal('notstrict');
+      o.notstrict.should.equal('Hovestadt');
+    });
+
+    it('toObject: if toObject is present in options array should be allowed to transform toObject method response', function() {
+      var SO = new SchemaObject({
+        string: String
+      }, {
+        toObject: function(object) {
+          _.each(object, function(value, key) {
+            if(_.isString(value)) {
+              object[key] = value.toUpperCase();
+            }
+          });
+          return object;
+        }
+      });
+
+      var o = new SO();
+      o.string = 'a string';
+      o.string.should.be.a.String;
+      o.string.should.equal('a string');
+      var toObj = o.toObject();
+      toObj.string.should.be.a.String;
+      toObj.string.should.equal('A STRING');
+    });
+
+  }
+});
+
+describe('SchemaObject internals', function() {
+  var SO = new SchemaObject({
+    string: String,
+    date: Date
   });
+
+  it('should not see _private when iterating', function() {
+    var keysIterated = 0;
+    var o = new SO({ string: 'hello', date: 582879600000 });
+    for(var key in o) {
+      key.should.not.equal('_private');
+      keysIterated++;
+    }
+    keysIterated.should.equal(2);
+  });
+
+  it('should return schema keys only', () => {
+    var o = new SO({ string: 'hello', date: 582879600000 });
+    _.keys(o).should.eql(['string', 'date']);
+  })
 });
 
 describe('any type', function() {
@@ -1173,30 +1199,34 @@ describe('toObject()', function() {
     obj.should.equal(jsonObject);
   });
 
-  it('should write non-schema indexes when strict mode is off', function() {
-    var SO = new SchemaObject({
-    }, {
-      strict: false
+  if(typeof(Proxy) !== 'undefined') {
+
+    it('should write non-schema indexes when strict mode is off', function() {
+      var SO = new SchemaObject({
+      }, {
+        strict: false
+      });
+
+      var o = new SO();
+      o.randomIndex = 123;
+      var obj = o.toObject();
+      obj.randomIndex.should.equal(123);
     });
 
-    var o = new SO();
-    o.randomIndex = 123;
-    var obj = o.toObject();
-    obj.randomIndex.should.equal(123);
-  });
+    it('should write non-schema dot notation deep indexes when strict mode is off', function() {
+      var SO = new SchemaObject({
+      }, {
+        strict: false,
+        dotNotation: true
+      });
 
-  it('should write non-schema dot notation deep indexes when strict mode is off', function() {
-    var SO = new SchemaObject({
-    }, {
-      strict: false,
-      dotNotation: true
+      var o = new SO();
+      o['random.index'] = 123;
+      var obj = o.toObject();
+      obj.random.index.should.equal(123);
     });
 
-    var o = new SO();
-    o['random.index'] = 123;
-    var obj = o.toObject();
-    obj.random.index.should.equal(123);
-  });
+  }
 
   it('should not write undefined values to object when option setUndefined: false (default)', function() {
     var o = new SO();
