@@ -181,6 +181,16 @@ describe('SchemaObject internals', function() {
     keysIterated.should.equal(2);
   });
 
+  it('should not see _private when iterating with lodash', function() {
+    var keysIterated = 0;
+    var o = new SO({ string: 'hello', date: 582879600000 });
+    _.each(o, function(value, key) {
+      key.should.not.equal('_private');
+      keysIterated++;
+    });
+    keysIterated.should.equal(2);
+  });
+
   it('should return schema keys only', () => {
     var o = new SO({ string: 'hello', date: 582879600000 });
     _.keys(o).should.eql(['string', 'date']);
@@ -902,6 +912,15 @@ describe('Array', function() {
       array.should.not.have.property('toArray');
       array[0].should.be.equal('1234');
     });
+
+    it('should be used for serializing an object to JSON', function() {
+      var o = new SO();
+
+      o.strings.push(1234);
+      var arrayStr = JSON.stringify(o.strings.toArray());
+      var jsonArrStr = JSON.stringify(o.strings);
+      arrayStr.should.equal(jsonArrStr);
+    });
   });
 });
 
@@ -1109,8 +1128,13 @@ describe('toObject()', function() {
     date: Date,
     invisible: {type: String, invisible: true},
     schemaObject: {
-      string: String
+      string: String,
+      anotherObject: {
+        name: String,
+        zip: Number
+      }
     },
+    anyObj: Object,
     schemaObjects: [{
       string: String
     }],
@@ -1191,11 +1215,24 @@ describe('toObject()', function() {
     var o = new SO();
     o.string = 'hello';
     o.date = new Date();
+    o.arrayOfStrings.push('1');
+    o.arrayOfStrings.push(1234);
     o.schemaObject.string = 'test';
     o.schemaObjects.push({string: 1234});
 
     var obj = JSON.stringify(o.toObject());
     var jsonObject = JSON.stringify(o);
+    obj.should.equal(jsonObject);
+  });
+
+  it('should be called for serializing a sub-SchemaObject to JSON', function() {
+    var o = new SO();
+    o.schemaObject.string = 'test';
+    o.schemaObject.anotherObject.name = 'hello';
+    o.schemaObject.anotherObject.zip = 'hello';
+
+    var obj = JSON.stringify(o.schemaObject.toObject());
+    var jsonObject = JSON.stringify(o.schemaObject);
     obj.should.equal(jsonObject);
   });
 
