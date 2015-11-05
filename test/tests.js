@@ -22,6 +22,22 @@ describe('SchemaObject construction options', function() {
     person.lastName.should.equal('Hovestadt');
   });
 
+  it('custom methods added to factory', function() {
+    var Person = new SchemaObject({
+      firstName: String,
+      lastName: String
+    }, {
+      methods: {
+        getFullName: function() {
+          return this.firstName + ' ' + this.lastName;
+        }
+      }
+    });
+
+    var person = new Person({ firstName: 'Scott', lastName: 'Hovestadt' });
+    person.getFullName().should.equal('Scott Hovestadt');
+  });
+
   if(typeof(Proxy) !== 'undefined') {
 
     it('strict: true should not allow you to set any index', function() {
