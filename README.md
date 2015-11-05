@@ -182,6 +182,29 @@ var person = Person.fromFullName('Scott Hovestadt');
   lastName: 'Hovestadt' }
 ```
 
+## methods
+
+The methods option allows you to attach new methods to your SchemaObject-created class.
+
+```js
+var Person = new SchemaObject({
+  firstName: String,
+  lastName: String
+}, {
+  methods: {
+    getFullName: function() {
+      return this.firstName + ' ' + this.lastName;
+    }
+  }
+});
+
+var person = new Person({ firstName: 'Scott', lastName: 'Hovestadt' });
+console.log(person.getFullName());
+
+// Prints:
+{ 'Scott Hovestadt' }
+```
+
 ## toObject(object)
 
 toObject allows you to transform the model before the result of toObject() is passed back.
