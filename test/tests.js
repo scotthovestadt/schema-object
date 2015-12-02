@@ -210,7 +210,7 @@ describe('SchemaObject internals', function() {
   it('should return schema keys only', () => {
     var o = new SO({ string: 'hello', date: 582879600000 });
     _.keys(o).should.eql(['string', 'date']);
-  })
+  });
 });
 
 describe('any type', function() {
@@ -265,18 +265,25 @@ describe('any type', function() {
   });
 
   describe('default', function() {
-    it('default as function should only be called once', function() {
+    it('default as function should only be called once', function(done) {
       var i = 0;
       var SO = new SchemaObject({
         token: {type: String, readOnly: true, default: function() {
           return i++;
-        }}
+        }},
+        defaultDate: {type: Date, default: function() { return Date.now() * Math.random(); }}
       });
 
       var o = new SO();
+
       var token = o.token;
       var stillSameToken = o.token;
       token.should.equal(stillSameToken);
+
+      var date = o.defaultDate;
+      var stillSameDate = o.defaultDate;
+      date.should.equal(stillSameDate);
+      done();
     });
   });
 
