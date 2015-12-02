@@ -240,14 +240,17 @@ describe('any type', function() {
     });
   });
 
-  describe('default', function() {
-    it('default as function + readOnly to combine properties into single readOnly property', function() {
+  describe('getter', function() {
+    it('getter to transform property on get', function() {
       var SO = new SchemaObject({
         firstName: String,
         lastName: String,
-        name: {type: String, readOnly: true, default: function() {
-          var name = (this.firstName ? this.firstName + ' ' : '') + (this.lastName ? this.lastName : '');
-          return name ? name : undefined;
+        name: {type: String, getter: function(value) {
+          if(value) {
+            return value;
+          } else {
+            return (this.firstName ? this.firstName + ' ' : '') + (this.lastName ? this.lastName : '');
+          }
         }}
       });
 
@@ -256,6 +259,24 @@ describe('any type', function() {
       o.lastName = 'Hovestadt';
       o.name.should.be.a.String;
       o.name.should.equal('Scott Hovestadt');
+      o.name = 'Scott A Hovestadt';
+      o.name.should.equal('Scott A Hovestadt');
+    });
+  });
+
+  describe('default', function() {
+    it('default as function should only be called once', function() {
+      var i = 0;
+      var SO = new SchemaObject({
+        token: {type: String, readOnly: true, default: function() {
+          return i++;
+        }}
+      });
+
+      var o = new SO();
+      var token = o.token;
+      var stillSameToken = o.token;
+      token.should.equal(stillSameToken);
     });
   });
 
@@ -309,17 +330,10 @@ describe('any type', function() {
   describe('readOnly', function() {
     it('should not allow you to modify value', function() {
       var SO = new SchemaObject({
-        firstName: String,
-        lastName: String,
-        name: {type: String, readOnly: true, default: function() {
-          var name = (this.firstName ? this.firstName + ' ' : '') + (this.lastName ? this.lastName : '');
-          return name ? name : undefined;
-        }}
+        name: {type: String, readOnly: true, default: 'Scott Hovestadt'}
       });
 
       var o = new SO();
-      o.firstName = 'Scott';
-      o.lastName = 'Hovestadt';
       o.name = 'John Smith';
       o.name.should.equal('Scott Hovestadt');
     });
