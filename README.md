@@ -412,7 +412,7 @@ name: {type: String, transform: function(value) {
 Provide default value. You may pass value directly or pass a function which will be executed when the object is initialized. The function is executed in the context of the object and can use "this" to access other properties (which .
 ```js
 country: {type: String, default: 'USA'}
-
+```
 
 ### getter
 Provide function to transform value when retrieved. Executed in the context of the object and can use "this" to access properties.
