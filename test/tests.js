@@ -763,14 +763,14 @@ describe('Object', function() {
         profile: {
           type: Profile,
           default: function() {
-            return new Profile({ firstName: "Jane" });
+            return new Profile({ firstName: 'Jane' });
           }
         }
       });
 
       var m = new ModelWithDefaults();
 
-      m.profile.firstName.should.equal("Jane");
+      m.profile.firstName.should.equal('Jane');
     });
 
     it('should allow shorthand declaration of nested schema', function() {
