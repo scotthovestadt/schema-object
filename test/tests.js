@@ -846,7 +846,8 @@ describe('Array', function() {
         }
       }],
       profiles: [{
-        firstName: String
+        firstName: String,
+        lastName: String
       }]
     });
 
@@ -877,6 +878,38 @@ describe('Array', function() {
       o.transformedStrings.should.have.lengthOf(1);
       o.transformedStrings[0].should.be.a.String;
       o.transformedStrings[0].should.equal('hello');
+    });
+
+    it('should allow you to set new schema objects', function() {
+      var o = new SO();
+
+      o.profiles = [
+        {
+          firstName: 'Scott',
+          lastName: 'Hovestadt'
+        },
+        {
+          firstName: 1234,
+          lastName: 4321
+        }
+      ];
+      o.profiles.should.have.lengthOf(2);
+      o.profiles[0].firstName.should.equal('Scott');
+      o.profiles[0].lastName.should.equal('Hovestadt');
+      o.profiles[1].firstName.should.be.a.String;
+      o.profiles[1].firstName.should.equal('1234');
+      o.profiles[1].lastName.should.be.a.String;
+      o.profiles[1].lastName.should.equal('4321');
+
+      o.profiles = [
+        {
+          firstName: 'Replaced',
+          lastName: 'Elements'
+        }
+      ];
+      o.profiles.should.have.lengthOf(1);
+      o.profiles[0].firstName.should.equal('Replaced');
+      o.profiles[0].lastName.should.equal('Elements');
     });
 
     it('should allow you to push() in new schema objects', function() {
