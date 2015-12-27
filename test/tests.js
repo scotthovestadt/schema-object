@@ -68,7 +68,7 @@ describe('SchemaObject construction options', function() {
         strict: false
       });
 
-      var o = new SO({
+      var sourceObj = {
         unknownIndex: 'a string',
         aNumber: 123,
         subObj: {
@@ -80,7 +80,8 @@ describe('SchemaObject construction options', function() {
         subObjs: [{
           aString: 'hey'
         }]
-      });
+      };
+      var o = new SO(sourceObj);
       o.unknownIndex.should.be.a.String;
       o.unknownIndex.should.equal('a string');
       o.aNumber.should.be.a.Number;
@@ -91,6 +92,7 @@ describe('SchemaObject construction options', function() {
       o.subShorthand.aString.should.equal('hi');
       o.subObjs[0].aString.should.be.a.String;
       o.subObjs[0].aString.should.equal('hey');
+      o.toObject().should.eql(sourceObj);
     });
 
     it('strict: false should allow you to set any index (but behave normally for schema-fields)', function() {
