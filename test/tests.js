@@ -62,7 +62,8 @@ describe('SchemaObject construction options', function() {
         subObj: SubObj,
         subShorthand: {
           aNum: Number
-        }
+        },
+        subObjs: [SubObj]
       }, {
         strict: false
       });
@@ -75,7 +76,10 @@ describe('SchemaObject construction options', function() {
         },
         subShorthand: {
           aString: 'hi'
-        }
+        },
+        subObjs: [{
+          aString: 'hey'
+        }]
       });
       o.unknownIndex.should.be.a.String;
       o.unknownIndex.should.equal('a string');
@@ -85,6 +89,8 @@ describe('SchemaObject construction options', function() {
       o.subObj.aString.should.equal('hello');
       o.subShorthand.aString.should.be.a.String;
       o.subShorthand.aString.should.equal('hi');
+      o.subObjs[0].aString.should.be.a.String;
+      o.subObjs[0].aString.should.equal('hey');
     });
 
     it('strict: false should allow you to set any index (but behave normally for schema-fields)', function() {
@@ -1360,7 +1366,10 @@ describe('toObject()', function() {
       var SO = new SchemaObject({
         schemaObject: {
           string: String
-        }
+        },
+        schemaObjects: [{
+          string: String
+        }]
       }, {
         strict: false
       });
@@ -1368,13 +1377,20 @@ describe('toObject()', function() {
       var o = new SO();
       o.schemaObject.new = '123';
       o.schemaObject.new.should.equal('123');
+      o.schemaObjects.push({
+        new: '123'
+      });
+      o.schemaObjects[0].new.should.equal('123');
     });
 
     it('strict mode true should be inherited by shorthand sub-SchemaObjects', function() {
       var SO = new SchemaObject({
         schemaObject: {
           string: String
-        }
+        },
+        schemaObjects: [{
+          string: String
+        }]
       }, {
         strict: true
       });
@@ -1382,6 +1398,10 @@ describe('toObject()', function() {
       var o = new SO();
       o.schemaObject.new = '123';
       should.not.exist(o.schemaObject.new);
+      o.schemaObjects.push({
+        new: '123'
+      });
+      should.not.exist(o.schemaObjects[0].new);
     });
 
     it('should write non-schema dot notation deep indexes when strict mode is off', function() {
