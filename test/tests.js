@@ -1320,6 +1320,34 @@ describe('toObject()', function() {
       obj.randomIndex.should.equal(123);
     });
 
+    it('strict mode false should be inherited by shorthand sub-SchemaObjects', function() {
+      var SO = new SchemaObject({
+        schemaObject: {
+          string: String
+        }
+      }, {
+        strict: false
+      });
+
+      var o = new SO();
+      o.schemaObject.new = '123';
+      o.schemaObject.new.should.equal('123');
+    });
+
+    it('strict mode true should be inherited by shorthand sub-SchemaObjects', function() {
+      var SO = new SchemaObject({
+        schemaObject: {
+          string: String
+        }
+      }, {
+        strict: true
+      });
+
+      var o = new SO();
+      o.schemaObject.new = '123';
+      should.not.exist(o.schemaObject.new);
+    });
+
     it('should write non-schema dot notation deep indexes when strict mode is off', function() {
       var SO = new SchemaObject({
       }, {
