@@ -51,6 +51,42 @@ describe('SchemaObject construction options', function() {
       should.not.exist(o.unknownIndex);
     });
 
+    it('strict: false should allow you to initialize with any indexes', function() {
+      var SubObj = new SchemaObject({
+        aNum: Number
+      }, {
+        strict: false
+      });
+      var SO = new SchemaObject({
+        aNumber: Number,
+        subObj: SubObj,
+        subShorthand: {
+          aNum: Number
+        }
+      }, {
+        strict: false
+      });
+
+      var o = new SO({
+        unknownIndex: 'a string',
+        aNumber: 123,
+        subObj: {
+          aString: 'hello'
+        },
+        subShorthand: {
+          aString: 'hi'
+        }
+      });
+      o.unknownIndex.should.be.a.String;
+      o.unknownIndex.should.equal('a string');
+      o.aNumber.should.be.a.Number;
+      o.aNumber.should.equal(123);
+      o.subObj.aString.should.be.a.String;
+      o.subObj.aString.should.equal('hello');
+      o.subShorthand.aString.should.be.a.String;
+      o.subShorthand.aString.should.equal('hi');
+    });
+
     it('strict: false should allow you to set any index (but behave normally for schema-fields)', function() {
       var SO = new SchemaObject({
         aNumber: Number
