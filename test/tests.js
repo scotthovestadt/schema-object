@@ -251,7 +251,7 @@ describe('SchemaObject internals', function() {
     keysIterated.should.equal(2);
   });
 
-  it('should return schema keys only', () => {
+  it('should return schema keys only', function() {
     var o = new SO({ string: 'hello', date: 582879600000 });
     _.keys(o).should.eql(['string', 'date']);
   });
