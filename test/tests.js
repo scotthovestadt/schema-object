@@ -267,6 +267,20 @@ describe('SchemaObject internals', function() {
     var o = new SO({ string: 'hello', date: 582879600000 });
     _.keys(o).should.eql(['string', 'date']);
   });
+
+  if(typeof(Proxy) !== 'undefined') {
+
+    // Without Proxy, delete keyword will delete the registered setter.
+    it('should support delete keyword', function() {
+      var o = new SO({ string: 'hello', date: 582879600000 });
+      delete o.string;
+      should.not.exist(o.string);
+      o.string = 1;
+      o.string.should.be.a.String;
+      o.string.should.equal('1');
+    });
+
+  }
 });
 
 describe('any type', function() {
