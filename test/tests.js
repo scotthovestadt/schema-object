@@ -1038,6 +1038,33 @@ describe('Array', function() {
     });
   });
 
+  describe('Array prototype', function() {
+    var SO = new SchemaObject({
+      verified: [String],
+      unverified: [String]
+    });
+
+    it('concat', function() {
+      var o = new SO();
+      o.verified = ['hello'];
+      o.unverified = ['world'];
+      var all = o.verified.concat(o.unverified, ['!']);
+      all.should.be.an.instanceOf(Array);
+      all.should.have.property('toArray');
+      all.should.have.lengthOf(3);
+      all[0].should.be.a.String;
+      all[0].should.equal('hello');
+      all[1].should.be.a.String;
+      all[1].should.equal('world');
+      all[2].should.be.a.String;
+      all[2].should.equal('!');
+      o.verified.should.have.lengthOf(1);
+      o.verified[0].should.equal('hello');
+      o.unverified.should.have.lengthOf(1);
+      o.unverified[0].should.equal('world');
+    });
+  });
+
   describe('toArray', function() {
     var SO = new SchemaObject({
       strings: {type: Array, unique: true, arrayType: String}
