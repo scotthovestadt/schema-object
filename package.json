@@ -1,7 +1,7 @@
 {
   "name": "node-schema-object",
   "version": "3.1.5",
-  "description": "Node object with validated, transformed & typecasted schema.",
+  "description": "Enforce schema on Javascript objects. Enabled type, transformation, and validation. Support for sub-schemas and arrays included.",
   "main": "index.js",
   "scripts": {
     "test": "gulp test --harmony --harmony_proxies;",
