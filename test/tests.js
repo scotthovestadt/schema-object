@@ -332,6 +332,21 @@ describe('any type', function() {
       o.name = 'Scott A Hovestadt';
       o.name.should.equal('Scott A Hovestadt');
     });
+
+    it('getter should happen after typecast', function() {
+      var SO = new SchemaObject({
+        date: {type: Date, getter: function(date) {
+          if(date) {
+            return date.getTime();
+          }
+        }}
+      });
+
+      var o = new SO();
+      o.date = '06/21/1988';
+      o.date.should.be.a.Number;
+      o.date.should.equal(582879600000);
+    });
   });
 
   describe('default', function() {
