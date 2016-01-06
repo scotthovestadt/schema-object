@@ -319,6 +319,41 @@ user['profile.name'] = 'Scott';
 { profile: { name: 'Scott' } }
 ```
 
+## keysIgnoreCase
+
+keysIgnoreCase (default: false) allows you to set indexes without worrying about the casing of the key.
+
+With keys ignore case off (default):
+```js
+var User = new SchemaObject({
+  firstName: String
+}, {
+  keyIgnoreCase: false
+});
+
+var user = new User();
+user.firstname = 'Scott';
+
+// Prints:
+{}
+```
+
+With keys ignore case on:
+```js
+var User = new SchemaObject({
+  firstName: String
+}, {
+  keyIgnoreCase: true
+});
+
+var user = new User();
+user.firstname = 'Scott';
+
+// Prints:
+{ firstName: 'Scott' }
+```
+
+
 ## onBeforeValueSet(value, key) / onValueSet(value, key)
 
 onBeforeValueSet / onValueSet allow you to bind an event handler to all write operations on an object. Currently, it will only notify of write operations on the object itself and will not notify you when child objects are written to. If you return false or throw an error within the onBeforeValueSet handler, the write operation will be cancelled. Throwing an error will add the error to the error stack.
