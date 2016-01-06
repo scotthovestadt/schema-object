@@ -343,7 +343,7 @@ describe('any type', function() {
       });
 
       var o = new SO();
-      o.date = '06/21/1988';
+      o.date = 'Tue Jun 21 1988 00:00:00 GMT-0700 (PDT)';
       o.date.should.be.a.Number;
       o.date.should.equal(582879600000);
     });
@@ -1359,7 +1359,7 @@ describe('toObject()', function() {
   it('should write getter when getter returns different type', function() {
     var o = new SO();
 
-    o.magicDate = 'June 21, 1988';
+    o.magicDate = 'Tue Jun 21 1988 00:00:00 GMT-0700 (PDT)';
     var obj = o.toObject();
     obj.magicDate.should.be.an.instanceof(Number);
     obj.magicDate.should.equal(582879600000);
