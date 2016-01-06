@@ -1320,7 +1320,12 @@ describe('toObject()', function() {
     schemaObjects: [{
       string: String
     }],
-    arrayOfStrings: [String]
+    arrayOfStrings: [String],
+    magicDate: {type: Date, getter: function(date) {
+      if(date) {
+        return date.getTime();
+      }
+    }}
   });
 
   it('should return undefined for empty String field', function() {
@@ -1349,6 +1354,15 @@ describe('toObject()', function() {
     obj.date.getMonth().should.equal(5);
     obj.date.getDate().should.equal(21);
     obj.date.getFullYear().should.equal(1988);
+  });
+
+  it('should write getter when getter returns different type', function() {
+    var o = new SO();
+
+    o.magicDate = 'June 21, 1988';
+    var obj = o.toObject();
+    obj.magicDate.should.be.an.instanceof(Number);
+    obj.magicDate.should.equal(582879600000);
   });
 
   it('should write Arrays for Array type', function() {
