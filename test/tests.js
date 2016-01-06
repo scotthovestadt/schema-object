@@ -40,6 +40,18 @@ describe('SchemaObject construction options', function() {
 
   if(typeof(Proxy) !== 'undefined') {
 
+    it('keysIgnoreCase: true should normalize profileUrl to key profileURL', function() {
+      var SO = new SchemaObject({
+        profileURL: String
+      }, {
+        keysIgnoreCase: true
+      });
+
+      var o = new SO();
+      o.profileUrl = 'a string';
+      o.profileURL.should.equal('a string');
+    });
+
     it('strict: true should not allow you to set any index', function() {
       var SO = new SchemaObject({
       }, {
