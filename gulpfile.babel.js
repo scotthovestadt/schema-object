@@ -1,8 +1,8 @@
-var gulp = require('gulp');
-var _gulp = require('load-plugins')('gulp-*');
-var argv = require('minimist')(process.argv.slice(2));
+const gulp = require('gulp');
+const _gulp = require('load-plugins')('gulp-*');
+const argv = require('minimist')(process.argv.slice(2));
 
-gulp.task('test', ['build'], function() {
+gulp.task('test', ['build'], () => {
   return gulp.src('test/tests.js', { read: false })
     .pipe(_gulp.mocha({
       reporter: 'spec',
@@ -10,7 +10,7 @@ gulp.task('test', ['build'], function() {
     }));
 });
 
-gulp.task('build', function() {
+gulp.task('build', () => {
   return gulp.src('lib/*.js')
     .pipe(_gulp.babel())
     .pipe(gulp.dest('dist'));
