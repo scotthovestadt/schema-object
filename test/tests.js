@@ -240,7 +240,11 @@ describe('SchemaObject construction options', function() {
 describe('SchemaObject internals', function() {
   var SO = new SchemaObject({
     string: String,
-    date: Date
+    date: Date,
+    subobj: {
+      string: String
+    },
+    arr: [String]
   });
 
   it('should not see _private when iterating', function() {
@@ -263,9 +267,14 @@ describe('SchemaObject internals', function() {
     keysIterated.should.equal(2);
   });
 
-  it('should return schema keys only', function() {
+  it('should return keys for values that have been set only', function() {
     var o = new SO({ string: 'hello', date: 582879600000 });
     _.keys(o).should.eql(['string', 'date']);
+  });
+
+  it('should be empty when nothing is set', function() {
+    var o = new SO();
+    _.size(o).should.equal(0);
   });
 
   if(typeof(Proxy) !== 'undefined') {
