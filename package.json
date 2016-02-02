@@ -18,7 +18,7 @@
     "schema"
   ],
   "dependencies": {
-    "lodash": "4.1.0",
+    "lodash": "4.2.0",
     "harmony-reflect": "1.4.2"
   },
   "devDependencies": {
