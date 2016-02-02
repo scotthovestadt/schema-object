@@ -247,37 +247,38 @@ describe('SchemaObject internals', function() {
     arr: [String]
   });
 
-  it('should not see _private when iterating', function() {
-    var keysIterated = 0;
-    var o = new SO({ string: 'hello', date: 582879600000 });
-    for(var key in o) {
-      key.should.not.equal('_private');
-      keysIterated++;
-    }
-    keysIterated.should.equal(2);
-  });
-
-  it('should not see _private when iterating with lodash', function() {
-    var keysIterated = 0;
-    var o = new SO({ string: 'hello', date: 582879600000 });
-    _.each(o, function(value, key) {
-      key.should.not.equal('_private');
-      keysIterated++;
-    });
-    keysIterated.should.equal(2);
-  });
-
-  it('should return keys for values that have been set only', function() {
-    var o = new SO({ string: 'hello', date: 582879600000 });
-    _.keys(o).should.eql(['string', 'date']);
-  });
-
-  it('should be empty when nothing is set', function() {
-    var o = new SO();
-    _.size(o).should.equal(0);
-  });
-
+  // Some tests require harmony proxies:
   if(typeof(Proxy) !== 'undefined') {
+
+    it('should be empty when nothing is set', function() {
+      var o = new SO();
+      _.size(o).should.equal(0);
+    });
+
+    it('should not see _private when iterating', function() {
+      var keysIterated = 0;
+      var o = new SO({ string: 'hello', date: 582879600000 });
+      for(var key in o) {
+        key.should.not.equal('_private');
+        keysIterated++;
+      }
+      keysIterated.should.equal(2);
+    });
+
+    it('should not see _private when iterating with lodash', function() {
+      var keysIterated = 0;
+      var o = new SO({ string: 'hello', date: 582879600000 });
+      _.each(o, function(value, key) {
+        key.should.not.equal('_private');
+        keysIterated++;
+      });
+      keysIterated.should.equal(2);
+    });
+
+    it('should return keys for values that have been set only', function() {
+      var o = new SO({ string: 'hello', date: 582879600000 });
+      _.keys(o).should.eql(['string', 'date']);
+    });
 
     // Without Proxy, delete keyword will delete the registered setter.
     it('should support delete keyword', function() {
