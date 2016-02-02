@@ -39,7 +39,6 @@ describe('SchemaObject construction options', function() {
   });
 
   if(typeof(Proxy) !== 'undefined') {
-
     it('keysIgnoreCase: true should normalize profileUrl to key profileURL', function() {
       var SO = new SchemaObject({
         profileURL: String
@@ -233,9 +232,49 @@ describe('SchemaObject construction options', function() {
       toObj.string.should.be.a.String;
       toObj.string.should.equal('A STRING');
     });
-
   }
 });
+
+if(typeof(Proxy) !== 'undefined') {
+  describe('SchemaObject extend', function() {
+    it('should extend methods and constructors with `this.super()`', function() {
+      var Person = new SchemaObject({
+        firstName: String,
+        lastName: String
+      }, {
+        constructors: {
+          fromFullName: function(fullName) {
+            fullName = fullName.split(' ');
+            this.firstName = fullName[0];
+            this.lastName = fullName[1];
+          }
+        },
+        methods: {
+          getDisplayName: function() {
+            return this.firstName + ' ' + this.lastName;
+          }
+        }
+      });
+
+      var Employee = Person.extend({
+        id: Number
+      }, {
+        methods: {
+          getDisplayName: function() {
+            return '[Employee ID ' + this.id + '] ' + this.super();
+          }
+        }
+      });
+
+      var john = Employee.fromFullName('John Smith');
+      john.id = 1;
+      john.firstName.should.equal('John');
+      john.lastName.should.equal('Smith');
+      john.id.should.equal(1);
+      john.getDisplayName().should.equal('[Employee ID 1] John Smith');
+    });
+  });
+}
 
 describe('SchemaObject internals', function() {
   var SO = new SchemaObject({

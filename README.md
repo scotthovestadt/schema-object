@@ -26,7 +26,7 @@ var User = new SchemaObject({
 
 // Initialize instance of user
 var user = new User({firstName: 'Scott', lastName: 'Hovestadt', birthDate: 'June 21, 1988'});
-console.log(user.toObject());
+console.log(user);
 
 // Prints:
 { firstName: 'Scott',
@@ -44,64 +44,134 @@ var NotEmptyString = {type: String, minLength: 1};
 
 // Create sub-schema for user's Company
 var Company = new SchemaObject({
+  // Any string will be magically parsed into date
   startDate: Date,
   endDate: Date,
-  name: NotEmptyString
+  
+  // String with properties
+  name: NotEmptyString,
+  
+  // Typed array
+  tags: [NotEmptyString]
 });
 
 // Create User schema
 var User = new SchemaObject({
-  // Basic user information using custom type
+  // Basic user information using properties
   firstName: NotEmptyString,
   lastName: NotEmptyString,
   
-  // "NotEmptyString" with only possible values as 'm' or 'f'
+  // Extend "NotEmptyString" with enum property
   gender: {type: NotEmptyString, enum: ['m', 'f']},
   
-  // Index with sub-schema
-  company: Company,
+  // Sub-object with enforced type
+  work: Company
+}, {
+  // Add methods to User prototype
+  methods: {
+    getDisplayName: function() {
+      return this.firstName + ' ' + this.lastName;
+    }
+  }
+});
+
+// Create Account schema by extending User schema
+var Account = User.extend({
+  // Add username to schema
+  username: NotEmptyString,
   
-  // An array of Objects with an enforced type
-  workHistory: [Company],
-  
-  // Create field which reflects other values but can't be directly modified
-  fullName: {type: String, readOnly: true, getter: function() {
-    return (this.firstName + ' ' + this.lastName).trim();
+  // Special behavior will transform password to hash if necessary
+  // https://www.npmjs.com/package/password-hash
+  password: {type: String, stringTransform: function(string) {
+    if(!passwordHash.isHashed(string)) {
+      string = passwordHash.generate(string);
+    }
+    return string;
   }}
+}, {
+  methods: {
+    getDisplayName: function() {
+      // If available, use username as display name
+      // Otherwise fall back to first name and last name
+      return this.username || this.super();
+    }
+  }
 });
 
 // Initialize a new instance of the User with a value
-var user = new User({firstName: 'Scott', lastName: 'Hovestadt', gender: 'm'});
-
-// Set company name
-user.company.name = 'My Company';
-
-// The date is automatically typecast from String
-user.company.startDate = 'June 1, 2010';
-
-// Add company to work history
-user.workHistory.push({
-  name: 'Old Company',
-  startDate: '01/12/2005',
-  endDate: '01/20/2010'
+var account = new Account({
+  username: 'scotthovestadt',
+  password: 'hunter2',
+  firstName: 'Scott',
+  lastName: 'Hovestadt',
+  gender: 'm',
+  work: {
+    name: 'My Company',
+    startDate: 'June 1, 2010'
+  }
 });
 
-console.log(user.toObject());
+console.log(account.getDisplayName());
+
+// Prints:
+"scotthovestadt"
+
+console.log(account);
 
 // Prints:
 { firstName: 'Scott',
   lastName: 'Hovestadt',
   gender: 'm',
-  company: 
+  work:
    { startDate: Tue Jun 01 2010 00:00:00 GMT-0700 (PDT),
-     endDate: undefined,
      name: 'My Company' },
-  workHistory: 
-   [ { startDate: Wed Jan 12 2005 00:00:00 GMT-0800 (PST),
-       endDate: Wed Jan 20 2010 00:00:00 GMT-0800 (PST),
-       name: 'Old Company' } ],
-  fullName: 'Scott Hovestadt' }
+  username: 'scotthovestadt' }
 ```
+
+# Static Methods
+
+## extend
+
+Allows you to extend SchemaObject instance schema and options.
+
+```js
+var Person = new SchemaObject({
+  firstName: String,
+  lastName: String
+}, {
+  constructors: {
+    fromFullName: function(fullName) {
+      fullName = fullName.split(' ');
+      this.firstName = fullName[0];
+      this.lastName = fullName[1];
+    }
+  },
+  methods: {
+    getDisplayName: function() {
+      return this.firstName + ' ' + this.lastName;
+    }
+  }
+});
+
+var Employee = Person.extend({
+  id: Number
+}, {
+  methods: {
+    getDisplayName: function() {
+      return '[Employee ID ' + this.id + '] ' + this.super();
+    }
+  }
+});
+
+var john = Employee.fromFullName('John Smith');
+john.id = 1;
+
+console.log(john.getDisplayName());
+
+// Prints:
+"[Employee ID 1] John Smith"
+```
+
 
 # Methods
 
