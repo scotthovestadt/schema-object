@@ -186,12 +186,30 @@ var User = new SchemaObject({
 });
 
 var user = new User({firstName: 'Scott', lastName: 'Hovestadt', birthDate: 'June 21, 1988'});
-console.log(user.toObject());
+console.log(user);
 
 // Prints:
 { firstName: 'Scott',
   lastName: 'Hovestadt',
   birthDate: Tue Jun 21 1988 00:00:00 GMT-0700 (PDT) }
+```
+
+## populate
+
+populate will copy an object's values.
+```js
+var User = new SchemaObject({
+  firstName: String,
+  lastName: String
+});
+
+var user = new User();
+user.populate({firstName: 'Scott', lastName: 'Hovestadt'});
+console.log(user);
+
+// Prints:
+{ firstName: 'Scott',
+  lastName: 'Hovestadt' }
 ```
 
 ## clear
@@ -204,14 +222,14 @@ var User = new SchemaObject({
 });
 
 var user = new User({firstName: 'Scott', lastName: 'Hovestadt'});
-console.log(user.toObject());
+console.log(user);
 
 // Prints:
 { firstName: 'Scott',
   lastName: 'Hovestadt' }
 
 user.clear();
-console.log(user.toObject());
+console.log(user);
 
 // Prints:
 { firstName: undefined,
@@ -237,19 +255,28 @@ var Person = new SchemaObject({
   lastName: String
 }, {
   constructors: {
-    fromFullName: function(fullName) {
-      fullName = fullName.split(' ');
-      this.firstName = fullName[0];
-      this.lastName = fullName[1];
+    withDefaults: function(values) {
+      // It is not required to call super
+      this.super(values);
+
+      // Populate default values with custom constructor
+      if(this.firstName === undefined) {
+        this.firstName = 'John';
+      }
+      if(this.lastName === undefined) {
+        this.lastName = 'Smith';
+      }
     }
   }
 });
 
-var person = Person.fromFullName('Scott Hovestadt');
+var person = Person.withDefaults({ firstName: 'Scott' });
+
+console.log(person);
 
 // Prints:
 { firstName: 'Scott',
-  lastName: 'Hovestadt' }
+  lastName: 'Smith' }
 ```
 
 ## methods

@@ -3,7 +3,7 @@ var _ = require('lodash');
 var SchemaObject = require('../dist/schemaobject');
 
 describe('SchemaObject construction options', function() {
-  it('custom constructors added to factory', function() {
+  it('custom constructors', function() {
     var Person = new SchemaObject({
       firstName: String,
       lastName: String
@@ -39,6 +39,29 @@ describe('SchemaObject construction options', function() {
   });
 
   if(typeof(Proxy) !== 'undefined') {
+    it('custom constructors with super', function() {
+      var Person = new SchemaObject({
+        firstName: String,
+        lastName: String
+      }, {
+        constructors: {
+          withDefaults: function(values) {
+            this.super(values);
+            if(this.firstName === undefined) {
+              this.firstName = 'John';
+            }
+            if(this.lastName === undefined) {
+              this.lastName = 'Smith';
+            }
+          }
+        }
+      });
+
+      var person = Person.withDefaults({ firstName: 'Scott' });
+      person.firstName.should.equal('Scott');
+      person.lastName.should.equal('Smith');
+    });
+
     it('keysIgnoreCase: true should normalize profileUrl to key profileURL', function() {
       var SO = new SchemaObject({
         profileURL: String
@@ -1336,6 +1359,20 @@ describe('Date', function() {
       o.date = null;
       should.not.exist(o.date);
     });
+  });
+});
+
+describe('populate()', function() {
+  it('should populate object', function() {
+    var User = new SchemaObject({
+      firstName: String,
+      lastName: String
+    });
+
+    var user = new User();
+    user.populate({ firstName: 'Scott', lastName: 'Hovestadt' });
+    user.firstName.should.equal('Scott');
+    user.lastName.should.equal('Hovestadt');
   });
 });
 
