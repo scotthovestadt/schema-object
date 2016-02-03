@@ -1503,6 +1503,13 @@ describe('toObject()', function() {
     _.keys(obj).length.should.equal(3);
   });
 
+  it('should output null values', function() {
+    var o = new SO();
+    o.string = null;
+    var obj = o.toObject();
+    should.equal(o.string, null);
+  });
+
   if(typeof(Proxy) !== 'undefined') {
     it('should write non-schema indexes when strict mode is off', function() {
       var SO = new SchemaObject({
