@@ -1481,8 +1481,29 @@ describe('toObject()', function() {
     obj.should.equal(jsonObject);
   });
 
-  if(typeof(Proxy) !== 'undefined') {
+  it('should not write undefined values to object when option setUndefined: false (default)', function() {
+    var o = new SO();
+    var obj = o.toObject();
+    _.keys(obj).length.should.equal(0);
+  });
 
+  it('should write undefined values to object when option setUndefined: true', function() {
+    var SO = new SchemaObject({
+      string: String,
+      arr: [],
+      obj: {
+        str: String
+      }
+    }, {
+      setUndefined: true
+    });
+
+    var o = new SO();
+    var obj = o.toObject();
+    _.keys(obj).length.should.equal(3);
+  });
+
+  if(typeof(Proxy) !== 'undefined') {
     it('should write non-schema indexes when strict mode is off', function() {
       var SO = new SchemaObject({
       }, {
@@ -1549,30 +1570,7 @@ describe('toObject()', function() {
       var obj = o.toObject();
       obj.random.index.should.equal(123);
     });
-
   }
-
-  it('should not write undefined values to object when option setUndefined: false (default)', function() {
-    var o = new SO();
-    var obj = o.toObject();
-    _.keys(obj).length.should.equal(0);
-  });
-
-  it('should write undefined values to object when option setUndefined: true', function() {
-    var SO = new SchemaObject({
-      string: String,
-      arr: [],
-      obj: {
-        str: String
-      }
-    }, {
-      setUndefined: true
-    });
-
-    var o = new SO();
-    var obj = o.toObject();
-    _.keys(obj).length.should.equal(3);
-  });
 });
 
 describe('clearErrors()', function() {
