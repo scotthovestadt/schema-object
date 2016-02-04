@@ -3,6 +3,25 @@ var _ = require('lodash');
 var SchemaObject = require('../dist/schemaobject');
 
 describe('SchemaObject construction options', function() {
+  it('override default constructors', function() {
+    var Person = new SchemaObject({
+      firstName: String,
+      lastName: String
+    }, {
+      constructors: {
+        default: function(fullName) {
+          fullName = fullName.split(' ');
+          this.firstName = fullName[0];
+          this.lastName = fullName[1];
+        }
+      }
+    });
+
+    var person = new Person('Scott Hovestadt');
+    person.firstName.should.equal('Scott');
+    person.lastName.should.equal('Hovestadt');
+  });
+
   it('custom constructors', function() {
     var Person = new SchemaObject({
       firstName: String,
@@ -267,6 +286,7 @@ if(typeof(Proxy) !== 'undefined') {
       }, {
         constructors: {
           fromFullName: function(fullName) {
+            this.super({ id: 1 }); // Should call default constructor
             fullName = fullName.split(' ');
             this.firstName = fullName[0];
             this.lastName = fullName[1];
@@ -290,7 +310,6 @@ if(typeof(Proxy) !== 'undefined') {
       });
 
       var john = Employee.fromFullName('John Smith');
-      john.id = 1;
       john.firstName.should.equal('John');
       john.lastName.should.equal('Smith');
       john.id.should.equal(1);

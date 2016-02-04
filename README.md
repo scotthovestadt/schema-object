@@ -247,7 +247,7 @@ When you create the SchemaObject, you may pass a set of options as a second argu
 
 ## constructors
 
-The constructors option allows you to attach new constructors to your SchemaObject-created class.
+The constructors option allows you to override the default or attach new constructors to your SchemaObject-created class.
 
 ```js
 var Person = new SchemaObject({
@@ -255,8 +255,9 @@ var Person = new SchemaObject({
   lastName: String
 }, {
   constructors: {
-    withDefaults: function(values) {
-      // It is not required to call super
+    // Override default constructor
+    default: function(values) {
+      // Will call this.populate
       this.super(values);
 
       // Populate default values with custom constructor
@@ -266,11 +267,27 @@ var Person = new SchemaObject({
       if(this.lastName === undefined) {
         this.lastName = 'Smith';
       }
+    },
+
+    // Create new constructor used by calling Person.fromFullName
+    fromFullName: function(fullName) {
+      // Will call default constructor
+      this.super();
+
+      fullName = fullName.split(' ');
+      if(fullName[0]) {
+        this.firstName = fullName[0];
+      }
+      if(fullName[1]) {
+        this.lastName = fullName[1];
+      }
     }
   }
 });
 
-var person = Person.withDefaults({ firstName: 'Scott' });
+var person = new Person({ firstName: 'Scott' });
+// OR
+var person = Person.fromFullName('Scott');
 
 console.log(person);
 
