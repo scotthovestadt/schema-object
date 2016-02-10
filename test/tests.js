@@ -330,7 +330,6 @@ describe('SchemaObject internals', function() {
 
   // Some tests require harmony proxies:
   if(typeof(Proxy) !== 'undefined') {
-
     it('should be empty when nothing is set', function() {
       var o = new SO();
       _.size(o).should.equal(0);
