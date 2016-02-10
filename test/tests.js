@@ -745,6 +745,20 @@ describe('Number', function() {
       o.number.should.be.a.Number;
       o.number.should.equal(1);
     });
+
+    it('should not typecast undefined or null', function() {
+      var o = new SO();
+
+      o.number = 1;
+      o.number.should.be.a.Boolean;
+      o.number.should.equal(1);
+
+      o.number = undefined;
+      should.not.exist(o.number);
+
+      o.number = null;
+      should.not.exist(o.number);
+    });
   });
 
   describe('min', function() {
@@ -831,10 +845,6 @@ describe('Boolean', function() {
       o.boolean.should.be.a.Boolean;
       o.boolean.should.equal(true);
 
-      o.boolean = '';
-      o.boolean.should.be.a.Boolean;
-      o.boolean.should.equal(false);
-
       o.boolean = 'false';
       o.boolean.should.be.a.Boolean;
       o.boolean.should.equal(false);
@@ -866,6 +876,20 @@ describe('Boolean', function() {
       o.boolean = -1;
       o.boolean.should.be.a.Boolean;
       o.boolean.should.equal(false);
+    });
+
+    it('should not typecast undefined or null', function() {
+      var o = new SO();
+
+      o.boolean = true;
+      o.boolean.should.be.a.Boolean;
+      o.boolean.should.equal(true);
+
+      o.boolean = undefined;
+      should.not.exist(o.boolean);
+
+      o.boolean = null;
+      should.not.exist(o.boolean);
     });
   });
 
