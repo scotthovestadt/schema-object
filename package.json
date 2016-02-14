@@ -1,6 +1,6 @@
 {
   "name": "node-schema-object",
-  "version": "3.2.10",
+  "version": "3.3.0",
   "description": "Enforce schema on JavaScript objects, including type, transformation, and validation. Supports extends, sub-schemas, and arrays.",
   "main": "index.js",
   "scripts": {

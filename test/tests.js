@@ -1659,6 +1659,30 @@ describe('toObject()', function() {
   }
 });
 
+describe('getErrors()', function() {
+  it('should get errors from sub-SchemaObjects', function() {
+    var SO = new SchemaObject({
+      string: {type: String, minLength: 15},
+      subobj: {
+        string: {type: String, minLength: 15}
+      }
+    });
+
+    var o = new SO();
+    o.string = '1234';
+    o.subobj.string = '1234';
+
+    const errors = o.getErrors();
+    errors.length.should.equal(2);
+    errors[0].fieldSchema.name.should.equal('string');
+    errors[1].fieldSchema.name.should.equal('subobj.string');
+    o.isErrors().should.equal(true);
+    o.clearErrors();
+    o.getErrors().length.should.equal(0);
+    o.isErrors().should.equal(false);
+  });
+});
+
 describe('clearErrors()', function() {
   it('should remove all errors on an object', function() {
     var SO = new SchemaObject({
