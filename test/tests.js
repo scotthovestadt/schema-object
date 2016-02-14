@@ -202,7 +202,7 @@ describe('SchemaObject construction options', function() {
             return false;
           }
           if(value === 'ErrorTest') {
-            throw 'Test error';
+            throw new Error('Test error');
           }
         },
         strict: false
@@ -1674,7 +1674,9 @@ describe('getErrors()', function() {
 
     const errors = o.getErrors();
     errors.length.should.equal(2);
+    (errors[0].so === o).should.be.true();
     errors[0].fieldSchema.name.should.equal('string');
+    (errors[1].so === o.subobj).should.be.true();
     errors[1].fieldSchema.name.should.equal('subobj.string');
     o.isErrors().should.equal(true);
     o.clearErrors();
