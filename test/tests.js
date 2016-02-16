@@ -1676,7 +1676,7 @@ describe('getErrors()', function() {
     errors.length.should.equal(2);
     (errors[0].schemaObject === o).should.be.true();
     errors[0].fieldSchema.name.should.equal('string');
-    (errors[1].schemaObject === o.subobj).should.be.true();
+    (errors[1].schemaObject === o).should.be.true();
     errors[1].fieldSchema.name.should.equal('subobj.string');
     o.isErrors().should.equal(true);
     o.clearErrors();
