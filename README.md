@@ -175,9 +175,35 @@ console.log(john.getDisplayName());
 
 # Methods
 
+## clone
+
+Clones SchemaObject and all sub-objects and sub-arrays into another SchemaObject container. Writes on any sub-objects or sub-arrays will not touch the original.
+```js
+var User = new SchemaObject({
+  firstName: String,
+  lastName: String
+});
+
+var user = new User({firstName: 'Scott', lastName: 'Hovestadt'});
+
+var anotherUser = user.clone();
+anotherUser.firstName = 'John';
+anotherUser.lastName = 'Smith';
+
+console.log(user);
+console.log(anotherUser);
+
+
+// Prints:
+{ firstName: 'Scott',
+  lastName: 'Hovestadt' }
+{ firstName: 'John',
+  lastName: 'Smith' }
+```
+
 ## toObject
 
-toObject returns a primitive object, stripped of all magic. All values will be typecasted and transformed, but future writes to the primitive object will not. The [invisible attribute](https://github.com/scotthovestadt/node-schema-object#invisible) can be used to ensure an index stored on the SchemaObject will not be written to the primitive object. toObject is automatically called if a SchemaObject is passed to JSON.stringify.
+toObject returns a cloned primitive object, stripped of all magic. Writes on any sub-objects or sub-arrays will not touch the original. All values will be typecasted and transformed, but future writes to the primitive object will not. The [invisible attribute](https://github.com/scotthovestadt/node-schema-object#invisible) can be used to ensure an index stored on the SchemaObject will not be written to the primitive object. toObject is automatically called if a SchemaObject is passed to JSON.stringify.
 ```js
 var User = new SchemaObject({
   firstName: String,

@@ -1659,6 +1659,39 @@ describe('toObject()', function() {
   }
 });
 
+describe('clone()', function() {
+  var SO = new SchemaObject({
+    string: String,
+    subobj: {
+      string: String
+    },
+    subarr: [String]
+  });
+
+  it('should clone object, subobjects, and arrays', function() {
+    var o = new SO({
+      string: 'hello',
+      subobj: { string: 'world' },
+      subarr: ['!']
+    });
+
+    const o2 = o.clone();
+    o2._isSchemaObject().should.equal(true);
+
+    o2.string = 'HELLO';
+    o2.string.should.equal('HELLO');
+    o.string.should.equal('hello');
+
+    o2.subobj.string = 'WORLD';
+    o2.subobj.string.should.equal('WORLD');
+    o.subobj.string.should.equal('world');
+
+    o2.subarr[0] = '!!!';
+    o2.subarr[0].should.equal('!!!');
+    o.subarr[0].should.equal('!');
+  });
+});
+
 describe('getErrors()', function() {
   it('should get errors from sub-SchemaObjects', function() {
     var SO = new SchemaObject({
