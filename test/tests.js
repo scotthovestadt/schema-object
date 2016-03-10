@@ -1035,6 +1035,19 @@ describe('Array', function() {
     });
   });
 
+  describe('accessing properties', function() {
+    var SO = new SchemaObject({
+      strings: [String]
+    });
+
+    it('should set properties without initializing array', function() {
+      var o = new SO();
+
+      o.strings.push(123);
+      o.strings[0].should.equal('123');
+    });
+  });
+
   describe('typecasting', function() {
     var SO = new SchemaObject({
       strings: [String],
