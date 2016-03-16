@@ -1,10 +1,10 @@
-node-schema-object [![Build Status](https://travis-ci.org/scotthovestadt/node-schema-object.png?branch=master)](https://travis-ci.org/scotthovestadt/node-schema-object)
+Schema Object [![Build Status](https://travis-ci.org/scotthovestadt/node-schema-object.png?branch=master)](https://travis-ci.org/scotthovestadt/node-schema-object)
 ==================
 
 Designed to enforce schema on Javascript objects. Allows you to specify type, transformation and validation of values via a set of attributes. Support for sub-schemas included.
 
 ```
-npm install node-schema-object
+npm install schema-object
 npm test
 ```
 
