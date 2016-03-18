@@ -1,4 +1,4 @@
-Schema Object [![Build Status](https://travis-ci.org/scotthovestadt/node-schema-object.png?branch=master)](https://travis-ci.org/scotthovestadt/node-schema-object)
+Schema Object [![Build Status](https://travis-ci.org/scotthovestadt/schema-object.png?branch=master)](https://travis-ci.org/scotthovestadt/schema-object)
 ==================
 
 Designed to enforce schema on Javascript objects. Allows you to specify type, transformation and validation of values via a set of attributes. Support for sub-schemas included.
@@ -15,7 +15,7 @@ Built using Babel ES6 and will release limited support for browsers soon.
 
 # Very basic usage example
 ```js
-var SchemaObject = require('node-schema-object');
+var SchemaObject = require('schema-object');
 
 // Create User schema
 var User = new SchemaObject({
@@ -36,7 +36,7 @@ console.log(user);
 
 # Advanced example
 ```js
-var SchemaObject = require('node-schema-object');
+var SchemaObject = require('schema-object');
 
 // Create custom basic type
 // Type can be extended with more properties when defined
@@ -203,7 +203,7 @@ console.log(anotherUser);
 
 ## toObject
 
-toObject returns a cloned primitive object, stripped of all magic. Writes on any sub-objects or sub-arrays will not touch the original. All values will be typecasted and transformed, but future writes to the primitive object will not. The [invisible attribute](https://github.com/scotthovestadt/node-schema-object#invisible) can be used to ensure an index stored on the SchemaObject will not be written to the primitive object. toObject is automatically called if a SchemaObject is passed to JSON.stringify.
+toObject returns a cloned primitive object, stripped of all magic. Writes on any sub-objects or sub-arrays will not touch the original. All values will be typecasted and transformed, but future writes to the primitive object will not. The [invisible attribute](https://github.com/scotthovestadt/schema-object#invisible) can be used to ensure an index stored on the SchemaObject will not be written to the primitive object. toObject is automatically called if a SchemaObject is passed to JSON.stringify.
 ```js
 var User = new SchemaObject({
   firstName: String,
@@ -264,7 +264,7 @@ console.log(user);
 
 ## isErrors / getErrors / clearErrors
 
-See documentation on [Errors](https://github.com/scotthovestadt/node-schema-object#errors).
+See documentation on [Errors](https://github.com/scotthovestadt/schema-object#errors).
 
 
 # Options
