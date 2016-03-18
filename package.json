@@ -1,11 +1,11 @@
 {
   "name": "schema-object",
-  "version": "3.3.5",
+  "version": "3.3.6",
   "description": "Enforce schema on JavaScript objects, including type, transformation, and validation. Supports extends, sub-schemas, and arrays.",
   "main": "index.js",
   "scripts": {
     "test": "gulp test --harmony --harmony_proxies; gulp test;",
-    "prepublish": "in-publish && gulp build;"
+    "prepublish": "in-publish || gulp build;"
   },
   "directories": {
     "test": "test"
