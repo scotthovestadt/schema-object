@@ -5,12 +5,12 @@ Designed to enforce schema on Javascript objects. Allows you to specify type, tr
 
 ```
 npm install schema-object
-npm test
+```
+```
+bower install schema-object
 ```
 
-**NodeJS >= 0.10 supported. For all features, run node with the harmony proxies ````--harmony_proxies```` and harmony collections ````--harmony```` flags.**
-
-Built using Babel ES6 and will release limited support for browsers soon.
+**Node and browser environments supported. For all features, run node with the harmony proxies ````--harmony_proxies```` and harmony collections ````--harmony```` flags.**
 
 
 # Very basic usage example
