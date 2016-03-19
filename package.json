@@ -2,7 +2,7 @@
   "name": "schema-object",
   "version": "3.3.7",
   "description": "Enforce schema on JavaScript objects, including type, transformation, and validation. Supports extends, sub-schemas, and arrays.",
-  "main": "index.js",
+  "main": "dist/schemaobject.js",
   "scripts": {
     "test": "gulp test --harmony --harmony_proxies; gulp test;",
     "prepublish": "in-publish && gulp build || not-in-publish"
@@ -15,7 +15,14 @@
     "url": "git@github.com:scotthovestadt/schema-object.git"
   },
   "keywords": [
-    "schema"
+    "javascript",
+    "schema",
+    "extends",
+    "type",
+    "transformation",
+    "validation",
+    "object",
+    "array"
   ],
   "dependencies": {
     "babel-polyfill": "6.7.2",
