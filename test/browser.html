@@ -3,11 +3,23 @@
 <head>
   <title>Schema Object</title>
 
+  <link href="../node_modules/mocha/mocha.css" media="screen" rel="stylesheet" type="text/css" />
+</head>
+<body>
+  <div id="mocha"></div>
+
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.7.2/polyfill.js"></script>
   <script type="text/javascript" src="../bower_components/lodash/lodash.js"></script>
   <script type="text/javascript" src="../bower_components/harmony-reflect/reflect.js"></script>
   <script type="text/javascript" src="../dist/schemaobject.js"></script>
-</head>
-<body>
+  <script src="../node_modules/should/should.js"></script>
+  <script src="../node_modules/mocha/mocha.js"></script>
+  <script>
+  mocha.setup('bdd');
+  </script>
+  <script type="text/javascript" src="tests.js"></script>
+  <script>
+  mocha.run();
+  </script>
 </body>
 </html>

@@ -1,6 +1,8 @@
-var should = require('should');
-var _ = require('lodash');
-var SchemaObject = require('../dist/schemaobject');
+if(typeof require !== 'undefined') {
+  var should = require('should');
+  var _ = require('lodash');
+  var SchemaObject = require('../dist/schemaobject');
+}
 
 describe('SchemaObject construction options', function() {
   it('override default constructors', function() {
