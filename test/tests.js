@@ -3,6 +3,8 @@ if(typeof require !== 'undefined') {
   var _ = require('lodash');
   var SchemaObject = require('../dist/schemaobject');
 }
+var _isProxySupported = typeof Proxy !== 'undefined'
+  && Proxy.toString().indexOf('proxies not supported on this platform') === -1;
 
 describe('SchemaObject construction options', function() {
   it('override default constructors', function() {
@@ -59,7 +61,7 @@ describe('SchemaObject construction options', function() {
     person.getFullName().should.equal('Scott Hovestadt');
   });
 
-  if(typeof(Proxy) !== 'undefined') {
+  if(_isProxySupported === true) {
     it('custom constructors with super', function() {
       var Person = new SchemaObject({
         firstName: String,
@@ -279,7 +281,7 @@ describe('SchemaObject construction options', function() {
   }
 });
 
-if(typeof(Proxy) !== 'undefined') {
+if(_isProxySupported === true) {
   describe('SchemaObject extend', function() {
     it('should extend methods and constructors with `this.super()`', function() {
       var Person = new SchemaObject({
@@ -331,7 +333,7 @@ describe('SchemaObject internals', function() {
   });
 
   // Some tests require harmony proxies:
-  if(typeof(Proxy) !== 'undefined') {
+  if(_isProxySupported === true) {
     it('should be empty when nothing is set', function() {
       var o = new SO();
       _.size(o).should.equal(0);
@@ -1604,7 +1606,7 @@ describe('toObject()', function() {
     should.equal(o.string, null);
   });
 
-  if(typeof(Proxy) !== 'undefined') {
+  if(_isProxySupported === true) {
     it('should write non-schema indexes when strict mode is off', function() {
       var SO = new SchemaObject({
       }, {

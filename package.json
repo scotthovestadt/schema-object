@@ -4,7 +4,7 @@
   "description": "Enforce schema on JavaScript objects, including type, transformation, and validation. Supports extends, sub-schemas, and arrays.",
   "main": "dist/schemaobject.js",
   "scripts": {
-    "test": "gulp test --harmony --harmony_proxies; gulp test;",
+    "test": "gulp test-node --harmony --harmony_proxies && gulp test-node && gulp test-browser;",
     "prepublish": "in-publish && gulp build || not-in-publish"
   },
   "directories": {
@@ -38,6 +38,7 @@
     "gulp": "3.9.1",
     "gulp-babel": "6.1.2",
     "gulp-mocha": "2.2.0",
+    "gulp-mocha-phantomjs": "0.11.0",
     "load-plugins": "2.1.0",
     "minimist": "1.2.0",
     "should": "8.x.x"
