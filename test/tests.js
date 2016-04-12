@@ -97,6 +97,29 @@ describe('SchemaObject construction options', function() {
       o.profileURL.should.equal('a string');
     });
 
+    it('keysIgnoreCase: true behavior when same key provided twice with different casing', function() {
+      var SO = new SchemaObject({
+        profileURL: String,
+        profileurl: String
+      }, {
+        keysIgnoreCase: true
+      });
+
+      var o = new SO();
+
+      o.profileurl = 'profileurl_1';
+      o.profileURL = 'profileURL_2';
+      o.profileurl.should.equal('profileurl_1');
+      o.profileURL.should.equal('profileURL_2');
+
+      o.PROFILEURL = 'PROFILEURL_3';
+      o.profileURL.should.equal('PROFILEURL_3');
+
+      var obj = o.toObject();
+      obj.profileurl.should.equal('profileurl_1');
+      obj.profileURL.should.equal('PROFILEURL_3');
+    });
+
     it('strict: true should not allow you to set any index', function() {
       var SO = new SchemaObject({
       }, {
