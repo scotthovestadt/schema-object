@@ -10,6 +10,9 @@
   "directories": {
     "test": "test"
   },
+  "files": [
+    "dist"
+  ],
   "repository": {
     "type": "git",
     "url": "git@github.com:scotthovestadt/schema-object.git"
