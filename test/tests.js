@@ -1207,6 +1207,28 @@ describe('Array', function() {
     });
   });
 
+  describe('filter', function() {
+    var SO = new SchemaObject({
+      filtered: {type: Array, arrayType: String, filter: function(str) { return str.toLowerCase() === str; }}
+    });
+
+    it('should filter array to only lowercase strings when push used', function() {
+      var o = new SO();
+      o.filtered.push('SCOTT');
+      o.filtered.should.have.lengthOf(0);
+      o.filtered.push('scott');
+      o.filtered.should.have.lengthOf(1);
+    });
+
+    it('should filter array to only lowercase strings when set to instance of existing array', function() {
+      var o = new SO();
+      var arr = ['SCOTT', 'scott'];
+      o.filtered = arr;
+      o.filtered.should.have.lengthOf(1);
+      arr.should.have.lengthOf(2);
+    });
+  });
+
   describe('Array prototype', function() {
     var SO = new SchemaObject({
       verified: [String],

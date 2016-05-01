@@ -671,12 +671,6 @@ negative: {type: Number, max: 0}
 
 ## Array
 
-### unique
-Ensures duplicate-free array, using === to test object equality.
-```js
-emails: {type: Array, unique: true, arrayType: String}
-```
-
 ### arrayType
 Elements within the array will be typed to the attributes defined.
 ```js
@@ -686,6 +680,18 @@ aliases: {type: Array, arrayType: {type: String, minLength: 1}}
 An alternative shorthand version is also available -- wrap the properties within array brackets.
 ```js
 aliases: [{type: String, minLength: 1}]
+```
+
+### unique
+Ensures duplicate-free array, using === to test object equality.
+```js
+emails: {type: Array, unique: true, arrayType: String}
+```
+
+### filter
+Reject any values where filter callback does not return truthy.
+```js
+emails: {type: Array, arrayType: Person, filter: (person) => person.gender !== 'f'}
 ```
 
 
