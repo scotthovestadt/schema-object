@@ -7,6 +7,18 @@ var _isProxySupported = typeof Proxy !== 'undefined'
   && Proxy.toString().indexOf('proxies not supported on this platform') === -1;
 
 describe('SchemaObject construction options', function() {
+  it('should not modify the options object passed in', function() {
+    var options = {
+      strict: true
+    };
+    var Person = new SchemaObject({
+      firstName: String,
+      lastName: String
+    }, options);
+
+    _.keys(options).should.eql(['strict']);
+  });
+
   it('override default constructors', function() {
     var Person = new SchemaObject({
       firstName: String,
@@ -957,17 +969,22 @@ describe('Object', function() {
     var Profile = new SchemaObject({
       firstName: String,
       age: Number,
-      notEmptyString: {type: String, minLength: 1}
+      notEmptyString: {type: String, minLength: 1},
+      rootTest: {type: 'any', getter: function() {
+        return this.age;
+      }}
     });
     var SO = new SchemaObject({
+      age: Number,
       profile: Profile,
       shorthandProfile: {
         firstName: String,
         age: Number,
         name: 'string',
         notEmptyString: {type: String, minLength: 1},
-        otherProfileAge: {type: 'any', getter: function() {
-          return this.profile.age;
+        rootTest: {type: 'any', getter: function() {
+          // Should return age from the root object.
+          return this.age;
         }}
       }
     }, {
@@ -1029,6 +1046,32 @@ describe('Object', function() {
       o.shorthandProfile.age = 50;
       var obj = o.toObject();
       obj.age.should.equal(50);
+    });
+
+    it('should NOT set "this" to root object when nested schema shorthand is NOT used', function() {
+      var o = new SO();
+      var o2 = new SO();
+
+      o.age = 20;
+      o.profile.age = 60;
+      o2.age = 50;
+      o2.profile.age = 30;
+
+      o.profile.rootTest.should.equal(60);
+      o2.profile.rootTest.should.equal(30);
+    });
+
+    it('should set "this" to root object when nested schema shorthand is used', function() {
+      var o = new SO();
+      var o2 = new SO();
+
+      o.age = 20;
+      o.shorthandProfile.age = 60;
+      o2.age = 50;
+      o2.shorthandProfile.age = 30;
+
+      o.shorthandProfile.rootTest.should.equal(20);
+      o2.shorthandProfile.rootTest.should.equal(50);
     });
 
     it('should allow shorthand declaration of nested schema to use "name" index', function() {

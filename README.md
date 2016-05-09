@@ -378,6 +378,11 @@ console.log(simpleObject.string);
 { 'A STRING' }
 ```
 
+## inheritRootThis
+
+inheritRootThis (default: false) should be set to true if you want your nested SchemaObjects to have the "this" context of the root SchemaObject. SchemaObjects created with the shorthand syntax are considered a part of the parent object and have this enabled automatically.
+
+
 ## setUndefined
 
 setUndefined (default: false) allows you to specify if an unset value is written when toObject() is called. By default, the behavior is not to write unset values. This means if there is a null/undefined primitive, an empty array, or an empty object it will not be written to the object when toObject() is called.
