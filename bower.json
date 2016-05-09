@@ -1,12 +1,12 @@
 {
   "name": "schema-object",
-  "version": "3.3.7",
+  "version": "4.0.0",
   "homepage": "https://github.com/scotthovestadt/schema-object",
   "authors": [
     "Scott Hovestadt <scott.hovestadt@gmail.com>"
   ],
   "description": "Enforce schema on JavaScript objects, including type, transformation, and validation. Supports extends, sub-schemas, and arrays.",
-  "main": "dist/browser/gy.js",
+  "main": "dist/schemaobject.js",
   "moduleType": [
     "globals"
   ],
@@ -29,7 +29,7 @@
     "lib"
   ],
   "dependencies": {
-    "lodash": "^4.6.1",
-    "harmony-reflect": "^1.4.4"
+    "harmony-reflect": "1.4.6",
+    "lodash": "4.11.1"
   }
 }
