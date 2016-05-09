@@ -965,11 +965,35 @@ describe('Object', function() {
         firstName: String,
         age: Number,
         name: 'string',
-        notEmptyString: {type: String, minLength: 1}
+        notEmptyString: {type: String, minLength: 1},
+        otherProfileAge: {type: 'any', getter: function() {
+          return this.profile.age;
+        }}
+      }
+    }, {
+      toObject: function(obj) {
+        return {
+          age: obj.shorthandProfile.age
+        };
       }
     });
 
     it('should allow nested schemas', function() {
+      var o = new SO();
+
+      o.profile.firstName = 123;
+      o.profile.firstName.should.be.a.String;
+      o.profile.firstName.should.equal('123');
+
+      o.profile.age = '23';
+      o.profile.age.should.be.a.Number;
+      o.profile.age.should.equal(23);
+
+      o.profile.notEmptyString = '';
+      should.not.exist(o.profile.notEmptyString);
+    });
+
+    it('should allow nested schemas to reference parent object', function() {
       var o = new SO();
 
       o.profile.firstName = 123;
@@ -1014,13 +1038,20 @@ describe('Object', function() {
       should.not.exist(o.shorthandProfile.notEmptyString);
     });
 
+    it('should not inherit toObject when nested schema is used', function() {
+      var o = new SO();
+
+      o.shorthandProfile.age = 50;
+      var obj = o.toObject();
+      obj.age.should.equal(50);
+    });
+
     it('should allow shorthand declaration of nested schema to use "name" index', function() {
       var o = new SO();
 
       o.shorthandProfile.name = 123;
       o.shorthandProfile.name.should.be.a.String;
       o.shorthandProfile.name.should.equal('123');
-
     });
   });
 });
