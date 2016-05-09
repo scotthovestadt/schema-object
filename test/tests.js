@@ -993,21 +993,6 @@ describe('Object', function() {
       should.not.exist(o.profile.notEmptyString);
     });
 
-    it('should allow nested schemas to reference parent object', function() {
-      var o = new SO();
-
-      o.profile.firstName = 123;
-      o.profile.firstName.should.be.a.String;
-      o.profile.firstName.should.equal('123');
-
-      o.profile.age = '23';
-      o.profile.age.should.be.a.Number;
-      o.profile.age.should.equal(23);
-
-      o.profile.notEmptyString = '';
-      should.not.exist(o.profile.notEmptyString);
-    });
-
     it('should allow default values', function() {
       var ModelWithDefaults = new SchemaObject({
         profile: {
