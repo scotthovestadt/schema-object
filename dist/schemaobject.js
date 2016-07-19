@@ -331,7 +331,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         }
 
         // If is timestamp, convert to Date.
-        if (_.isNumber(value)) {
+        if (isNumeric(value)) {
           value = new Date((value + '').length > 10 ? value : value * 1000);
         }
 

@@ -1,6 +1,6 @@
 {
   "name": "schema-object",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "Enforce schema on JavaScript objects, including type, transformation, and validation. Supports extends, sub-schemas, and arrays.",
   "main": "dist/schemaobject.js",
   "scripts": {
