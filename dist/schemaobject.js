@@ -210,7 +210,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
         // Remove comma from strings.
         if (typeof value === 'string') {
-          value = value.replace(',', '');
+          value = value.replace(/,/g, '');
         }
 
         // Reject if array, object, or not numeric.
