@@ -775,12 +775,12 @@ describe('Number', function() {
     it('should typecast string with comma to number', function() {
       var o = new SO();
 
-      o.number = '123,988';
+      o.number = '123,988,123';
       o.number.should.be.a.Number;
-      o.number.should.equal(123988);
+      o.number.should.equal(123988123);
 
       o.number = o.number + 1;
-      o.number.should.equal(123989);
+      o.number.should.equal(123988124);
     });
 
     it('should typecast boolean to number', function() {
