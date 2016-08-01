@@ -772,15 +772,18 @@ describe('Number', function() {
       o.number.should.equal(124);
     });
 
-    it('should typecast string with comma to number', function() {
+    it('should typecast string with comma to precision number', function() {
       var o = new SO();
 
-      o.number = '123,988,123';
+      o.number = '123988,123';
       o.number.should.be.a.Number;
-      o.number.should.equal(123988123);
+      o.number.should.equal(123988.123);
 
       o.number = o.number + 1;
-      o.number.should.equal(123988124);
+      o.number.should.equal(123989.123);
+
+      o.number = o.number + 0.01;
+      o.number.should.equal(123989.133);
     });
 
     it('should typecast boolean to number', function() {
