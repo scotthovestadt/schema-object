@@ -208,6 +208,11 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
           value = value ? 1 : 0;
         }
 
+        // Remove comma from strings.
+        if (typeof value === 'string') {
+          value = value.replace(',', '');
+        }
+
         // Reject if array, object, or not numeric.
         if (_.isArray(value) || _.isObject(value) || !isNumeric(value)) {
           throw new SetterError('Number type cannot typecast Array or Object types.', value, originalValue, properties);
