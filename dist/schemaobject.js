@@ -378,8 +378,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         // Users can pass in their own custom types to the schema and we don't want to write to that object.
         // Especially since properties.name contains the index of our field and copying that will break functionality.
       } else {
-          properties = _.cloneDeep(properties);
-        }
+        properties = _.cloneDeep(properties);
+      }
     }
 
     // Type may be an object with properties.
@@ -404,8 +404,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       // Do not convert the initialized SchemaObjectInstance to a string!
       // Check for a shorthand declaration of schema by key length.
     } else if (_.isString(properties.type.name) && properties.type.name !== 'SchemaObjectInstance' && Object.keys(properties.type).length === 0) {
-        properties.type = properties.type.name;
-      }
+      properties.type = properties.type.name;
+    }
     if (_.isString(properties.type)) {
       properties.type = properties.type.toLowerCase();
     }
@@ -480,8 +480,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
           // Native arrays are not used so that Array class can be extended with custom behaviors.
         } else if (properties.type === 'array') {
-            writeValue.call(_this[_privateKey]._this, new SchemaArray(_this, properties), properties);
-          }
+          writeValue.call(_this[_privateKey]._this, new SchemaArray(_this, properties), properties);
+        }
       }
 
       try {
@@ -527,12 +527,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       // Native arrays are never used so that toArray can be globally supported.
       // Additionally, other properties such as unique rely on passing through SchemaObject.
     } else if (properties.type === 'array') {
-        this[properties.name].length = 0;
+      this[properties.name].length = 0;
 
-        // Other field types can simply have their value set to undefined.
-      } else {
-          writeValue.call(this[_privateKey]._this, undefined, properties);
-        }
+      // Other field types can simply have their value set to undefined.
+    } else {
+      writeValue.call(this[_privateKey]._this, undefined, properties);
+    }
   }
 
   // Represents a basic array with typecasted values.
@@ -544,7 +544,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       _classCallCheck(this, SchemaArray);
 
       // Store all internals.
-
       var _this3 = _possibleConstructorReturn(this, Object.getPrototypeOf(SchemaArray).call(this));
 
       var _private = _this3[_privateKey] = {};
@@ -638,8 +637,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
             // If is non-SchemaType object, shallow clone so that properties modification don't have an affect on the original object.
           } else if (_.isObject(element)) {
-              element = _.clone(element);
-            }
+            element = _.clone(element);
+          }
 
           array.push(element);
         });
@@ -675,7 +674,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     // Create object for options if doesn't exist and merge with defaults.
     options = _.extend({
       // By default, allow only values in the schema to be set.
-      // When this is false, setting new fields will dynamically add the field to the schema as type "any".
+      // When this is false, setting new fields will dynamically add the field to the schema as type "any". 
       strict: true,
 
       // Allow fields to be set via dotNotation; obj['user.name'] = 'Scott'; -> obj: { user: 'Scott' }
@@ -751,7 +750,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
   function SchemaObjectInstanceFactory(schema, options) {
     // Represents an actual instance of an object.
-
     var SchemaObjectInstance = function () {
       _createClass(SchemaObjectInstance, null, [{
         key: 'extend',
