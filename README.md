@@ -392,6 +392,12 @@ This value should set to true if:
 - You want to write undefined values when exporting to JSON explicitly.
 - You want toObject() to contain empty arrays and objects.
 
+## preserveNull
+
+preserveNull (default: false) allows you to set `null` to any field. The default behavior will treat null as unsetting the field.
+
+This value should set to true if you're intentionally using null and know the difference between null and undefined.
+
 ## strict
 
 strict (default: true) allows you to specify what happens when an index is set on your SchemaObject that does not exist in the schema. If strict mode is on, the index will be ignored. If strict mode is off, the index will automatically be created in the schema when it's set with type "any".

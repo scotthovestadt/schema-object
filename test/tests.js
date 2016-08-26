@@ -73,6 +73,47 @@ describe('SchemaObject construction options', function() {
     person.getFullName().should.equal('Scott Hovestadt');
   });
 
+  it('preserveNull: true should allow null to be set on any field', function() {
+    var SO = new SchemaObject({
+      str: String,
+      str2: String,
+      num: Number,
+      num2: Number
+    }, {
+      preserveNull: true
+    });
+
+    var o = new SO();
+    o.str = null;
+    o.num = null;
+    should.equal(o.str, null);
+    should.equal(o.num2, null);
+    o.toObject().should.eql({
+      str: null,
+      num: null
+    });
+  });
+
+  it('preserveNull: false should treat null as undefined', function() {
+    var SO = new SchemaObject({
+      str: String,
+      str2: String,
+      num: Number,
+      num2: Number
+    }, {
+      preserveNull: false
+    });
+
+    var o = new SO();
+    o.str = null;
+    o.num = null;
+    should.not.exist(o.str);
+    should.not.exist(o.str2);
+    should.not.exist(o.num);
+    should.not.exist(o.num2);
+    o.toObject().should.eql({});
+  });
+
   if(_isProxySupported === true) {
     it('custom constructors with super', function() {
       var Person = new SchemaObject({
