@@ -141,9 +141,16 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
   function typecast(value, originalValue, properties) {
+    var options = this[_privateKey]._options;
+
     // Allow transform to manipulate raw properties.
     if (properties.transform) {
       value = properties.transform.call(this[_privateKey]._root, value, originalValue, properties);
+    }
+
+    // Allow null to be preserved.
+    if (value === null && options.preserveNull) {
+      return null;
     }
 
     // Property types are always normalized as lowercase strings despite shorthand definitions being available.
@@ -156,7 +163,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
         // If index is being set with null or undefined, set value and end.
         if (value === undefined || value === null) {
-          return value;
+          return undefined;
         }
 
         // Typecast to String.
@@ -195,7 +202,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         }
 
         return value;
-        break;
 
       case 'number':
         // If index is being set with null, undefined, or empty string: clear value.
@@ -235,7 +241,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         }
 
         return value;
-        break;
 
       case 'boolean':
         // If index is being set with null, undefined, or empty string: clear value.
@@ -262,7 +267,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         }
 
         return value;
-        break;
 
       case 'array':
         // If it's an object, typecast to an array and return array.
@@ -284,7 +288,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         });
 
         return originalValue;
-        break;
 
       case 'object':
         // If it's not an Object, reject.
@@ -317,7 +320,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
         // Otherwise, it's OK.
         return value;
-        break;
 
       case 'date':
         // If index is being set with null, undefined, or empty string: clear value.
@@ -351,12 +353,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         }
 
         return value;
-        break;
 
       default:
         // 'any'
         return value;
-        break;
     }
   }
 
@@ -685,6 +685,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       // If this is true, toObject() will output undefined for unset primitives and empty arrays/objects for those types.
       // If this is false, toObject() will not output any keys for unset primitives, arrays, and objects.
       setUndefined: false,
+
+      // If this is set to true, null will NOT be converted to undefined automatically.
+      // In many cases, when people use null, they actually want to unset a value.
+      // There are rare cases where preserving the null is important.
+      // Set to true if you are one of those rare cases.
+      preserveNull: false,
 
       // Allow "profileURL" to be set with "profileUrl" when set to false
       keysIgnoreCase: false,
