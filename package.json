@@ -31,7 +31,7 @@
     "babel-polyfill": "6.13.0",
     "harmony-reflect": "1.4.6",
     "in-publish": "2.0.0",
-    "lodash": "4.15.0"
+    "lodash": "4.16.0"
   },
   "devDependencies": {
     "babel-core": "6.13.2",
