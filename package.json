@@ -42,7 +42,7 @@
     "gulp-babel": "6.1.2",
     "gulp-mocha": "3.0.1",
     "gulp-mocha-phantomjs": "0.11.0",
-    "load-plugins": "2.1.0",
+    "load-plugins": "2.1.1",
     "minimist": "1.2.0",
     "should": "11.x.x"
   },
