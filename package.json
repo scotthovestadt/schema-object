@@ -1,18 +1,19 @@
 {
   "name": "schema-object",
-  "version": "4.0.6",
+  "version": "4.0.7",
   "description": "Enforce schema on JavaScript objects, including type, transformation, and validation. Supports extends, sub-schemas, and arrays.",
   "main": "dist/schemaobject.js",
   "scripts": {
     "test": "gulp test-node && gulp test-node",
     "prepublish": "in-publish && gulp build || not-in-publish"
   },
-  "types": "./lib/schemaobject.d.ts",
+  "types": "./typescript/schemaobject.d.ts",
   "directories": {
     "test": "test"
   },
   "files": [
-    "dist"
+    "dist",
+    "typescript"
   ],
   "repository": {
     "type": "git",
