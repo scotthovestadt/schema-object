@@ -10,7 +10,9 @@ npm install schema-object
 bower install schema-object
 ```
 
-**Node and browser environments supported. For all features, run node with the harmony proxies ````--harmony_proxies```` and harmony collections ````--harmony```` flags.**
+**TypeScript typings included. Node and browser environments supported.**
+
+For older versions of Node, run node with the harmony proxies ````--harmony_proxies```` flag. This flag is on by default in newer NodeJS versions.
 
 
 # Very basic usage example

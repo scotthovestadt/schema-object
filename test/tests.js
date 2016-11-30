@@ -415,16 +415,6 @@ describe('SchemaObject internals', function() {
       _.size(o).should.equal(0);
     });
 
-    it('should not see _private when iterating', function() {
-      var keysIterated = 0;
-      var o = new SO({ string: 'hello', date: 582879600000 });
-      for(var key in o) {
-        key.should.not.equal('_private');
-        keysIterated++;
-      }
-      keysIterated.should.equal(2);
-    });
-
     it('should not see _private when iterating with lodash', function() {
       var keysIterated = 0;
       var o = new SO({ string: 'hello', date: 582879600000 });
