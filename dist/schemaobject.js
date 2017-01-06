@@ -988,7 +988,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
           if (properties.required && !_this6[index]) {
             var error = new SetterError(index + ' is required but not provided', _this6[index], _this6[index], properties);
-            _this6._private._errors.push(error);
+            _private._errors.push(error);
           }
         });
 
