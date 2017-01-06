@@ -100,6 +100,15 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
   // Used to write value to object.
   function writeValue(value, fieldSchema) {
+    // remove errors related to this field
+    // will get replied if it is still failing later
+    var errors = this[_privateKey]._errors;
+    var _errors = _.filter(errors, function (e) {
+      return e.fieldSchema.name !== fieldSchema.name;
+    });
+
+    this[_privateKey]._errors = _errors;
+
     // onBeforeValueSet allows you to cancel the operation.
     // It doesn't work like transform and others that allow you to modify the value because all typecast has already happened.
     // For use-cases where you need to modify the value, you can set a new value in the handler and return false.
@@ -453,7 +462,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
   // Add field to schema and initializes getter and setter for the field.
   function addToSchema(index, properties) {
-    console.log('index, properties', index, properties);
     this[_privateKey]._schema[index] = normalizeProperties.call(this, properties, index);
 
     defineGetter.call(this[_privateKey]._getset, index, this[_privateKey]._schema[index]);
