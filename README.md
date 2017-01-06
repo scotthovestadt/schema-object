@@ -49,10 +49,10 @@ var Company = new SchemaObject({
   // Any string will be magically parsed into date
   startDate: Date,
   endDate: Date,
-  
+
   // String with properties
   name: NotEmptyString,
-  
+
   // Typed array
   tags: [NotEmptyString]
 });
@@ -62,10 +62,10 @@ var User = new SchemaObject({
   // Basic user information using properties
   firstName: NotEmptyString,
   lastName: NotEmptyString,
-  
+
   // Extend "NotEmptyString" with enum property
   gender: {type: NotEmptyString, enum: ['m', 'f']},
-  
+
   // Sub-object with enforced type
   work: Company
 }, {
@@ -81,7 +81,7 @@ var User = new SchemaObject({
 var Account = User.extend({
   // Add username to schema
   username: NotEmptyString,
-  
+
   // Special behavior will transform password to hash if necessary
   // https://www.npmjs.com/package/password-hash
   password: {type: String, stringTransform: function(string) {
@@ -606,6 +606,12 @@ country: {type: String, default: 'USA'}
 Provide function to transform value when retrieved. Executed in the context of the object and can use "this" to access properties.
 ```js
 string: {type: String, getter: function(value) { return value.toUpperCase(); }}
+```
+
+### required
+If true, a value must be provided. If a value is not provided, an error will be generated silently. If used in conjunction with default, this check will always pass.
+```js
+fullName: {type: String, required: true}
 ```
 
 ### readOnly
