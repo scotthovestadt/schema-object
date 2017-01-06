@@ -100,6 +100,15 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
   // Used to write value to object.
   function writeValue(value, fieldSchema) {
+    // remove errors related to this field
+    // will get replied if it is still failing later
+    var errors = this[_privateKey]._errors;
+    var _errors = _.filter(errors, function (e) {
+      return e.fieldSchema.name !== fieldSchema.name;
+    });
+
+    this[_privateKey]._errors = _errors;
+
     // onBeforeValueSet allows you to cancel the operation.
     // It doesn't work like transform and others that allow you to modify the value because all typecast has already happened.
     // For use-cases where you need to modify the value, you can set a new value in the handler and return false.
@@ -673,7 +682,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     // Create object for options if doesn't exist and merge with defaults.
     options = _.extend({
       // By default, allow only values in the schema to be set.
-      // When this is false, setting new fields will dynamically add the field to the schema as type "any". 
+      // When this is false, setting new fields will dynamically add the field to the schema as type "any".
       strict: true,
 
       // Allow fields to be set via dotNotation; obj['user.name'] = 'Scott'; -> obj: { user: 'Scott' }
@@ -975,6 +984,11 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             properties.readOnly = false;
             _this6[index] = _.isFunction(properties.default) ? properties.default.call(_this6) : properties.default;
             properties.readOnly = readOnly;
+          }
+
+          if (properties.required && !_this6[index]) {
+            var error = new SetterError(index + ' is required but not provided', _this6[index], _this6[index], properties);
+            _private._errors.push(error);
           }
         });
 

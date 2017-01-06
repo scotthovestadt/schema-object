@@ -590,6 +590,40 @@ describe('any type', function() {
       o.name.should.equal('Scott Hovestadt');
     });
   });
+
+  describe('required', function() {
+    it('should reject if field is required', function() {
+      var SO = new SchemaObject({
+        name: { type: String, required: true }
+      });
+
+      var o = new SO();
+      o.getErrors().length.should.equal(1);
+      o.isErrors().should.equal(true);
+    });
+
+    it('should not reject if field is required but default provided', function() {
+      var SO = new SchemaObject({
+        name: { type: String, required: true, default: 'Andy Pai' }
+      });
+
+      var o = new SO();
+      o.getErrors().length.should.equal(0);
+      o.isErrors().should.equal(false);
+    });
+
+    it('should not reject if field is required and provided after intiliazation', function() {
+      var SO = new SchemaObject({
+        name: { type: String, required: true }
+      });
+
+      var o = new SO();
+      o.name = 'Andy & Scott'
+
+      o.getErrors().length.should.equal(0);
+      o.isErrors().should.equal(false);
+    });
+  });
 });
 
 describe('String', function() {
@@ -743,7 +777,7 @@ describe('String', function() {
       o.string.should.equal('permanent value');
     });
   });
-  
+
   describe('minLength', function() {
     var SO = new SchemaObject({
       notEmptyString: {type: String, minLength: 1}
