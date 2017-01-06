@@ -453,6 +453,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
   // Add field to schema and initializes getter and setter for the field.
   function addToSchema(index, properties) {
+    console.log('index, properties', index, properties);
     this[_privateKey]._schema[index] = normalizeProperties.call(this, properties, index);
 
     defineGetter.call(this[_privateKey]._getset, index, this[_privateKey]._schema[index]);
@@ -673,7 +674,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     // Create object for options if doesn't exist and merge with defaults.
     options = _.extend({
       // By default, allow only values in the schema to be set.
-      // When this is false, setting new fields will dynamically add the field to the schema as type "any". 
+      // When this is false, setting new fields will dynamically add the field to the schema as type "any".
       strict: true,
 
       // Allow fields to be set via dotNotation; obj['user.name'] = 'Scott'; -> obj: { user: 'Scott' }
@@ -975,6 +976,11 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             properties.readOnly = false;
             _this6[index] = _.isFunction(properties.default) ? properties.default.call(_this6) : properties.default;
             properties.readOnly = readOnly;
+          }
+
+          if (properties.required && !_this6[index]) {
+            var error = new SetterError(index + ' is required but not provided', _this6[index], _this6[index], properties);
+            _this6._private._errors.push(error);
           }
         });
 
