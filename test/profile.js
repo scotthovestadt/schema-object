@@ -1,3 +1,5 @@
+// Used to get rough benchmarks when trying to optimize the library.
+
 var SchemaObject = require('../dist/schemaobject');
 
 var SO = new SchemaObject({
@@ -21,7 +23,7 @@ var data = {
 };
 var start = Date.now();
 var o;
-for(var i = 0; i < 100000; i++) {
+for (var i = 0; i < 100000; i++) {
   o = new SO(data);
 }
 console.log((Date.now() - start) / 1000);
