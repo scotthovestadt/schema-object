@@ -985,11 +985,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             _this6[index] = _.isFunction(properties.default) ? properties.default.call(_this6) : properties.default;
             properties.readOnly = readOnly;
           }
-
-          if (properties.required && !_this6[index]) {
-            var error = new SetterError(index + ' is required but not provided', _this6[index], _this6[index], properties);
-            _private._errors.push(error);
-          }
         });
 
         // Call default constructor.
@@ -1104,6 +1099,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       }, {
         key: 'getErrors',
         value: function getErrors() {
+          var _this9 = this;
+
           var errors = [];
           var _iteratorNormalCompletion2 = true;
           var _didIteratorError2 = false;
@@ -1117,8 +1114,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
               error.schemaObject = this;
               errors.push(error);
             }
-
-            // Look for sub-SchemaObjects.
           } catch (err) {
             _didIteratorError2 = true;
             _iteratorError2 = err;
@@ -1134,6 +1129,15 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             }
           }
 
+          _.each(this[_privateKey]._schema, function (properties, index) {
+            if (properties.required && !_this9[index]) {
+              var error = new SetterError(index + ' is required but not provided', _this9[index], _this9[index], properties);
+              error.schemaObject = _this9;
+              errors.push(error);
+            }
+          });
+
+          // Look for sub-SchemaObjects.
           for (var name in this[_privateKey]._schema) {
             var field = this[_privateKey]._schema[name];
             if (field.type === 'object' && typeof field.objectType === 'function') {

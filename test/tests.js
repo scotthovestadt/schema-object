@@ -612,7 +612,7 @@ describe('any type', function() {
       o.isErrors().should.equal(false);
     });
 
-    it('should not reject if field is required and provided after intiliazation', function() {
+    it('should not reject if field is required and provided after initialization', function() {
       var SO = new SchemaObject({
         name: { type: String, required: true }
       });
@@ -622,6 +622,20 @@ describe('any type', function() {
 
       o.getErrors().length.should.equal(0);
       o.isErrors().should.equal(false);
+    });
+
+    it('should reject if field is required, provided, and then removed', function() {
+      var SO = new SchemaObject({
+        name: { type: String, required: true }
+      });
+
+      var o = new SO();
+      o.name = 'Andy & Scott'
+      o.getErrors().length.should.equal(0);
+      o.isErrors().should.equal(false);
+      o.name = '';
+      o.getErrors().length.should.equal(1);
+      o.isErrors().should.equal(true);
     });
   });
 });
