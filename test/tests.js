@@ -702,7 +702,7 @@ describe('any type', function () {
             o.name = 'Andy & Scott'
             o.getErrors().length.should.equal(0);
             o.isErrors().should.equal(false);
-            o.name = '';
+            o.name = undefined; 
             o.getErrors().length.should.equal(1);
             o.isErrors().should.equal(true);
         });
