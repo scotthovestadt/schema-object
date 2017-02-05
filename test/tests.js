@@ -674,6 +674,21 @@ describe('any type', function () {
             o.getErrors().length.should.equal(0);
             o.isErrors().should.equal(false);
         });
+        
+        it('should not reject if field is required and a falsy value is provided', function () {
+            var SO = new SchemaObject({
+                name: {
+                    type: String,
+                    required: true
+                }
+            });
+
+            var o = new SO();
+            o.name = '';
+
+            o.getErrors().length.should.equal(0);
+            o.isErrors().should.equal(false);
+        });
 
         it('should reject if field is required, provided, and then removed', function () {
             var SO = new SchemaObject({
