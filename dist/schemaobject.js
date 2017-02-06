@@ -1134,7 +1134,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                     }
 
                     _.each(this[_privateKey]._schema, function (properties, index) {
-                        if (properties.required && !_this9[index]) {
+                        if (properties.required && _this9[index] === undefined) {
                             var error = new SetterError(index + ' is required but not provided', _this9[index], _this9[index], properties);
                             error.schemaObject = _this9;
                             errors.push(error);
