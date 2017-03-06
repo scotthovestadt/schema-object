@@ -762,7 +762,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 key: 'extend',
 
                 // Extend instance factory.
-                value: function extend(extendSchema, extendOptions) {
+                value: function extend(extendSchema) {
+                    var extendOptions = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
                     // Extend requires reflection.
                     if (_isProxySupported === false) {
                         throw new Error('[schema-object] Extending object requires --harmony flag.');
