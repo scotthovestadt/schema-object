@@ -532,6 +532,47 @@ user.name = 'Scott Hovestadt';
 { name: 'Scott Hovestadt' }
 ```
 
+## allowFalsyValues
+
+allowFalsyValues (default: true) allows you to specify what happens when an index is required by the schema, but a falsy value is provided. If allowFalsyValues is true, all falsy values, such as empty strings are ignored. If false, falsy values other than booleans will result in an error.
+
+With allowFalsyValues mode on (default):
+```js
+var Profile = new SchemaObject({
+  id: {
+    type: String,
+    required: true
+}, {
+  allowFalsyValues: true
+});
+
+var profile = new Profile();
+profile.id = '';
+
+console.log(profile.getErrors());
+// Prints:
+[]
+```
+
+With allowFalsyValues mode off:
+```js
+var Profile = new SchemaObject({
+  id: {
+    type: String,
+    required: true
+}, {
+  allowFalsyValues: false
+});
+
+var profile = new Profile();
+profile.id = '';
+
+console.log(profile.getErrors());
+// Prints:
+[ SetterError {
+    errorMessage: 'id is required but not provided'
+    ...
+```
 
 # Errors
 
@@ -613,7 +654,38 @@ If true, a value must be provided. If a value is not provided, an error will be 
 ```js
 fullName: {type: String, required: true}
 ```
-
+Required can also be a function, you can use 'this' to reference the current object instance. Required will be based on what boolean value the function returns.
+```js
+age: {
+  type: Number,
+  required: true
+},
+employer: {
+  type: String,
+  required: function() {
+    return this.age > 18;
+  }
+}
+```
+You can also override the default error message for required fields by using an array and providing a string for the second value.
+```js
+age: {
+  type: Number,
+  required: [
+    true,
+    'You must provide the age of this user'
+  ]
+},
+employer: {
+  type: String,
+  required: [
+    function() {
+      return this.age > 18;
+    },
+    'An employer is required for all users over the age of 18'
+  ]
+}
+```
 ### readOnly
 If true, the value can be read but cannot be written to. This can be useful for creating fields that reflect other values.
 ```js
