@@ -737,24 +737,24 @@ describe('any type', function () {
           o.isErrors().should.equal(true);
         });
 
-      it('should not reject if field is required and a boolean false value is provided and allowFalsyValues is false', function () {
-        var SO = new SchemaObject({
-          myBoolean: {
-            type: Boolean,
-            required: true
-          }
-        }, {
-          allowFalsyValues: false
+        it('should not reject if field is required and a boolean false value is provided and allowFalsyValues is false', function () {
+          var SO = new SchemaObject({
+            myBoolean: {
+              type: Boolean,
+              required: true
+            }
+          }, {
+            allowFalsyValues: false
+          });
+
+          var o = new SO();
+          o.myBoolean = false;
+
+          o.getErrors().length.should.equal(0);
+          o.isErrors().should.equal(false);
+          should.exist(o.toObject().myBoolean);
+          o.toObject().myBoolean.should.equal(false);
         });
-
-        var o = new SO();
-        o.myBoolean = false;
-
-        o.getErrors().length.should.equal(0);
-        o.isErrors().should.equal(false);
-        should.exist(o.toObject().myBoolean);
-        o.toObject().myBoolean.should.equal(false);
-      });
 
         it('should reject if field is required, provided, and then removed', function () {
             var SO = new SchemaObject({

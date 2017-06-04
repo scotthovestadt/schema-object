@@ -1145,7 +1145,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                                 return;
                             }
 
-                        //If property has a value, is a boolean set to false, or if it's falsy and falsy values are allowed
+                        //Skip if property has a value, is a boolean set to false, or if it's falsy and falsy values are allowed
                         if (_this9[index] || typeof _this9[index] === 'boolean' || _this9[_privateKey]._options.allowFalsyValues && _this9[index] !== undefined) {
                             return;
                         }
