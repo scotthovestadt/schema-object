@@ -697,7 +697,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             keysIgnoreCase: false,
 
             // Inherit root object "this" context from parent SchemaObject.
-            inheritRootThis: false
+            inheritRootThis: false,
+
+            // If this is set to false, require will not allow falsy values such as empty strings
+            allowFalsyValues: true
         }, options);
 
         // Some of the options require reflection.
@@ -883,94 +886,92 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 // Without Proxy we must register individual getter/typecasts to put any logic in place.
                 // With Proxy, we still use the individual getter/typecasts, but also catch values that aren't in the schema.
                 if (_isProxySupported === true) {
-                    (function () {
-                        var proxy = _this6[_privateKey]._this = new Proxy(_this6, {
-                            // Ensure only public keys are shown.
-                            ownKeys: function ownKeys(target) {
-                                return Object.keys(_this6.toObject());
-                            },
+                    var proxy = this[_privateKey]._this = new Proxy(this, {
+                        // Ensure only public keys are shown.
+                        ownKeys: function ownKeys(target) {
+                            return Object.keys(_this6.toObject());
+                        },
 
-                            // Return keys to iterate.
-                            enumerate: function enumerate(target) {
-                                return Object.keys(_this6[_privateKey]._this)[Symbol.iterator]();
-                            },
+                        // Return keys to iterate.
+                        enumerate: function enumerate(target) {
+                            return Object.keys(_this6[_privateKey]._this)[Symbol.iterator]();
+                        },
 
-                            // Check to see if key exists.
-                            has: function has(target, key) {
-                                return !!_private._getset[key];
-                            },
+                        // Check to see if key exists.
+                        has: function has(target, key) {
+                            return !!_private._getset[key];
+                        },
 
-                            // Ensure correct prototype is returned.
-                            getPrototypeOf: function getPrototypeOf() {
-                                return _private._getset;
-                            },
+                        // Ensure correct prototype is returned.
+                        getPrototypeOf: function getPrototypeOf() {
+                            return _private._getset;
+                        },
 
-                            // Ensure readOnly fields are not writeable.
-                            getOwnPropertyDescriptor: function getOwnPropertyDescriptor(target, key) {
-                                return {
-                                    value: proxy[key],
-                                    writeable: !schema[key] || schema[key].readOnly !== true,
-                                    enumerable: true,
-                                    configurable: true
-                                };
-                            },
+                        // Ensure readOnly fields are not writeable.
+                        getOwnPropertyDescriptor: function getOwnPropertyDescriptor(target, key) {
+                            return {
+                                value: proxy[key],
+                                writeable: !schema[key] || schema[key].readOnly !== true,
+                                enumerable: true,
+                                configurable: true
+                            };
+                        },
 
-                            // Intercept all get calls.
-                            get: function get(target, name, receiver) {
-                                // First check to see if it's a reserved field.
-                                if (_reservedFields.includes(name)) {
-                                    return _this6[_privateKey]._reservedFields[name];
-                                }
-
-                                // Support dot notation via lodash.
-                                if (options.dotNotation && name.indexOf('.') !== -1) {
-                                    return _.get(_this6[_privateKey]._this, name);
-                                }
-
-                                // Use registered getter without hitting the proxy to avoid creating an infinite loop.
-                                return _this6[name];
-                            },
-
-                            // Intercept all set calls.
-                            set: function set(target, name, value, receiver) {
-                                // Support dot notation via lodash.
-                                if (options.dotNotation && name.indexOf('.') !== -1) {
-                                    return _.set(_this6[_privateKey]._this, name, value);
-                                }
-
-                                // Find real keyname if case sensitivity is off.
-                                if (options.keysIgnoreCase && !schema[name]) {
-                                    name = getIndex.call(_this6, name);
-                                }
-
-                                if (!schema[name]) {
-                                    if (options.strict) {
-                                        // Strict mode means we don't want to deal with anything not in the schema.
-                                        // TODO: SetterError here.
-                                        return true;
-                                    } else {
-                                        // Add index to schema dynamically when value is set.
-                                        // This is necessary for toObject to see the field.
-                                        addToSchema.call(_this6, name, {
-                                            type: 'any'
-                                        });
-                                    }
-                                }
-
-                                // This hits the registered setter but bypasses the proxy to avoid an infinite loop.
-                                _this6[name] = value;
-
-                                // Necessary for Node v6.0. Prevents error: 'set' on proxy: trap returned falsish for property 'string'".
-                                return true;
-                            },
-
-                            // Intercept all delete calls.
-                            deleteProperty: function deleteProperty(target, property) {
-                                _this6[property] = undefined;
-                                return true;
+                        // Intercept all get calls.
+                        get: function get(target, name, receiver) {
+                            // First check to see if it's a reserved field.
+                            if (_reservedFields.includes(name)) {
+                                return _this6[_privateKey]._reservedFields[name];
                             }
-                        });
-                    })();
+
+                            // Support dot notation via lodash.
+                            if (options.dotNotation && name.indexOf('.') !== -1) {
+                                return _.get(_this6[_privateKey]._this, name);
+                            }
+
+                            // Use registered getter without hitting the proxy to avoid creating an infinite loop.
+                            return _this6[name];
+                        },
+
+                        // Intercept all set calls.
+                        set: function set(target, name, value, receiver) {
+                            // Support dot notation via lodash.
+                            if (options.dotNotation && name.indexOf('.') !== -1) {
+                                return _.set(_this6[_privateKey]._this, name, value);
+                            }
+
+                            // Find real keyname if case sensitivity is off.
+                            if (options.keysIgnoreCase && !schema[name]) {
+                                name = getIndex.call(_this6, name);
+                            }
+
+                            if (!schema[name]) {
+                                if (options.strict) {
+                                    // Strict mode means we don't want to deal with anything not in the schema.
+                                    // TODO: SetterError here.
+                                    return true;
+                                } else {
+                                    // Add index to schema dynamically when value is set.
+                                    // This is necessary for toObject to see the field.
+                                    addToSchema.call(_this6, name, {
+                                        type: 'any'
+                                    });
+                                }
+                            }
+
+                            // This hits the registered setter but bypasses the proxy to avoid an infinite loop.
+                            _this6[name] = value;
+
+                            // Necessary for Node v6.0. Prevents error: 'set' on proxy: trap returned falsish for property 'string'".
+                            return true;
+                        },
+
+                        // Intercept all delete calls.
+                        deleteProperty: function deleteProperty(target, property) {
+                            _this6[property] = undefined;
+                            return true;
+                        }
+                    });
                 }
 
                 // Populate schema defaults into object.
@@ -1127,11 +1128,31 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                     }
 
                     _.each(this[_privateKey]._schema, function (properties, index) {
-                        if (properties.required && _this9[index] === undefined) {
-                            var error = new SetterError(index + ' is required but not provided', _this9[index], _this9[index], properties);
-                            error.schemaObject = _this9;
-                            errors.push(error);
+                        var required = properties.required;
+                        var message = index + ' is required but not provided';
+
+                        //If required is an array, set custom message
+                        if (Array.isArray(required)) {
+                            message = required[1] || message;
+                            required = required[0];
                         }
+                        //Skip if required does not exist
+                        if (!required) {
+                            return;
+                        }
+                        //Skip if required is a function, but returns false
+                        else if (typeof required === 'function' && !required.call(_this9)) {
+                                return;
+                            }
+
+                        //Skip if property has a value, is a boolean set to false, or if it's falsy and falsy values are allowed
+                        if (_this9[index] || typeof _this9[index] === 'boolean' || _this9[_privateKey]._options.allowFalsyValues && _this9[index] !== undefined) {
+                            return;
+                        }
+
+                        var error = new SetterError(message, _this9[index], _this9[index], properties);
+                        error.schemaObject = _this9;
+                        errors.push(error);
                     });
 
                     // Look for sub-SchemaObjects.
