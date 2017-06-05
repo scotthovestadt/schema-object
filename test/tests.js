@@ -646,6 +646,36 @@ describe('any type', function () {
             o.isErrors().should.equal(true);
         });
 
+        it('should reject if field required function returns true', function () {
+          var SO = new SchemaObject({
+            name: {
+              type: String,
+              required: function() {
+                return true;
+              }
+            }
+          });
+  
+          var o = new SO();
+          o.getErrors().length.should.equal(1);
+          o.isErrors().should.equal(true);
+        });
+  
+        it('should not reject if field required function returns false', function () {
+          var SO = new SchemaObject({
+            name: {
+              type: String,
+              required: function() {
+                return false;
+              }
+            }
+          });
+  
+          var o = new SO();
+          o.getErrors().length.should.equal(0);
+          o.isErrors().should.equal(false);
+        });
+
         it('should not reject if field is required but default provided', function () {
             var SO = new SchemaObject({
                 name: {
@@ -669,10 +699,61 @@ describe('any type', function () {
             });
 
             var o = new SO();
-            o.name = 'Andy & Scott'
+            o.name = 'Andy & Scott';
 
             o.getErrors().length.should.equal(0);
             o.isErrors().should.equal(false);
+        });
+        
+        it('should not reject if field is required and a falsy value is provided', function () {
+            var SO = new SchemaObject({
+                name: {
+                    type: String,
+                    required: true
+                }
+            });
+
+            var o = new SO();
+            o.name = '';
+
+            o.getErrors().length.should.equal(0);
+            o.isErrors().should.equal(false);
+        });
+
+        it('should reject if field is required and a falsy value is provided and allowFalsyValues is false', function () {
+          var SO = new SchemaObject({
+            name: {
+              type: String,
+              required: true
+            }
+          }, {
+            allowFalsyValues: false
+          });
+  
+          var o = new SO();
+          o.name = '';
+  
+          o.getErrors().length.should.equal(1);
+          o.isErrors().should.equal(true);
+        });
+
+        it('should not reject if field is required and a boolean false value is provided and allowFalsyValues is false', function () {
+          var SO = new SchemaObject({
+            myBoolean: {
+              type: Boolean,
+              required: true
+            }
+          }, {
+            allowFalsyValues: false
+          });
+
+          var o = new SO();
+          o.myBoolean = false;
+
+          o.getErrors().length.should.equal(0);
+          o.isErrors().should.equal(false);
+          should.exist(o.toObject().myBoolean);
+          o.toObject().myBoolean.should.equal(false);
         });
 
         it('should reject if field is required, provided, and then removed', function () {
@@ -684,10 +765,10 @@ describe('any type', function () {
             });
 
             var o = new SO();
-            o.name = 'Andy & Scott'
+            o.name = 'Andy & Scott';
             o.getErrors().length.should.equal(0);
             o.isErrors().should.equal(false);
-            o.name = '';
+            o.name = undefined; 
             o.getErrors().length.should.equal(1);
             o.isErrors().should.equal(true);
         });
