@@ -4,10 +4,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
 function _extendableBuiltin(cls) {
     function ExtendableBuiltin() {
         var instance = Reflect.construct(cls, Array.from(arguments));
@@ -32,6 +28,10 @@ function _extendableBuiltin(cls) {
 
     return ExtendableBuiltin;
 }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -136,11 +136,293 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         this.fieldSchema = fieldSchema;
     };
 
+    var CastError = function (_SetterError) {
+        _inherits(CastError, _SetterError);
+
+        function CastError(errorMessage, setValue, originalValue, fieldSchema) {
+            _classCallCheck(this, CastError);
+
+            var _this = _possibleConstructorReturn(this, (CastError.__proto__ || Object.getPrototypeOf(CastError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
+
+            _this.errorType = 'CastError';
+            _this.errorCode = 1000;
+            return _this;
+        }
+
+        return CastError;
+    }(SetterError);
+
+    var ValidationError = function (_SetterError2) {
+        _inherits(ValidationError, _SetterError2);
+
+        function ValidationError(errorMessage, setValue, originalValue, fieldSchema) {
+            _classCallCheck(this, ValidationError);
+
+            var _this2 = _possibleConstructorReturn(this, (ValidationError.__proto__ || Object.getPrototypeOf(ValidationError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
+
+            _this2.errorType = 'ValidationError';
+            _this2.errorCode = 2000;
+            return _this2;
+        }
+
+        return ValidationError;
+    }(SetterError);
+
+    var StringCastError = function (_CastError) {
+        _inherits(StringCastError, _CastError);
+
+        function StringCastError(setValue, originalValue, fieldSchema) {
+            _classCallCheck(this, StringCastError);
+
+            var errorMessage = 'String type cannot typecast Object or Array types.';
+
+            var _this3 = _possibleConstructorReturn(this, (StringCastError.__proto__ || Object.getPrototypeOf(StringCastError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
+
+            _this3.errorCode = 1001;
+            return _this3;
+        }
+
+        return StringCastError;
+    }(CastError);
+
+    var NumberCastError = function (_CastError2) {
+        _inherits(NumberCastError, _CastError2);
+
+        function NumberCastError(sourceType, setValue, originalValue, fieldSchema) {
+            _classCallCheck(this, NumberCastError);
+
+            var errorMessage = 'Number could not be typecast from the provided ' + sourceType;
+
+            var _this4 = _possibleConstructorReturn(this, (NumberCastError.__proto__ || Object.getPrototypeOf(NumberCastError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
+
+            _this4.errorCode = 1002;
+            return _this4;
+        }
+
+        return NumberCastError;
+    }(CastError);
+
+    var ArrayCastError = function (_CastError3) {
+        _inherits(ArrayCastError, _CastError3);
+
+        function ArrayCastError(setValue, originalValue, fieldSchema) {
+            _classCallCheck(this, ArrayCastError);
+
+            var errorMessage = 'Array type cannot typecast non-Array types.';
+
+            var _this5 = _possibleConstructorReturn(this, (ArrayCastError.__proto__ || Object.getPrototypeOf(ArrayCastError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
+
+            _this5.errorCode = 1003;
+            return _this5;
+        }
+
+        return ArrayCastError;
+    }(CastError);
+
+    var ObjectCastError = function (_CastError4) {
+        _inherits(ObjectCastError, _CastError4);
+
+        function ObjectCastError(setValue, originalValue, fieldSchema) {
+            _classCallCheck(this, ObjectCastError);
+
+            var errorMessage = 'Object type cannot typecast non-Object types.';
+
+            var _this6 = _possibleConstructorReturn(this, (ObjectCastError.__proto__ || Object.getPrototypeOf(ObjectCastError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
+
+            _this6.errorCode = 1004;
+            return _this6;
+        }
+
+        return ObjectCastError;
+    }(CastError);
+
+    var DateCastError = function (_CastError5) {
+        _inherits(DateCastError, _CastError5);
+
+        function DateCastError(setValue, originalValue, fieldSchema) {
+            _classCallCheck(this, DateCastError);
+
+            var errorMessage = 'Date type cannot typecast Array or Object types.';
+
+            var _this7 = _possibleConstructorReturn(this, (DateCastError.__proto__ || Object.getPrototypeOf(DateCastError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
+
+            _this7.errorCode = 1005;
+            return _this7;
+        }
+
+        return DateCastError;
+    }(CastError);
+
+    var StringValidationError = function (_ValidationError) {
+        _inherits(StringValidationError, _ValidationError);
+
+        function StringValidationError(errorMessage, setValue, originalValue, fieldSchema) {
+            _classCallCheck(this, StringValidationError);
+
+            var _this8 = _possibleConstructorReturn(this, (StringValidationError.__proto__ || Object.getPrototypeOf(StringValidationError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
+
+            _this8.errorCode = 2100;
+            return _this8;
+        }
+
+        return StringValidationError;
+    }(ValidationError);
+
+    var NumberValidationError = function (_ValidationError2) {
+        _inherits(NumberValidationError, _ValidationError2);
+
+        function NumberValidationError(errorMessage, setValue, originalValue, fieldSchema) {
+            _classCallCheck(this, NumberValidationError);
+
+            var _this9 = _possibleConstructorReturn(this, (NumberValidationError.__proto__ || Object.getPrototypeOf(NumberValidationError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
+
+            _this9.errorCode = 2200;
+            return _this9;
+        }
+
+        return NumberValidationError;
+    }(ValidationError);
+
+    var DateValidationError = function (_ValidationError3) {
+        _inherits(DateValidationError, _ValidationError3);
+
+        function DateValidationError(errorMessage, setValue, originalValue, fieldSchema) {
+            _classCallCheck(this, DateValidationError);
+
+            var _this10 = _possibleConstructorReturn(this, (DateValidationError.__proto__ || Object.getPrototypeOf(DateValidationError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
+
+            _this10.errorCode = 2300;
+            return _this10;
+        }
+
+        return DateValidationError;
+    }(ValidationError);
+
+    var StringEnumValidationError = function (_StringValidationErro) {
+        _inherits(StringEnumValidationError, _StringValidationErro);
+
+        function StringEnumValidationError(errorMessage, setValue, originalValue, fieldSchema) {
+            _classCallCheck(this, StringEnumValidationError);
+
+            errorMessage = errorMessage || 'String does not exist in enum list.';
+
+            var _this11 = _possibleConstructorReturn(this, (StringEnumValidationError.__proto__ || Object.getPrototypeOf(StringEnumValidationError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
+
+            _this11.errorCode = 2101;
+            return _this11;
+        }
+
+        return StringEnumValidationError;
+    }(StringValidationError);
+
+    var StringMinLengthValidationError = function (_StringValidationErro2) {
+        _inherits(StringMinLengthValidationError, _StringValidationErro2);
+
+        function StringMinLengthValidationError(errorMessage, setValue, originalValue, fieldSchema) {
+            _classCallCheck(this, StringMinLengthValidationError);
+
+            errorMessage = errorMessage || 'String length too short to meet minLength requirement.';
+
+            var _this12 = _possibleConstructorReturn(this, (StringMinLengthValidationError.__proto__ || Object.getPrototypeOf(StringMinLengthValidationError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
+
+            _this12.errorCode = 2102;
+            return _this12;
+        }
+
+        return StringMinLengthValidationError;
+    }(StringValidationError);
+
+    var StringMaxLengthValidationError = function (_StringValidationErro3) {
+        _inherits(StringMaxLengthValidationError, _StringValidationErro3);
+
+        function StringMaxLengthValidationError(errorMessage, setValue, originalValue, fieldSchema) {
+            _classCallCheck(this, StringMaxLengthValidationError);
+
+            errorMessage = errorMessage || 'String length too long to meet maxLength requirement.';
+
+            var _this13 = _possibleConstructorReturn(this, (StringMaxLengthValidationError.__proto__ || Object.getPrototypeOf(StringMaxLengthValidationError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
+
+            _this13.errorCode = 2103;
+            return _this13;
+        }
+
+        return StringMaxLengthValidationError;
+    }(StringValidationError);
+
+    var StringRegexValidationError = function (_StringValidationErro4) {
+        _inherits(StringRegexValidationError, _StringValidationErro4);
+
+        function StringRegexValidationError(errorMessage, setValue, originalValue, fieldSchema) {
+            _classCallCheck(this, StringRegexValidationError);
+
+            errorMessage = errorMessage || 'String does not match regular expression pattern.';
+
+            var _this14 = _possibleConstructorReturn(this, (StringRegexValidationError.__proto__ || Object.getPrototypeOf(StringRegexValidationError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
+
+            _this14.errorCode = 2104;
+            return _this14;
+        }
+
+        return StringRegexValidationError;
+    }(StringValidationError);
+
+    var NumberMinValidationError = function (_NumberValidationErro) {
+        _inherits(NumberMinValidationError, _NumberValidationErro);
+
+        function NumberMinValidationError(errorMessage, setValue, originalValue, fieldSchema) {
+            _classCallCheck(this, NumberMinValidationError);
+
+            errorMessage = errorMessage || 'Number is too small to meet min requirement.';
+
+            var _this15 = _possibleConstructorReturn(this, (NumberMinValidationError.__proto__ || Object.getPrototypeOf(NumberMinValidationError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
+
+            _this15.errorCode = 2201;
+            return _this15;
+        }
+
+        return NumberMinValidationError;
+    }(NumberValidationError);
+
+    var NumberMaxValidationError = function (_NumberValidationErro2) {
+        _inherits(NumberMaxValidationError, _NumberValidationErro2);
+
+        function NumberMaxValidationError(errorMessage, setValue, originalValue, fieldSchema) {
+            _classCallCheck(this, NumberMaxValidationError);
+
+            errorMessage = errorMessage || 'Number is too big to meet max requirement.';
+
+            var _this16 = _possibleConstructorReturn(this, (NumberMaxValidationError.__proto__ || Object.getPrototypeOf(NumberMaxValidationError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
+
+            _this16.errorCode = 2202;
+            return _this16;
+        }
+
+        return NumberMaxValidationError;
+    }(NumberValidationError);
+
+    var DateParseValidationError = function (_DateValidationError) {
+        _inherits(DateParseValidationError, _DateValidationError);
+
+        function DateParseValidationError(errorMessage, setValue, originalValue, fieldSchema) {
+            _classCallCheck(this, DateParseValidationError);
+
+            errorMessage = errorMessage || 'Could not parse date.';
+
+            var _this17 = _possibleConstructorReturn(this, (DateParseValidationError.__proto__ || Object.getPrototypeOf(DateParseValidationError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
+
+            _this17.errorCode = 2301;
+            return _this17;
+        }
+
+        return DateParseValidationError;
+    }(DateValidationError);
+
     // Returns typecasted value if possible. If rejected, originalValue is returned.
 
 
     function typecast(value, originalValue, properties) {
         var options = this[_privateKey]._options;
+        var customError = void 0;
 
         // Allow transform to manipulate raw properties.
         if (properties.transform) {
@@ -152,12 +434,22 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             return null;
         }
 
+        // Helper function designed to detect and handle usage of array-form custom error messages for validators
+        function detectCustomErrorMessage(key) {
+            if (_.isArray(properties[key])) {
+                customError = properties[key][1];
+                properties[key] = properties[key][0];
+            } else {
+                customError = undefined;
+            }
+        }
+
         // Property types are always normalized as lowercase strings despite shorthand definitions being available.
         switch (properties.type) {
             case 'string':
                 // Reject if object or array.
                 if (_.isObject(value) || _.isArray(value)) {
-                    throw new SetterError('String type cannot typecast Object or Array types.', value, originalValue, properties);
+                    throw new StringCastError(value, originalValue, properties);
                 }
 
                 // If index is being set with null or undefined, set value and end.
@@ -180,24 +472,39 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                     value = value.substr(0, properties.maxLength);
                 }
 
+                // Detect custom error message usage for enum (can't use function here as enum is expected to be an array)
+                if (_.isArray(properties.enum) && _.isArray(properties.enum[0])) {
+                    customError = properties.enum[1];
+                    properties.enum = properties.enum[0];
+                }
+
                 // If enum is being used, be sure the value is within definition.
                 if (_.isArray(properties.enum) && properties.enum.indexOf(value) === -1) {
-                    throw new SetterError('String does not exist in enum list.', value, originalValue, properties);
+                    throw new StringEnumValidationError(customError, value, originalValue, properties);
                 }
+
+                // Detect custom error message usage for minLength
+                detectCustomErrorMessage('minLength');
 
                 // If minLength is defined, check to be sure the string is > minLength.
                 if (properties.minLength !== undefined && value.length < properties.minLength) {
-                    throw new SetterError('String length too short to meet minLength requirement.', value, originalValue, properties);
+                    throw new StringMinLengthValidationError(customError, value, originalValue, properties);
                 }
+
+                // Detect custom error message usage for maxLength
+                detectCustomErrorMessage('maxLength');
 
                 // If maxLength is defined, check to be sure the string is < maxLength.
                 if (properties.maxLength !== undefined && value.length > properties.maxLength) {
-                    throw new SetterError('String length too long to meet maxLength requirement.', value, originalValue, properties);
+                    throw new StringMaxLengthValidationError(customError, value, originalValue, properties);
                 }
+
+                // Detect custom error message usage for maxLength
+                detectCustomErrorMessage('regex');
 
                 // If regex is defined, check to be sure the string matches the regex pattern.
                 if (properties.regex && !properties.regex.test(value)) {
-                    throw new SetterError('String does not match regular expression pattern.', value, originalValue, properties);
+                    throw new StringRegexValidationError(customError, value, originalValue, properties);
                 }
 
                 return value;
@@ -215,28 +522,43 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
                 // Remove comma from strings.
                 if (typeof value === 'string') {
-                    value = value.replace(/,/g, '');
+                    value = value.replace(new RegExp(options.numberGroupSeparator, 'g'), '');
+
+                    // Reject if string was not a valid number
+                    if (isNaN(Number(value))) {
+                        throw new NumberCastError('String', value, originalValue, properties);
+                    }
                 }
 
                 // Reject if array, object, or not numeric.
-                if (_.isArray(value) || _.isObject(value) || !isNumeric(value)) {
-                    throw new SetterError('Number type cannot typecast Array or Object types.', value, originalValue, properties);
+                if (_.isArray(value)) {
+                    throw new NumberCastError('Array', value, originalValue, properties);
+                } else if (_.isObject(value)) {
+                    throw new NumberCastError('Object', value, originalValue, properties);
+                } else if (!isNumeric(value)) {
+                    throw new NumberCastError('Non-numeric', value, originalValue, properties);
                 }
 
                 // Typecast to number.
-                value = value * 1;
+                value = Number(value);
 
                 // Transformation after typecasting but before validation and filters.
                 if (properties.numberTransform) {
                     value = properties.numberTransform.call(this[_privateKey]._root, value, originalValue, properties);
                 }
 
+                // Detect custom error message usage for min
+                detectCustomErrorMessage('min');
+
                 if (properties.min !== undefined && value < properties.min) {
-                    throw new SetterError('Number is too small to meet min requirement.', value, originalValue, properties);
+                    throw new NumberMinValidationError(customError, value, originalValue, properties);
                 }
 
+                // Detect custom error message usage for min
+                detectCustomErrorMessage('max');
+
                 if (properties.max !== undefined && value > properties.max) {
-                    throw new SetterError('Number is too big to meet max requirement.', value, originalValue, properties);
+                    throw new NumberMaxValidationError(customError, value, originalValue, properties);
                 }
 
                 return value;
@@ -254,11 +576,11 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
                 // If is Number, <0 is true and >0 is false.
                 if (isNumeric(value)) {
-                    return value * 1 > 0 ? true : false;
+                    return value * 1 > 0;
                 }
 
                 // Use Javascript to eval and return boolean.
-                value = value ? true : false;
+                value = !!value;
 
                 // Transformation after typecasting but before validation and filters.
                 if (properties.booleanTransform) {
@@ -275,7 +597,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
                 // Reject if not array.
                 if (!_.isArray(value)) {
-                    throw new SetterError('Array type cannot typecast non-Array types.', value, originalValue, properties);
+                    throw new ArrayCastError(value, originalValue, properties);
                 }
 
                 // Arrays are never set directly.
@@ -291,7 +613,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             case 'object':
                 // If it's not an Object, reject.
                 if (!_.isObject(value)) {
-                    throw new SetterError('Object type cannot typecast non-Object types.', value, originalValue, properties);
+                    throw new ObjectCastError(value, originalValue, properties);
                 }
 
                 // If object is schema object and an entirely new object was passed, clear values and set.
@@ -328,7 +650,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
                 // Reject if object, array or boolean.
                 if (!_.isDate(value) && !_.isString(value) && !_.isNumber(value)) {
-                    throw new SetterError('Date type cannot typecast Array or Object types.', value, originalValue, properties);
+                    throw new DateCastError(value, originalValue, properties);
                 }
 
                 // Attempt to parse string value with Date.parse (which returns number of milliseconds).
@@ -343,7 +665,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
                 // If the date couldn't be parsed, do not modify index.
                 if (value == 'Invalid Date' || !_.isDate(value)) {
-                    throw new SetterError('Could not parse date.', value, originalValue, properties);
+                    throw new DateParseValidationError(customError, value, originalValue, properties);
                 }
 
                 // Transformation after typecasting but before validation and filters.
@@ -463,40 +785,40 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
     // Defines getter for specific field.
     function defineGetter(index, properties) {
-        var _this = this;
+        var _this18 = this;
 
         // If the field type is an alias, we retrieve the value through the alias's index.
         var indexOrAliasIndex = properties.type === 'alias' ? properties.index : index;
 
         this.__defineGetter__(index, function () {
             // If accessing object or array, lazy initialize if not set.
-            if (!_this[_privateKey]._obj[indexOrAliasIndex] && (properties.type === 'object' || properties.type === 'array')) {
+            if (!_this18[_privateKey]._obj[indexOrAliasIndex] && (properties.type === 'object' || properties.type === 'array')) {
                 // Initialize object.
                 if (properties.type === 'object') {
                     if (properties.default !== undefined) {
-                        writeValue.call(_this[_privateKey]._this, _.isFunction(properties.default) ? properties.default.call(_this) : properties.default, properties);
+                        writeValue.call(_this18[_privateKey]._this, _.isFunction(properties.default) ? properties.default.call(_this18) : properties.default, properties);
                     } else {
-                        writeValue.call(_this[_privateKey]._this, properties.objectType ? new properties.objectType({}, _this[_privateKey]._root) : {}, properties);
+                        writeValue.call(_this18[_privateKey]._this, properties.objectType ? new properties.objectType({}, _this18[_privateKey]._root) : {}, properties);
                     }
 
                     // Native arrays are not used so that Array class can be extended with custom behaviors.
                 } else if (properties.type === 'array') {
-                    writeValue.call(_this[_privateKey]._this, new SchemaArray(_this, properties), properties);
+                    writeValue.call(_this18[_privateKey]._this, new SchemaArray(_this18, properties), properties);
                 }
             }
 
             try {
-                return getter.call(_this, _this[_privateKey]._obj[indexOrAliasIndex], properties);
+                return getter.call(_this18, _this18[_privateKey]._obj[indexOrAliasIndex], properties);
             } catch (error) {
                 // This typically happens when the default value isn't valid -- log error.
-                _this[_privateKey]._errors.push(error);
+                _this18[_privateKey]._errors.push(error);
             }
         });
     }
 
     // Defines setter for specific field.
     function defineSetter(index, properties) {
-        var _this2 = this;
+        var _this19 = this;
 
         this.__defineSetter__(index, function (value) {
             // Don't proceed if readOnly is true.
@@ -506,10 +828,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
             try {
                 // this[_privateKey]._this[index] is used instead of this[_privateKey]._obj[index] to route through the public interface.
-                writeValue.call(_this2[_privateKey]._this, typecast.call(_this2, value, _this2[_privateKey]._this[index], properties), properties);
+                writeValue.call(_this19[_privateKey]._this, typecast.call(_this19, value, _this19[_privateKey]._this[index], properties), properties);
             } catch (error) {
                 // Setter failed to validate value -- log error.
-                _this2[_privateKey]._errors.push(error);
+                _this19[_privateKey]._errors.push(error);
             }
         });
     }
@@ -545,9 +867,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             _classCallCheck(this, SchemaArray);
 
             // Store all internals.
-            var _this3 = _possibleConstructorReturn(this, (SchemaArray.__proto__ || Object.getPrototypeOf(SchemaArray)).call(this));
+            var _this20 = _possibleConstructorReturn(this, (SchemaArray.__proto__ || Object.getPrototypeOf(SchemaArray)).call(this));
 
-            var _private = _this3[_privateKey] = {};
+            var _private = _this20[_privateKey] = {};
 
             // Store reference to self.
             _private._self = self;
@@ -559,13 +881,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             if (properties.arrayType) {
                 properties.arrayType = normalizeProperties.call(self, properties.arrayType);
             }
-            return _this3;
+            return _this20;
         }
 
         _createClass(SchemaArray, [{
             key: 'push',
             value: function push() {
-                var _this4 = this;
+                var _this21 = this;
 
                 // Values are passed through the typecast before being allowed onto the array if arrayType is set.
                 // In the case of rejection, the typecast returns undefined, which is not appended to the array.
@@ -577,7 +899,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
                 if (this[_privateKey]._properties.arrayType) {
                     values = [].map.call(args, function (value) {
-                        return typecast.call(_this4[_privateKey]._self, value, undefined, _this4[_privateKey]._properties.arrayType);
+                        return typecast.call(_this21[_privateKey]._self, value, undefined, _this21[_privateKey]._properties.arrayType);
                     }, this);
                 } else {
                     values = args;
@@ -586,7 +908,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 // Enforce filter.
                 if (this[_privateKey]._properties.filter) {
                     values = _.filter(values, function (value) {
-                        return _this4[_privateKey]._properties.filter.call(_this4, value);
+                        return _this21[_privateKey]._properties.filter.call(_this21, value);
                     });
                 }
 
@@ -700,7 +1022,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             inheritRootThis: false,
 
             // If this is set to false, require will not allow falsy values such as empty strings
-            allowFalsyValues: true
+            allowFalsyValues: true,
+
+            // This defines the digit group separator used for parsing numbers, it defaults to ','
+            // For example 3,043,2013.01
+            numberGroupSeparator: ','
+
         }, options);
 
         // Some of the options require reflection.
@@ -744,7 +1071,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 };
 
                 // Call custom constructor.
-                method.apply(obj, arguments);;
+                method.apply(obj, arguments);
 
                 // Cleanup and return SO.
                 delete obj[_privateKey]._reservedFields.super;
@@ -797,11 +1124,11 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                                         // Extend method by creating a binding that takes the `this` context given and adds `self`.
                                         // `self` is a reference to the original method, also bound to the correct `this`.
                                         mergedOptions[methodHome][name] = function () {
-                                            var _this5 = this,
+                                            var _this22 = this,
                                                 _arguments = arguments;
 
                                             this[_privateKey]._reservedFields.super = function () {
-                                                return method.apply(_this5, _arguments);
+                                                return method.apply(_this22, _arguments);
                                             };
                                             var ret = extendOptions[methodHome][name].apply(this, arguments);
                                             delete this[_privateKey]._reservedFields.super;
@@ -838,7 +1165,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             }]);
 
             function SchemaObjectInstance(values, _root) {
-                var _this6 = this;
+                var _this23 = this;
 
                 _classCallCheck(this, SchemaObjectInstance);
 
@@ -872,7 +1199,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
                 // Normalize schema properties to allow for shorthand declarations.
                 _.each(schema, function (properties, index) {
-                    schema[index] = normalizeProperties.call(_this6, properties, index);
+                    schema[index] = normalizeProperties.call(_this23, properties, index);
                 });
 
                 // Define getters/typecasts based off of schema.
@@ -889,12 +1216,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                     var proxy = this[_privateKey]._this = new Proxy(this, {
                         // Ensure only public keys are shown.
                         ownKeys: function ownKeys(target) {
-                            return Object.keys(_this6.toObject());
+                            return Object.keys(_this23.toObject());
                         },
 
                         // Return keys to iterate.
                         enumerate: function enumerate(target) {
-                            return Object.keys(_this6[_privateKey]._this)[Symbol.iterator]();
+                            return Object.keys(_this23[_privateKey]._this)[Symbol.iterator]();
                         },
 
                         // Check to see if key exists.
@@ -921,28 +1248,28 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                         get: function get(target, name, receiver) {
                             // First check to see if it's a reserved field.
                             if (_reservedFields.includes(name)) {
-                                return _this6[_privateKey]._reservedFields[name];
+                                return _this23[_privateKey]._reservedFields[name];
                             }
 
                             // Support dot notation via lodash.
                             if (options.dotNotation && name.indexOf('.') !== -1) {
-                                return _.get(_this6[_privateKey]._this, name);
+                                return _.get(_this23[_privateKey]._this, name);
                             }
 
                             // Use registered getter without hitting the proxy to avoid creating an infinite loop.
-                            return _this6[name];
+                            return _this23[name];
                         },
 
                         // Intercept all set calls.
                         set: function set(target, name, value, receiver) {
                             // Support dot notation via lodash.
                             if (options.dotNotation && name.indexOf('.') !== -1) {
-                                return _.set(_this6[_privateKey]._this, name, value);
+                                return _.set(_this23[_privateKey]._this, name, value);
                             }
 
                             // Find real keyname if case sensitivity is off.
                             if (options.keysIgnoreCase && !schema[name]) {
-                                name = getIndex.call(_this6, name);
+                                name = getIndex.call(_this23, name);
                             }
 
                             if (!schema[name]) {
@@ -953,14 +1280,14 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                                 } else {
                                     // Add index to schema dynamically when value is set.
                                     // This is necessary for toObject to see the field.
-                                    addToSchema.call(_this6, name, {
+                                    addToSchema.call(_this23, name, {
                                         type: 'any'
                                     });
                                 }
                             }
 
                             // This hits the registered setter but bypasses the proxy to avoid an infinite loop.
-                            _this6[name] = value;
+                            _this23[name] = value;
 
                             // Necessary for Node v6.0. Prevents error: 'set' on proxy: trap returned falsish for property 'string'".
                             return true;
@@ -968,7 +1295,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
                         // Intercept all delete calls.
                         deleteProperty: function deleteProperty(target, property) {
-                            _this6[property] = undefined;
+                            _this23[property] = undefined;
                             return true;
                         }
                     });
@@ -980,7 +1307,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                         // Temporarily ensure readOnly is turned off to prevent the set from failing.
                         var readOnly = properties.readOnly;
                         properties.readOnly = false;
-                        _this6[index] = _.isFunction(properties.default) ? properties.default.call(_this6) : properties.default;
+                        _this23[index] = _.isFunction(properties.default) ? properties.default.call(_this23) : properties.default;
                         properties.readOnly = readOnly;
                     }
                 });
@@ -1016,7 +1343,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             }, {
                 key: 'toObject',
                 value: function toObject() {
-                    var _this7 = this;
+                    var _this24 = this;
 
                     var options = this[_privateKey]._options;
                     var getObj = {};
@@ -1029,7 +1356,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                         }
 
                         // Fetch value through the public interface.
-                        var value = _this7[_privateKey]._this[index];
+                        var value = _this24[_privateKey]._this[index];
 
                         // Do not write undefined values to the object because of strange behavior when using with MongoDB.
                         // MongoDB will convert undefined to null and overwrite existing values in that field.
@@ -1085,10 +1412,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             }, {
                 key: 'clear',
                 value: function clear() {
-                    var _this8 = this;
+                    var _this25 = this;
 
                     _.each(this[_privateKey]._schema, function (properties, index) {
-                        clearField.call(_this8[_privateKey]._this, index, properties);
+                        clearField.call(_this25[_privateKey]._this, index, properties);
                     });
                 }
 
@@ -1097,7 +1424,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             }, {
                 key: 'getErrors',
                 value: function getErrors() {
-                    var _this9 = this;
+                    var _this26 = this;
 
                     var errors = [];
                     var _iteratorNormalCompletion2 = true;
@@ -1141,17 +1468,17 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                             return;
                         }
                         //Skip if required is a function, but returns false
-                        else if (typeof required === 'function' && !required.call(_this9)) {
+                        else if (typeof required === 'function' && !required.call(_this26)) {
                                 return;
                             }
 
                         //Skip if property has a value, is a boolean set to false, or if it's falsy and falsy values are allowed
-                        if (_this9[index] || typeof _this9[index] === 'boolean' || _this9[_privateKey]._options.allowFalsyValues && _this9[index] !== undefined) {
+                        if (_this26[index] || typeof _this26[index] === 'boolean' || _this26[_privateKey]._options.allowFalsyValues && _this26[index] !== undefined) {
                             return;
                         }
 
-                        var error = new SetterError(message, _this9[index], _this9[index], properties);
-                        error.schemaObject = _this9;
+                        var error = new SetterError(message, _this26[index], _this26[index], properties);
+                        error.schemaObject = _this26;
                         errors.push(error);
                     });
 
