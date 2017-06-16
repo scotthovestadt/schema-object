@@ -637,17 +637,17 @@ profile.clearErrors();
 
 Each error type has an error code. Here is a map of them, however this may be out of date if someone adds an error without updating this list.
 
-* [1000] Setter Error
-  * [1100] Cast Error
-    * [1101] String Cast Error
-    * [1102] Number Cast Error
-    * [1103] Array Cast Error
-    * [1104] Object Cast Error
-    * [1105] Date Cast Error
-  * [1200] Validation Error
-    * [1210] String Validation Error
-      * [1211] String Enum Validation Error
-      * [1212] String Min Length Validation Error
+* [1000] SetterError
+  * [1100] CastError
+    * [1101] StringCastError
+    * [1102] NumberCastError
+    * [1103] ArrayCastError
+    * [1104] ObjectCastError
+    * [1105] DateCastError
+  * [1200] ValidationError
+    * [1210] StringValidationError
+      * [1211] StringEnumValidationError
+      * [1212] StringMinLengthValidationError
       * [1213] StringMaxLengthValidationError
       * [1214] StringRegexValidationError
     * [1220] NumberValidationError
