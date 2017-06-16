@@ -126,15 +126,33 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     }
 
     // Represents an error encountered when trying to set a value.
+    // Code 1xxx
 
-    var SetterError = function SetterError(errorMessage, setValue, originalValue, fieldSchema) {
-        _classCallCheck(this, SetterError);
+    var SetterError = function () {
+        function SetterError(errorMessage, setValue, originalValue, fieldSchema) {
+            _classCallCheck(this, SetterError);
 
-        this.errorMessage = errorMessage;
-        this.setValue = setValue;
-        this.originalValue = originalValue;
-        this.fieldSchema = fieldSchema;
-    };
+            this.errorMessage = errorMessage;
+            this.setValue = setValue;
+            this.originalValue = originalValue;
+            this.fieldSchema = fieldSchema;
+            this.errorCode = this.constructor.errorCode();
+        }
+
+        _createClass(SetterError, null, [{
+            key: 'errorCode',
+            value: function errorCode() {
+                return 1000;
+            }
+        }]);
+
+        return SetterError;
+    }();
+
+    // Cast Error Base
+    // Thrown when a value cannot be cast to the type specified by the schema
+    // Code 11xx
+
 
     var CastError = function (_SetterError) {
         _inherits(CastError, _SetterError);
@@ -145,27 +163,17 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             var _this = _possibleConstructorReturn(this, (CastError.__proto__ || Object.getPrototypeOf(CastError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
 
             _this.errorType = 'CastError';
-            _this.errorCode = 1000;
             return _this;
         }
 
+        _createClass(CastError, null, [{
+            key: 'errorCode',
+            value: function errorCode() {
+                return 1100;
+            }
+        }]);
+
         return CastError;
-    }(SetterError);
-
-    var ValidationError = function (_SetterError2) {
-        _inherits(ValidationError, _SetterError2);
-
-        function ValidationError(errorMessage, setValue, originalValue, fieldSchema) {
-            _classCallCheck(this, ValidationError);
-
-            var _this2 = _possibleConstructorReturn(this, (ValidationError.__proto__ || Object.getPrototypeOf(ValidationError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
-
-            _this2.errorType = 'ValidationError';
-            _this2.errorCode = 2000;
-            return _this2;
-        }
-
-        return ValidationError;
     }(SetterError);
 
     var StringCastError = function (_CastError) {
@@ -175,12 +183,15 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             _classCallCheck(this, StringCastError);
 
             var errorMessage = 'String type cannot typecast Object or Array types.';
-
-            var _this3 = _possibleConstructorReturn(this, (StringCastError.__proto__ || Object.getPrototypeOf(StringCastError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
-
-            _this3.errorCode = 1001;
-            return _this3;
+            return _possibleConstructorReturn(this, (StringCastError.__proto__ || Object.getPrototypeOf(StringCastError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
         }
+
+        _createClass(StringCastError, null, [{
+            key: 'errorCode',
+            value: function errorCode() {
+                return 1101;
+            }
+        }]);
 
         return StringCastError;
     }(CastError);
@@ -192,12 +203,15 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             _classCallCheck(this, NumberCastError);
 
             var errorMessage = 'Number could not be typecast from the provided ' + sourceType;
-
-            var _this4 = _possibleConstructorReturn(this, (NumberCastError.__proto__ || Object.getPrototypeOf(NumberCastError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
-
-            _this4.errorCode = 1002;
-            return _this4;
+            return _possibleConstructorReturn(this, (NumberCastError.__proto__ || Object.getPrototypeOf(NumberCastError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
         }
+
+        _createClass(NumberCastError, null, [{
+            key: 'errorCode',
+            value: function errorCode() {
+                return 1102;
+            }
+        }]);
 
         return NumberCastError;
     }(CastError);
@@ -209,12 +223,15 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             _classCallCheck(this, ArrayCastError);
 
             var errorMessage = 'Array type cannot typecast non-Array types.';
-
-            var _this5 = _possibleConstructorReturn(this, (ArrayCastError.__proto__ || Object.getPrototypeOf(ArrayCastError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
-
-            _this5.errorCode = 1003;
-            return _this5;
+            return _possibleConstructorReturn(this, (ArrayCastError.__proto__ || Object.getPrototypeOf(ArrayCastError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
         }
+
+        _createClass(ArrayCastError, null, [{
+            key: 'errorCode',
+            value: function errorCode() {
+                return 1103;
+            }
+        }]);
 
         return ArrayCastError;
     }(CastError);
@@ -226,12 +243,15 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             _classCallCheck(this, ObjectCastError);
 
             var errorMessage = 'Object type cannot typecast non-Object types.';
-
-            var _this6 = _possibleConstructorReturn(this, (ObjectCastError.__proto__ || Object.getPrototypeOf(ObjectCastError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
-
-            _this6.errorCode = 1004;
-            return _this6;
+            return _possibleConstructorReturn(this, (ObjectCastError.__proto__ || Object.getPrototypeOf(ObjectCastError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
         }
+
+        _createClass(ObjectCastError, null, [{
+            key: 'errorCode',
+            value: function errorCode() {
+                return 1104;
+            }
+        }]);
 
         return ObjectCastError;
     }(CastError);
@@ -243,15 +263,50 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             _classCallCheck(this, DateCastError);
 
             var errorMessage = 'Date type cannot typecast Array or Object types.';
-
-            var _this7 = _possibleConstructorReturn(this, (DateCastError.__proto__ || Object.getPrototypeOf(DateCastError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
-
-            _this7.errorCode = 1005;
-            return _this7;
+            return _possibleConstructorReturn(this, (DateCastError.__proto__ || Object.getPrototypeOf(DateCastError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
         }
+
+        _createClass(DateCastError, null, [{
+            key: 'errorCode',
+            value: function errorCode() {
+                return 1105;
+            }
+        }]);
 
         return DateCastError;
     }(CastError);
+
+    // Validation error base
+    // Thrown when a value does not meet the validation criteria set by the schema
+    // Code 12xx
+
+
+    var ValidationError = function (_SetterError2) {
+        _inherits(ValidationError, _SetterError2);
+
+        function ValidationError(errorMessage, setValue, originalValue, fieldSchema) {
+            _classCallCheck(this, ValidationError);
+
+            var _this7 = _possibleConstructorReturn(this, (ValidationError.__proto__ || Object.getPrototypeOf(ValidationError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
+
+            _this7.errorType = 'ValidationError';
+            return _this7;
+        }
+
+        _createClass(ValidationError, null, [{
+            key: 'errorCode',
+            value: function errorCode() {
+                return 1200;
+            }
+        }]);
+
+        return ValidationError;
+    }(SetterError);
+
+    /**
+     * String Validation Errors
+     * Codes 121x
+     */
 
     var StringValidationError = function (_ValidationError) {
         _inherits(StringValidationError, _ValidationError);
@@ -259,43 +314,17 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         function StringValidationError(errorMessage, setValue, originalValue, fieldSchema) {
             _classCallCheck(this, StringValidationError);
 
-            var _this8 = _possibleConstructorReturn(this, (StringValidationError.__proto__ || Object.getPrototypeOf(StringValidationError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
-
-            _this8.errorCode = 2100;
-            return _this8;
+            return _possibleConstructorReturn(this, (StringValidationError.__proto__ || Object.getPrototypeOf(StringValidationError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
         }
+
+        _createClass(StringValidationError, null, [{
+            key: 'errorCode',
+            value: function errorCode() {
+                return 1210;
+            }
+        }]);
 
         return StringValidationError;
-    }(ValidationError);
-
-    var NumberValidationError = function (_ValidationError2) {
-        _inherits(NumberValidationError, _ValidationError2);
-
-        function NumberValidationError(errorMessage, setValue, originalValue, fieldSchema) {
-            _classCallCheck(this, NumberValidationError);
-
-            var _this9 = _possibleConstructorReturn(this, (NumberValidationError.__proto__ || Object.getPrototypeOf(NumberValidationError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
-
-            _this9.errorCode = 2200;
-            return _this9;
-        }
-
-        return NumberValidationError;
-    }(ValidationError);
-
-    var DateValidationError = function (_ValidationError3) {
-        _inherits(DateValidationError, _ValidationError3);
-
-        function DateValidationError(errorMessage, setValue, originalValue, fieldSchema) {
-            _classCallCheck(this, DateValidationError);
-
-            var _this10 = _possibleConstructorReturn(this, (DateValidationError.__proto__ || Object.getPrototypeOf(DateValidationError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
-
-            _this10.errorCode = 2300;
-            return _this10;
-        }
-
-        return DateValidationError;
     }(ValidationError);
 
     var StringEnumValidationError = function (_StringValidationErro) {
@@ -305,12 +334,15 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             _classCallCheck(this, StringEnumValidationError);
 
             errorMessage = errorMessage || 'String does not exist in enum list.';
-
-            var _this11 = _possibleConstructorReturn(this, (StringEnumValidationError.__proto__ || Object.getPrototypeOf(StringEnumValidationError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
-
-            _this11.errorCode = 2101;
-            return _this11;
+            return _possibleConstructorReturn(this, (StringEnumValidationError.__proto__ || Object.getPrototypeOf(StringEnumValidationError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
         }
+
+        _createClass(StringEnumValidationError, null, [{
+            key: 'errorCode',
+            value: function errorCode() {
+                return 1211;
+            }
+        }]);
 
         return StringEnumValidationError;
     }(StringValidationError);
@@ -322,12 +354,15 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             _classCallCheck(this, StringMinLengthValidationError);
 
             errorMessage = errorMessage || 'String length too short to meet minLength requirement.';
-
-            var _this12 = _possibleConstructorReturn(this, (StringMinLengthValidationError.__proto__ || Object.getPrototypeOf(StringMinLengthValidationError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
-
-            _this12.errorCode = 2102;
-            return _this12;
+            return _possibleConstructorReturn(this, (StringMinLengthValidationError.__proto__ || Object.getPrototypeOf(StringMinLengthValidationError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
         }
+
+        _createClass(StringMinLengthValidationError, null, [{
+            key: 'errorCode',
+            value: function errorCode() {
+                return 1212;
+            }
+        }]);
 
         return StringMinLengthValidationError;
     }(StringValidationError);
@@ -339,12 +374,15 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             _classCallCheck(this, StringMaxLengthValidationError);
 
             errorMessage = errorMessage || 'String length too long to meet maxLength requirement.';
-
-            var _this13 = _possibleConstructorReturn(this, (StringMaxLengthValidationError.__proto__ || Object.getPrototypeOf(StringMaxLengthValidationError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
-
-            _this13.errorCode = 2103;
-            return _this13;
+            return _possibleConstructorReturn(this, (StringMaxLengthValidationError.__proto__ || Object.getPrototypeOf(StringMaxLengthValidationError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
         }
+
+        _createClass(StringMaxLengthValidationError, null, [{
+            key: 'errorCode',
+            value: function errorCode() {
+                return 1213;
+            }
+        }]);
 
         return StringMaxLengthValidationError;
     }(StringValidationError);
@@ -356,15 +394,42 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             _classCallCheck(this, StringRegexValidationError);
 
             errorMessage = errorMessage || 'String does not match regular expression pattern.';
-
-            var _this14 = _possibleConstructorReturn(this, (StringRegexValidationError.__proto__ || Object.getPrototypeOf(StringRegexValidationError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
-
-            _this14.errorCode = 2104;
-            return _this14;
+            return _possibleConstructorReturn(this, (StringRegexValidationError.__proto__ || Object.getPrototypeOf(StringRegexValidationError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
         }
+
+        _createClass(StringRegexValidationError, null, [{
+            key: 'errorCode',
+            value: function errorCode() {
+                return 1214;
+            }
+        }]);
 
         return StringRegexValidationError;
     }(StringValidationError);
+
+    /**
+     * Number Validation Errors
+     * Codes 122x
+     */
+
+    var NumberValidationError = function (_ValidationError2) {
+        _inherits(NumberValidationError, _ValidationError2);
+
+        function NumberValidationError(errorMessage, setValue, originalValue, fieldSchema) {
+            _classCallCheck(this, NumberValidationError);
+
+            return _possibleConstructorReturn(this, (NumberValidationError.__proto__ || Object.getPrototypeOf(NumberValidationError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
+        }
+
+        _createClass(NumberValidationError, null, [{
+            key: 'errorCode',
+            value: function errorCode() {
+                return 1220;
+            }
+        }]);
+
+        return NumberValidationError;
+    }(ValidationError);
 
     var NumberMinValidationError = function (_NumberValidationErro) {
         _inherits(NumberMinValidationError, _NumberValidationErro);
@@ -373,12 +438,15 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             _classCallCheck(this, NumberMinValidationError);
 
             errorMessage = errorMessage || 'Number is too small to meet min requirement.';
-
-            var _this15 = _possibleConstructorReturn(this, (NumberMinValidationError.__proto__ || Object.getPrototypeOf(NumberMinValidationError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
-
-            _this15.errorCode = 2201;
-            return _this15;
+            return _possibleConstructorReturn(this, (NumberMinValidationError.__proto__ || Object.getPrototypeOf(NumberMinValidationError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
         }
+
+        _createClass(NumberMinValidationError, null, [{
+            key: 'errorCode',
+            value: function errorCode() {
+                return 1221;
+            }
+        }]);
 
         return NumberMinValidationError;
     }(NumberValidationError);
@@ -390,15 +458,42 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             _classCallCheck(this, NumberMaxValidationError);
 
             errorMessage = errorMessage || 'Number is too big to meet max requirement.';
-
-            var _this16 = _possibleConstructorReturn(this, (NumberMaxValidationError.__proto__ || Object.getPrototypeOf(NumberMaxValidationError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
-
-            _this16.errorCode = 2202;
-            return _this16;
+            return _possibleConstructorReturn(this, (NumberMaxValidationError.__proto__ || Object.getPrototypeOf(NumberMaxValidationError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
         }
+
+        _createClass(NumberMaxValidationError, null, [{
+            key: 'errorCode',
+            value: function errorCode() {
+                return 1222;
+            }
+        }]);
 
         return NumberMaxValidationError;
     }(NumberValidationError);
+
+    /**
+     * Date Validation Errors
+     * Codes 123x
+     */
+
+    var DateValidationError = function (_ValidationError3) {
+        _inherits(DateValidationError, _ValidationError3);
+
+        function DateValidationError(errorMessage, setValue, originalValue, fieldSchema) {
+            _classCallCheck(this, DateValidationError);
+
+            return _possibleConstructorReturn(this, (DateValidationError.__proto__ || Object.getPrototypeOf(DateValidationError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
+        }
+
+        _createClass(DateValidationError, null, [{
+            key: 'errorCode',
+            value: function errorCode() {
+                return 1230;
+            }
+        }]);
+
+        return DateValidationError;
+    }(ValidationError);
 
     var DateParseValidationError = function (_DateValidationError) {
         _inherits(DateParseValidationError, _DateValidationError);
@@ -407,12 +502,15 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             _classCallCheck(this, DateParseValidationError);
 
             errorMessage = errorMessage || 'Could not parse date.';
-
-            var _this17 = _possibleConstructorReturn(this, (DateParseValidationError.__proto__ || Object.getPrototypeOf(DateParseValidationError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
-
-            _this17.errorCode = 2301;
-            return _this17;
+            return _possibleConstructorReturn(this, (DateParseValidationError.__proto__ || Object.getPrototypeOf(DateParseValidationError)).call(this, errorMessage, setValue, originalValue, fieldSchema));
         }
+
+        _createClass(DateParseValidationError, null, [{
+            key: 'errorCode',
+            value: function errorCode() {
+                return 1231;
+            }
+        }]);
 
         return DateParseValidationError;
     }(DateValidationError);
@@ -520,9 +618,17 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                     value = value ? 1 : 0;
                 }
 
-                // Remove comma from strings.
+                // Remove/convert number group separators
                 if (typeof value === 'string') {
-                    value = value.replace(new RegExp(options.numberGroupSeparator, 'g'), '');
+                    if (options.useDecimalNumberGroupSeparator) {
+                        // Remove decimals
+                        value = value.replace(/\./g, '');
+                        // Replace commas with decimals for js parsing
+                        value = value.replace(/,/g, '.');
+                    } else {
+                        //Remove commas
+                        value = value.replace(/,/g, '');
+                    }
 
                     // Reject if string was not a valid number
                     if (isNaN(Number(value))) {
@@ -1025,8 +1131,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             allowFalsyValues: true,
 
             // This defines the digit group separator used for parsing numbers, it defaults to ','
-            // For example 3,043,2013.01
-            numberGroupSeparator: ','
+            // For example 3,043,201.01. However if enabled it swaps commas and decimals to allow parsing
+            // numbers like 3.043.201,01
+            useDecimalNumberGroupSeparator: false
 
         }, options);
 

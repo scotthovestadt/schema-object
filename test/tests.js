@@ -825,15 +825,71 @@ describe('String', function () {
     });
 
     describe('regex', function () {
-        var SO = new SchemaObject({
-            string: {
-                type: String,
-                regex: new RegExp('^([A-Z]{4})$')
-            }
+        it('should only allow values that match regex ^([A-Z]{4})$', function () {
+            var SO = new SchemaObject({
+                string: {
+                    type: String,
+                    regex: new RegExp('^([A-Z]{4})$')
+                }
+            });
+
+            var o = new SO();
+
+            o.string = 'ABCD';
+            o.string.should.equal('ABCD');
+
+            o.string = '1234';
+            o.string.should.equal('ABCD');
         });
 
-        it('should only allow values that match regex ^([A-Z]{4})$', function () {
+        it('should handle default errors', function () {
+            var SO = new SchemaObject({
+                string: {
+                    type: String,
+                    regex: new RegExp('^([A-Z]{4})$')
+                }
+            });
+
             var o = new SO();
+
+            o.string = 'abcd';
+            should.not.exist(o.string);
+
+            var errors = o.getErrors();
+            should.exist(errors);
+            errors.length.should.equal(1);
+            errors[0].errorMessage.should.equal('String does not match regular expression pattern.');
+            errors[0].errorCode.should.equal(1214);
+            errors[0].errorType.should.equal('ValidationError');
+
+            o.string = 'ABCD';
+            o.string.should.equal('ABCD');
+
+            o.string = '1234';
+            o.string.should.equal('ABCD');
+        });
+
+        it('should handle custom errors', function () {
+            var SO = new SchemaObject({
+                string: {
+                    type: String,
+                    regex: [new RegExp('^([A-Z]{4})$'), 'This can only contain capital letters A-Z, and must be 4' +
+                        ' characters long']
+                }
+            });
+
+            var o = new SO();
+
+            o.string = 'abcd';
+            should.not.exist(o.string);
+
+            var errors = o.getErrors();
+            should.exist(errors);
+            errors.length.should.equal(1);
+            errors[0].errorMessage.should.equal('This can only contain capital letters A-Z, and must be 4 characters' +
+                ' long');
+            errors[0].errorCode.should.equal(1214);
+            errors[0].errorType.should.equal('ValidationError');
 
             o.string = 'ABCD';
             o.string.should.equal('ABCD');
@@ -892,6 +948,29 @@ describe('String', function () {
 
             o.string.should.equal('allowed');
         });
+
+        it('should handle custom error', function () {
+            var SO = new SchemaObject({
+                string: {
+                    type: String,
+                    enum: [
+                        ['a', 'b'],
+                        'Must be a or b'
+                    ]
+                }
+            });
+            var o = new SO({
+                string: 'c'
+            });
+
+            should.not.exist(o.string);
+            var errors = o.getErrors();
+            errors.length.should.equal(1);
+            errors[0].errorMessage.should.equal('Must be a or b');
+            errors[0].errorCode.should.equal(1211);
+
+            o.isErrors().should.equal(true);
+        });
     });
 
     describe('stringTransform', function () {
@@ -946,36 +1025,80 @@ describe('String', function () {
     });
 
     describe('minLength', function () {
-        var SO = new SchemaObject({
-            notEmptyString: {
-                type: String,
-                minLength: 1
-            }
-        });
-
         it('should not allow empty strings', function () {
+            var SO = new SchemaObject({
+                notEmptyString: {
+                    type: String,
+                    minLength: 1
+                }
+            });
+
             var o = new SO();
             o.notEmptyString = '';
             should.not.exist(o.notEmptyString);
+
+            var errors = o.getErrors();
+            errors.length.should.equal(1);
+            errors[0].errorType.should.equal('ValidationError');
+            errors[0].errorCode.should.equal(1212);
+
             o.notEmptyString = '1';
             o.notEmptyString.should.equal('1');
+        });
+
+        it('should allow custom error message', function () {
+            var SO = new SchemaObject({
+                notEmptyString: {
+                    type: String,
+                    minLength: [1, 'notEmptyString cannot be empty']
+                }
+            });
+
+            var o = new SO();
+            o.notEmptyString = '';
+            should.not.exist(o.notEmptyString);
+
+            var errors = o.getErrors();
+            errors.length.should.equal(1);
+            errors[0].errorMessage.should.equal('notEmptyString cannot be empty');
+            errors[0].errorType.should.equal('ValidationError');
+            errors[0].errorCode.should.equal(1212);
         });
     });
 
     describe('maxLength', function () {
-        var SO = new SchemaObject({
-            shortString: {
-                type: String,
-                maxLength: 5
-            }
-        });
+       it('should allow a max of 5 characters', function () {
+            var SO = new SchemaObject({
+                shortString: {
+                    type: String,
+                    maxLength: 5
+                }
+            });
 
-        it('should allow a max of 5 characters', function () {
             var o = new SO();
             o.shortString = '123456';
             should.not.exist(o.shortString);
             o.shortString = '1';
             o.shortString.should.equal('1');
+        });
+
+        it('should allow custom error message', function () {
+            var SO = new SchemaObject({
+                shortString: {
+                    type: String,
+                    maxLength: [5, 'shortString cannot be longer than 5 characters']
+                }
+            });
+
+            var o = new SO();
+            o.shortString = '123456';
+            should.not.exist(o.shortString);
+
+            var errors = o.getErrors();
+            errors.length.should.equal(1);
+            errors[0].errorMessage.should.equal('shortString cannot be longer than 5 characters');
+            errors[0].errorType.should.equal('ValidationError');
+            errors[0].errorCode.should.equal(1213);
         });
     });
 
@@ -1016,17 +1139,61 @@ describe('Number', function () {
 
             o.number = o.number + 1;
             o.number.should.equal(124);
+
+            o.number = 'a';
+            o.number.should.equal(124);
+
+            var errors = o.getErrors();
+            errors.length.should.equal(1);
+            errors[0].errorMessage.should.equal('Number could not be typecast from the provided String');
+            errors[0].errorType.should.equal('CastError');
+            errors[0].errorCode.should.equal(1102);
         });
 
-        it('should typecast string with comma to number', function () {
+        it('should typecast string with comma digit group separator to number', function () {
             var o = new SO();
 
-            o.number = '123,988,123';
+            o.number = '123,988,123.01';
             o.number.should.be.a.Number;
-            o.number.should.equal(123988123);
+            o.number.should.equal(123988123.01);
 
             o.number = o.number + 1;
-            o.number.should.equal(123988124);
+            o.number.should.equal(123988124.01);
+        });
+
+        it('should fail to typecast string with decimal digit group separator to number', function () {
+            var o = new SO();
+
+            o.number = '123.988.123,01';
+            should.not.exist(o.number);
+
+            var errors = o.getErrors();
+            errors.length.should.equal(1);
+            errors[0].errorMessage.should.equal('Number could not be typecast from the provided String');
+            errors[0].errorType.should.equal('CastError');
+            errors[0].errorCode.should.equal(1102);
+        });
+
+        it('should typecast string with period digit group separator to number if option enabled', function () {
+            SO = new SchemaObject({
+                number: Number,
+                minMax: {
+                    type: Number,
+                    min: 100,
+                    max: 200
+                }
+            }, {
+                useDecimalNumberGroupSeparator: true
+            });
+
+            var o = new SO();
+
+            o.number = '123.988.123,01';
+            o.number.should.be.a.Number;
+            o.number.should.equal(123988123.01);
+
+            o.number = o.number + 1;
+            o.number.should.equal(123988124.01);
         });
 
         it('should typecast boolean to number', function () {
@@ -1115,6 +1282,87 @@ describe('Number', function () {
 
             o.number = null;
             should.not.exist(o.date);
+        });
+    });
+
+    describe('Errors', function () {
+        var SOD = new SchemaObject({
+            number: {
+                type: Number,
+                min: 5,
+                max: 6
+            }
+        });
+
+        var SOC = new SchemaObject({
+            number: {
+                type: Number,
+                min: [5, 'number cannot be smaller than 5'],
+                max: [6, 'number cannot be larger than 6']
+            }
+        });
+
+        it('should return default min error', function () {
+            var o = new SOD({
+                number: 1
+            });
+            var errors = o.getErrors();
+            errors.length.should.equal(1);
+
+            errors[0].errorMessage.should.equal('Number is too small to meet min requirement.');
+            errors[0].errorType.should.equal('ValidationError');
+            errors[0].errorCode.should.equal(1221);
+        });
+
+        it('should return custom min error', function () {
+            var o = new SOC({
+                number: 1
+            });
+            var errors = o.getErrors();
+            errors.length.should.equal(1);
+
+            errors[0].errorMessage.should.equal('number cannot be smaller than 5');
+            errors[0].errorType.should.equal('ValidationError');
+            errors[0].errorCode.should.equal(1221);
+        });
+
+        it('should return default max error', function () {
+            var o = new SOD({
+                number: 7
+            });
+            var errors = o.getErrors();
+            errors.length.should.equal(1);
+
+            errors[0].errorMessage.should.equal('Number is too big to meet max requirement.');
+            errors[0].errorType.should.equal('ValidationError');
+            errors[0].errorCode.should.equal(1222);
+        });
+
+        it('should return custom max error', function () {
+            var o = new SOC({
+                number: 7
+            });
+            var errors = o.getErrors();
+            errors.length.should.equal(1);
+
+            errors[0].errorMessage.should.equal('number cannot be larger than 6');
+            errors[0].errorType.should.equal('ValidationError');
+            errors[0].errorCode.should.equal(1222);
+        });
+    });
+
+
+    describe('misc', function () {
+        it('should allow zero even with allowFalsyValues set false', function () {
+            var SO = new SchemaObject({
+                number: Number
+            }, {
+                allowFalsyValues: false
+            });
+
+            var o = new SO({number: 0});
+            var errors = o.getErrors();
+            errors.length.should.equal(0);
         });
     });
 });
