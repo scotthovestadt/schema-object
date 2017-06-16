@@ -574,6 +574,37 @@ console.log(profile.getErrors());
     ...
 ```
 
+## useDecimalNumberGroupSeparator
+useDecimalNumberGroupSeparator (default: false) defines the digit group separator used for parsing numbers. When left false, numbers are expected to use `,` as a digit separator. For example 3,043,201.01. However this options is enabled it swaps commas and decimals to allow parsing numbers like 3.043.201,01. This is to allow for usability in countries which use this format instead.
+
+With useDecimalNumberGroupSeparator mode off (default):
+```js
+var Profile = new SchemaObject({
+  id: String,
+  followers: Number
+});
+var profile = new Profile({ followers: '124.423.123,87'});
+console.log(profile.followers); //undefined
+
+profile = new Profile({ followers: '124,423,123.87'});
+console.log(profile.followers); //124423123.87
+```
+
+With useDecimalNumberGroupSeparator mode on:
+```js
+var Profile = new SchemaObject({
+  id: String,
+  followers: Number
+}, {
+  useDecimalNumberGroupSeparator: true
+});
+var profile = new Profile({ followers: '124.423.123,87'});
+console.log(profile.followers); //124423123.87
+
+profile = new Profile({ followers: '124,423,123.87'});
+console.log(profile.followers); //undefined
+```
+
 # Errors
 
 When setting a value fails, an error is generated silently. Errors can be retrieved with getErrors() and cleared with clearErrors().
@@ -602,7 +633,63 @@ console.log(profile.getErrors());
 // Clear all errors.
 profile.clearErrors();
 ```
+## Error codes
 
+Each error type has an error code. Here is a map of them, however this may be out of date if someone adds an error without updating this list.
+
+* [1000] Setter Error
+  * [1100] Cast Error
+    * [1101] String Cast Error
+    * [1102] Number Cast Error
+    * [1103] Array Cast Error
+    * [1104] Object Cast Error
+    * [1105] Date Cast Error
+  * [1200] Validation Error
+    * [1210] String Validation Error
+      * [1211] String Enum Validation Error
+      * [1212] String Min Length Validation Error
+      * [1213] StringMaxLengthValidationError
+      * [1214] StringRegexValidationError
+    * [1220] NumberValidationError
+      * [1221] NumberMinValidationError
+      * [1222] NumberMaxValidationError
+    * [1230] DateValidationError
+      * [1231] DateParseValidationError
+
+## Custom Errors
+
+You can also set custom errors for all validators. There are currently two supported formats for this.
+
+### Array Error Format
+
+The array format expects the validator value as the first argument, and the error message as the second argument.
+Here is an example:
+```js
+var Profile = new SchemaObject({
+  id: {
+    type: String,
+    minLength: [5, 'id length must be longer than 5 characters']
+  }
+});
+```
+
+### Object Error Format
+
+The object format expects an object with two keys, `value` is the validator value, and `errorMessage` is the custom error message.
+Here is an example:
+```js
+var Profile = new SchemaObject({
+  id: {
+    type: String,
+    minLength: {
+      value: 5,
+      errorMessage: 'id length must be longer than 5 characters'
+    }
+  }
+});
+```
+
+Both of these formats can be used interchangeably.
 
 # Types
 

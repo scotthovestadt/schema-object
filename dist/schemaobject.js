@@ -537,6 +537,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             if (_.isArray(properties[key])) {
                 customError = properties[key][1];
                 properties[key] = properties[key][0];
+            } else if (_typeof(properties[key]) === 'object' && properties[key].errorMessage && properties[key].value) {
+                customError = properties[key].errorMessage;
+                properties[key] = properties[key].value;
             } else {
                 customError = undefined;
             }
@@ -574,6 +577,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 if (_.isArray(properties.enum) && _.isArray(properties.enum[0])) {
                     customError = properties.enum[1];
                     properties.enum = properties.enum[0];
+                } else if (_typeof(properties.enum) === 'object' && properties.enum.errorMessage && properties.enum.value) {
+                    customError = properties.enum.errorMessage;
+                    properties.enum = properties.enum.value;
                 }
 
                 // If enum is being used, be sure the value is within definition.

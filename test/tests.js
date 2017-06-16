@@ -869,12 +869,43 @@ describe('String', function () {
             o.string.should.equal('ABCD');
         });
 
-        it('should handle custom errors', function () {
+        it('should handle custom errors in array format', function () {
             var SO = new SchemaObject({
                 string: {
                     type: String,
                     regex: [new RegExp('^([A-Z]{4})$'), 'This can only contain capital letters A-Z, and must be 4' +
                         ' characters long']
+                }
+            });
+
+            var o = new SO();
+
+            o.string = 'abcd';
+            should.not.exist(o.string);
+
+            var errors = o.getErrors();
+            should.exist(errors);
+            errors.length.should.equal(1);
+            errors[0].errorMessage.should.equal('This can only contain capital letters A-Z, and must be 4 characters' +
+                ' long');
+            errors[0].errorCode.should.equal(1214);
+            errors[0].errorType.should.equal('ValidationError');
+
+            o.string = 'ABCD';
+            o.string.should.equal('ABCD');
+
+            o.string = '1234';
+            o.string.should.equal('ABCD');
+        });
+
+        it('should handle custom errors in object format', function () {
+            var SO = new SchemaObject({
+                string: {
+                    type: String,
+                    regex: {
+                        value: new RegExp('^([A-Z]{4})$'),
+                        errorMessage: 'This can only contain capital letters A-Z, and must be 4 characters long'
+                    }
                 }
             });
 
@@ -949,7 +980,7 @@ describe('String', function () {
             o.string.should.equal('allowed');
         });
 
-        it('should handle custom error', function () {
+        it('should handle custom error in array format', function () {
             var SO = new SchemaObject({
                 string: {
                     type: String,
@@ -957,6 +988,29 @@ describe('String', function () {
                         ['a', 'b'],
                         'Must be a or b'
                     ]
+                }
+            });
+            var o = new SO({
+                string: 'c'
+            });
+
+            should.not.exist(o.string);
+            var errors = o.getErrors();
+            errors.length.should.equal(1);
+            errors[0].errorMessage.should.equal('Must be a or b');
+            errors[0].errorCode.should.equal(1211);
+
+            o.isErrors().should.equal(true);
+        });
+
+        it('should handle custom error in object format', function () {
+            var SO = new SchemaObject({
+                string: {
+                    type: String,
+                    enum: {
+                        value: ['a', 'b'],
+                        errorMessage: 'Must be a or b'
+                    }
                 }
             });
             var o = new SO({
@@ -1046,11 +1100,33 @@ describe('String', function () {
             o.notEmptyString.should.equal('1');
         });
 
-        it('should allow custom error message', function () {
+        it('should allow custom error message in array format', function () {
             var SO = new SchemaObject({
                 notEmptyString: {
                     type: String,
                     minLength: [1, 'notEmptyString cannot be empty']
+                }
+            });
+
+            var o = new SO();
+            o.notEmptyString = '';
+            should.not.exist(o.notEmptyString);
+
+            var errors = o.getErrors();
+            errors.length.should.equal(1);
+            errors[0].errorMessage.should.equal('notEmptyString cannot be empty');
+            errors[0].errorType.should.equal('ValidationError');
+            errors[0].errorCode.should.equal(1212);
+        });
+
+        it('should allow custom error message in object format', function () {
+            var SO = new SchemaObject({
+                notEmptyString: {
+                    type: String,
+                    minLength: {
+                        value: 1,
+                        errorMessage: 'notEmptyString cannot be empty'
+                    }
                 }
             });
 
@@ -1082,11 +1158,33 @@ describe('String', function () {
             o.shortString.should.equal('1');
         });
 
-        it('should allow custom error message', function () {
+        it('should allow custom error message in array format', function () {
             var SO = new SchemaObject({
                 shortString: {
                     type: String,
                     maxLength: [5, 'shortString cannot be longer than 5 characters']
+                }
+            });
+
+            var o = new SO();
+            o.shortString = '123456';
+            should.not.exist(o.shortString);
+
+            var errors = o.getErrors();
+            errors.length.should.equal(1);
+            errors[0].errorMessage.should.equal('shortString cannot be longer than 5 characters');
+            errors[0].errorType.should.equal('ValidationError');
+            errors[0].errorCode.should.equal(1213);
+        });
+
+        it('should allow custom error message in object format', function () {
+            var SO = new SchemaObject({
+                shortString: {
+                    type: String,
+                    maxLength: {
+                        value: 5,
+                        errorMessage: 'shortString cannot be longer than 5 characters'
+                    }
                 }
             });
 
@@ -1175,7 +1273,7 @@ describe('Number', function () {
         });
 
         it('should typecast string with period digit group separator to number if option enabled', function () {
-            SO = new SchemaObject({
+            var SO = new SchemaObject({
                 number: Number,
                 minMax: {
                     type: Number,
@@ -1238,6 +1336,67 @@ describe('Number', function () {
             o.minMax = 150;
             o.minMax.should.equal(150);
         });
+
+        it('should handle custom errors in array format', function () {
+            var SO = new SchemaObject({
+                number: Number,
+                minMax: {
+                    type: Number,
+                    min: [100, 'min is 100'],
+                    max: 200
+                }
+            });
+            var o = new SO();
+
+            o.minMax = 0;
+            should.not.exist(o.minMax);
+
+            var errors = o.getErrors();
+            errors.length.should.equal(1);
+
+            o.isErrors().should.equal(true);
+
+            errors[0].errorMessage.should.equal('min is 100');
+            errors[0].errorCode.should.equal(1221);
+
+            o.minMax = 100;
+            o.minMax.should.equal(100);
+
+            o.minMax = 150;
+            o.minMax.should.equal(150);
+        });
+
+        it('should handle custom errors in object format', function () {
+            var SO = new SchemaObject({
+                number: Number,
+                minMax: {
+                    type: Number,
+                    min: {
+                        value:100,
+                        errorMessage:'min is 100'
+                    },
+                    max: 200
+                }
+            });
+            var o = new SO();
+
+            o.minMax = 0;
+            should.not.exist(o.minMax);
+
+            var errors = o.getErrors();
+            errors.length.should.equal(1);
+
+            o.isErrors().should.equal(true);
+
+            errors[0].errorMessage.should.equal('min is 100');
+            errors[0].errorCode.should.equal(1221);
+
+            o.minMax = 100;
+            o.minMax.should.equal(100);
+
+            o.minMax = 150;
+            o.minMax.should.equal(150);
+        });
     });
 
     describe('max', function () {
@@ -1251,6 +1410,55 @@ describe('Number', function () {
 
             o.minMax = 200;
             o.minMax.should.equal(200);
+        });
+
+        it('should handle custom errors in array format', function () {
+            var SO = new SchemaObject({
+                number: Number,
+                minMax: {
+                    type: Number,
+                    min: 100,
+                    max: [200, 'max is 200']
+                }
+            });
+            var o = new SO();
+
+            o.minMax = 300;
+            should.not.exist(o.minMax);
+
+            var errors = o.getErrors();
+            errors.length.should.equal(1);
+
+            o.isErrors().should.equal(true);
+
+            errors[0].errorMessage.should.equal('max is 200');
+            errors[0].errorCode.should.equal(1222);
+        });
+
+        it('should handle custom errors in object format', function () {
+            var SO = new SchemaObject({
+                number: Number,
+                minMax: {
+                    type: Number,
+                    min: 100,
+                    max: {
+                        value: 200,
+                        errorMessage:'max is 200'
+                    }
+                }
+            });
+            var o = new SO();
+
+            o.minMax = 300;
+            should.not.exist(o.minMax);
+
+            var errors = o.getErrors();
+            errors.length.should.equal(1);
+
+            o.isErrors().should.equal(true);
+
+            errors[0].errorMessage.should.equal('max is 200');
+            errors[0].errorCode.should.equal(1222);
         });
     });
 
@@ -1302,6 +1510,87 @@ describe('Number', function () {
             }
         });
 
+        var SOO = new SchemaObject({
+            number: {
+                type: Number,
+                min: {
+                    value: 5,
+                    errorMessage: 'number cannot be smaller than 5'
+                },
+                max: {
+                    value: 6,
+                    errorMessage: 'number cannot be larger than 6'
+                }
+            }
+        });
+
+        var ComplicatedSchema = new SchemaObject({
+            number1: {
+                type: Number,
+                min: 5,
+            },
+            number2: {
+                type: Number,
+                min: [5, 'number cannot be smaller than 5'],
+            },
+            number3: {
+                type: Number,
+                min: {
+                    value: 5,
+                    errorMessage: 'number cannot be smaller than 5'
+                }
+            },
+            subObject: {
+                string1: {
+                    type: String,
+                    maxLength: 5
+                },
+                string2: {
+                    type: String,
+                    maxLength: [5, 'max length is 5']
+                },
+                string3: {
+                    type: String,
+                    maxLength: {
+                        value: 5,
+                        errorMessage: 'max length is 5'
+                    }
+                }
+            },
+            array1: [{
+                type: String,
+                maxLength: 5
+            }],
+            array2: [{
+                type: String,
+                maxLength: [5, 'max length is 5']
+            }],
+            array3: [{
+                type: String,
+                maxLength: {
+                    value: 5,
+                    errorMessage: 'max length is 5'
+                }
+            }],
+            arrayObject: [{
+                string1: {
+                    type: String,
+                    maxLength: 5
+                },
+                string2: {
+                    type: String,
+                    maxLength: [5, 'max length is 5']
+                },
+                string3: {
+                    type: String,
+                    maxLength: {
+                        value: 5,
+                        errorMessage: 'max length is 5'
+                    }
+                }
+            }]
+        });
+
         it('should return default min error', function () {
             var o = new SOD({
                 number: 1
@@ -1316,7 +1605,7 @@ describe('Number', function () {
 
         it('should return custom min error', function () {
             var o = new SOC({
-                number: 1
+                number: 1,
             });
             var errors = o.getErrors();
             errors.length.should.equal(1);
@@ -1338,7 +1627,7 @@ describe('Number', function () {
             errors[0].errorCode.should.equal(1222);
         });
 
-        it('should return custom max error', function () {
+        it('should return custom max error in array format', function () {
             var o = new SOC({
                 number: 7
             });
@@ -1348,6 +1637,92 @@ describe('Number', function () {
             errors[0].errorMessage.should.equal('number cannot be larger than 6');
             errors[0].errorType.should.equal('ValidationError');
             errors[0].errorCode.should.equal(1222);
+        });
+
+        it('should return custom max error in object format', function () {
+            var o = new SOO({
+                number: 7
+            });
+            var errors = o.getErrors();
+            errors.length.should.equal(1);
+
+            errors[0].errorMessage.should.equal('number cannot be larger than 6');
+            errors[0].errorType.should.equal('ValidationError');
+            errors[0].errorCode.should.equal(1222);
+        });
+
+        it('should handle both error formats as well as errors in sub-objects', function () {
+            var o = new ComplicatedSchema({
+                number1: 1,
+                number2: 2,
+                number3: 3,
+                subObject: {
+                    string1: 'longerThan5',
+                    string2: 'longerThan5Also',
+                    string3: 'longerThan5Too',
+                },
+                array1: ['longerThan5'],
+                array2: ['longerThan5'],
+                array3: ['longerThan5'],
+                arrayObject: [{
+                    string1: 'muchLongerThan5',
+                    string2: 'muchLongerThan5Also',
+                    string3: 'muchLongerThan5Too',
+                },{
+                    string1: 'good',
+                    string2: 'small',
+                    string3: 'tiny',
+                }]
+            });
+
+            var errors = o.getErrors();
+            //This number will increase by 3 once there is a fix for arrayObject errors not being populated
+            errors.length.should.equal(9);
+
+            //Top level default error
+            errors[0].errorMessage.should.equal('Number is too small to meet min requirement.');
+            errors[0].errorType.should.equal('ValidationError');
+            errors[0].errorCode.should.equal(1221);
+
+            //Top level custom error array
+            errors[1].errorMessage.should.equal('number cannot be smaller than 5');
+            errors[1].errorType.should.equal('ValidationError');
+            errors[1].errorCode.should.equal(1221);
+
+            //Top level custom error object
+            errors[2].errorMessage.should.equal('number cannot be smaller than 5');
+            errors[2].errorType.should.equal('ValidationError');
+            errors[2].errorCode.should.equal(1221);
+
+            //Sub-object default error
+            errors[3].errorMessage.should.equal('String length too long to meet maxLength requirement.');
+            errors[3].errorType.should.equal('ValidationError');
+            errors[3].errorCode.should.equal(1213);
+
+            //Sub-object custom error array
+            errors[4].errorMessage.should.equal('max length is 5');
+            errors[4].errorType.should.equal('ValidationError');
+            errors[4].errorCode.should.equal(1213);
+
+            //Sub-object custom error object
+            errors[5].errorMessage.should.equal('max length is 5');
+            errors[5].errorType.should.equal('ValidationError');
+            errors[5].errorCode.should.equal(1213);
+
+            //Array-string default error
+            errors[6].errorMessage.should.equal('String length too long to meet maxLength requirement.');
+            errors[6].errorType.should.equal('ValidationError');
+            errors[6].errorCode.should.equal(1213);
+
+            //Array-string custom error array
+            errors[7].errorMessage.should.equal('max length is 5');
+            errors[7].errorType.should.equal('ValidationError');
+            errors[7].errorCode.should.equal(1213);
+
+            //Array-string custom error object
+            errors[8].errorMessage.should.equal('max length is 5');
+            errors[8].errorType.should.equal('ValidationError');
+            errors[8].errorCode.should.equal(1213);
         });
     });
 
