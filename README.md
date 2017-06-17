@@ -575,7 +575,7 @@ console.log(profile.getErrors());
 ```
 
 ## useDecimalNumberGroupSeparator
-useDecimalNumberGroupSeparator (default: false) defines the digit group separator used for parsing numbers. When left false, numbers are expected to use `,` as a digit separator. For example 3,043,201.01. However this options is enabled it swaps commas and decimals to allow parsing numbers like 3.043.201,01. This is to allow for usability in countries which use this format instead.
+useDecimalNumberGroupSeparator (default: false) defines the digit group separator used for parsing numbers. When left false, numbers are expected to use `,` as a digit separator. For example 3,043,201.01. However when this options is enabled it swaps commas and decimals to allow parsing numbers like 3.043.201,01. This is to allow for usability in countries which use this format instead.
 
 With useDecimalNumberGroupSeparator mode off (default):
 ```js
