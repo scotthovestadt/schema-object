@@ -896,6 +896,14 @@ describe('String', function () {
 
             o.string = '1234';
             o.string.should.equal('ABCD');
+
+            //Should have the custom error when creating a second instance
+            var o2 = new SO({
+                string: 'abcd'
+            });
+            errors = o2.getErrors();
+            errors[0].errorMessage.should.equal('This can only contain capital letters A-Z, and must be 4 characters' +
+                ' long');
         });
 
         it('should handle custom errors in object format', function () {
@@ -1001,6 +1009,13 @@ describe('String', function () {
             errors[0].errorCode.should.equal(1211);
 
             o.isErrors().should.equal(true);
+
+            //Should have the custom error when creating a second instance
+            var o2 = new SO({
+                string: 'c'
+            });
+            errors = o2.getErrors();
+            errors[0].errorMessage.should.equal('Must be a or b');
         });
 
         it('should handle custom error in object format', function () {
@@ -1024,6 +1039,14 @@ describe('String', function () {
             errors[0].errorCode.should.equal(1211);
 
             o.isErrors().should.equal(true);
+
+            //Should have the custom error when creating a second instance
+            var o2 = new SO({
+                string: 'c'
+            });
+
+            errors = o2.getErrors();
+            errors[0].errorMessage.should.equal('Must be a or b');
         });
     });
 
@@ -1197,6 +1220,12 @@ describe('String', function () {
             errors[0].errorMessage.should.equal('shortString cannot be longer than 5 characters');
             errors[0].errorType.should.equal('ValidationError');
             errors[0].errorCode.should.equal(1213);
+
+            //Should have same custom error on second instance
+            var o2 = new SO();
+            o2.shortString = '123456';
+            errors = o2.getErrors();
+            errors[0].errorMessage.should.equal('shortString cannot be longer than 5 characters');
         });
     });
 
