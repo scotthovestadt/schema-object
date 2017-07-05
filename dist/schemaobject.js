@@ -520,7 +520,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
     function typecast(value, originalValue, properties) {
         var options = this[_privateKey]._options;
-        var customError = void 0;
 
         // Allow transform to manipulate raw properties.
         if (properties.transform) {
@@ -789,7 +788,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
                 // If the date couldn't be parsed, do not modify index.
                 if (value == 'Invalid Date' || !_.isDate(value)) {
-                    throw new DateParseValidationError(customError, value, originalValue, properties);
+                    throw new DateParseValidationError(null, value, originalValue, properties);
                 }
 
                 // Transformation after typecasting but before validation and filters.
