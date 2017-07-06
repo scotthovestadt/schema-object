@@ -520,7 +520,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
     function typecast(value, originalValue, properties) {
         var options = this[_privateKey]._options;
-        var customError = void 0;
 
         // Allow transform to manipulate raw properties.
         if (properties.transform) {
@@ -534,14 +533,18 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
         // Helper function designed to detect and handle usage of array-form custom error messages for validators
         function detectCustomErrorMessage(key) {
-            if (_.isArray(properties[key])) {
-                customError = properties[key][1];
-                properties[key] = properties[key][0];
-            } else if (_typeof(properties[key]) === 'object' && properties[key].errorMessage && properties[key].value) {
-                customError = properties[key].errorMessage;
-                properties[key] = properties[key].value;
+            if (_typeof(properties[key]) === 'object' && properties[key].errorMessage && properties[key].value) {
+                return properties[key];
+            } else if (_.isArray(properties[key])) {
+                return {
+                    value: properties[key][0],
+                    errorMessage: properties[key][1]
+                };
             } else {
-                customError = undefined;
+                return {
+                    value: properties[key],
+                    errorMessage: undefined
+                };
             }
         }
 
@@ -573,42 +576,50 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                     value = value.substr(0, properties.maxLength);
                 }
 
+                var enumValidation = void 0;
+
                 // Detect custom error message usage for enum (can't use function here as enum is expected to be an array)
-                if (_.isArray(properties.enum) && _.isArray(properties.enum[0])) {
-                    customError = properties.enum[1];
-                    properties.enum = properties.enum[0];
-                } else if (_typeof(properties.enum) === 'object' && properties.enum.errorMessage && properties.enum.value) {
-                    customError = properties.enum.errorMessage;
-                    properties.enum = properties.enum.value;
+                if (_typeof(properties.enum) === 'object' && properties.enum.errorMessage && properties.enum.value) {
+                    enumValidation = properties.enum;
+                } else if (_.isArray(properties.enum) && _.isArray(properties.enum[0])) {
+                    enumValidation = {
+                        value: properties.enum[0],
+                        errorMessage: properties.enum[1]
+                    };
+                } else {
+                    enumValidation = {
+                        value: properties.enum,
+                        errorMessage: undefined
+                    };
                 }
 
                 // If enum is being used, be sure the value is within definition.
-                if (_.isArray(properties.enum) && properties.enum.indexOf(value) === -1) {
-                    throw new StringEnumValidationError(customError, value, originalValue, properties);
+                if (enumValidation.value !== undefined && _.isArray(enumValidation.value) && enumValidation.value.indexOf(value) === -1) {
+                    throw new StringEnumValidationError(enumValidation.errorMessage, value, originalValue, properties);
                 }
 
                 // Detect custom error message usage for minLength
-                detectCustomErrorMessage('minLength');
+                var minLength = detectCustomErrorMessage('minLength');
 
                 // If minLength is defined, check to be sure the string is > minLength.
-                if (properties.minLength !== undefined && value.length < properties.minLength) {
-                    throw new StringMinLengthValidationError(customError, value, originalValue, properties);
+                if (minLength.value !== undefined && value.length < minLength.value) {
+                    throw new StringMinLengthValidationError(minLength.errorMessage, value, originalValue, properties);
                 }
 
                 // Detect custom error message usage for maxLength
-                detectCustomErrorMessage('maxLength');
+                var maxLength = detectCustomErrorMessage('maxLength');
 
                 // If maxLength is defined, check to be sure the string is < maxLength.
-                if (properties.maxLength !== undefined && value.length > properties.maxLength) {
-                    throw new StringMaxLengthValidationError(customError, value, originalValue, properties);
+                if (maxLength.value !== undefined && value.length > maxLength.value) {
+                    throw new StringMaxLengthValidationError(maxLength.errorMessage, value, originalValue, properties);
                 }
 
                 // Detect custom error message usage for maxLength
-                detectCustomErrorMessage('regex');
+                var regex = detectCustomErrorMessage('regex');
 
                 // If regex is defined, check to be sure the string matches the regex pattern.
-                if (properties.regex && !properties.regex.test(value)) {
-                    throw new StringRegexValidationError(customError, value, originalValue, properties);
+                if (regex.value && !regex.value.test(value)) {
+                    throw new StringRegexValidationError(regex.errorMessage, value, originalValue, properties);
                 }
 
                 return value;
@@ -660,17 +671,17 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 }
 
                 // Detect custom error message usage for min
-                detectCustomErrorMessage('min');
+                var min = detectCustomErrorMessage('min');
 
-                if (properties.min !== undefined && value < properties.min) {
-                    throw new NumberMinValidationError(customError, value, originalValue, properties);
+                if (min.value !== undefined && value < min.value) {
+                    throw new NumberMinValidationError(min.errorMessage, value, originalValue, properties);
                 }
 
                 // Detect custom error message usage for min
-                detectCustomErrorMessage('max');
+                var max = detectCustomErrorMessage('max');
 
-                if (properties.max !== undefined && value > properties.max) {
-                    throw new NumberMaxValidationError(customError, value, originalValue, properties);
+                if (max.value !== undefined && value > max.value) {
+                    throw new NumberMaxValidationError(max.errorMessage, value, originalValue, properties);
                 }
 
                 return value;
@@ -777,7 +788,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
                 // If the date couldn't be parsed, do not modify index.
                 if (value == 'Invalid Date' || !_.isDate(value)) {
-                    throw new DateParseValidationError(customError, value, originalValue, properties);
+                    throw new DateParseValidationError(null, value, originalValue, properties);
                 }
 
                 // Transformation after typecasting but before validation and filters.
