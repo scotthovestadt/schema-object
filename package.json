@@ -47,7 +47,7 @@
     "in-publish": "^2.0.0",
     "load-plugins": "2.1.2",
     "minimist": "1.2.0",
-    "should": "12.x.x"
+    "should": "13.x.x"
   },
   "author": "Scott Hovestadt",
   "license": "BSD",
