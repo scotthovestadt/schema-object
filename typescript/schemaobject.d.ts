@@ -20,7 +20,7 @@ interface SchemaObjectInstance<T> {
 declare module 'schema-object' {
 
     interface SchemaObject {
-        new <T>(schema: any, options?: any): {
+        new <T>(schema: { [key in keyof T]: any }, options?: any): {
             new (values?: T): T & SchemaObjectInstance<T>;
         };
     }
