@@ -1376,7 +1376,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                             }
 
                             // Support dot notation via lodash.
-                            if (options.dotNotation && name.indexOf('.') !== -1) {
+                            if (options.dotNotation && typeof name === 'string' && name.indexOf('.') !== -1) {
                                 return _.get(_this23[_privateKey]._this, name);
                             }
 
@@ -1387,7 +1387,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                         // Intercept all set calls.
                         set: function set(target, name, value, receiver) {
                             // Support dot notation via lodash.
-                            if (options.dotNotation && name.indexOf('.') !== -1) {
+                            if (options.dotNotation && typeof name === 'string' && name.indexOf('.') !== -1) {
                                 return _.set(_this23[_privateKey]._this, name, value);
                             }
 
