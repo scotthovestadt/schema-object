@@ -1,3 +1,6 @@
+UNMAINTAINED
+==================
+
 Schema Object [![Build Status](https://travis-ci.org/scotthovestadt/schema-object.png?branch=master)](https://travis-ci.org/scotthovestadt/schema-object)
 ==================
 
