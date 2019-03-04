@@ -72,11 +72,29 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
     // Used to get real index name.
     function getIndex(index) {
-        if (this[_privateKey]._options.keysIgnoreCase && typeof index === 'string') {
-            var indexLowerCase = index.toLowerCase();
-            for (var key in this[_privateKey]._schema) {
-                if (typeof key === 'string' && key.toLowerCase() === indexLowerCase) {
-                    return key;
+        if (typeof index === 'string') {
+            var modifiedIndex = index;
+            if (this[_privateKey]._options.keysAutoNormalized) {
+                modifiedIndex = modifiedIndex.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+            }
+            if (this[_privateKey]._options.keysIgnoreCase) {
+                modifiedIndex = modifiedIndex.toLowerCase();
+            }
+            if (modifiedIndex !== index) {
+                for (var key in this[_privateKey]._schema) {
+                    if (typeof key === 'string') {
+                        var modifiedKey = key;
+                        // TODO optimize this by keeping the modified keys in a cache, for example this[_privateKey]._modifiedSchema in order to avoid this foreach loop each time a key is searched
+                        if (this[_privateKey]._options.keysAutoNormalized) {
+                            modifiedKey = modifiedKey.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                        }
+                        if (this[_privateKey]._options.keysIgnoreCase) {
+                            modifiedKey = modifiedKey.toLowerCase();
+                        }
+                        if (modifiedKey === modifiedIndex) {
+                            return key;
+                        }
+                    }
                 }
             }
         }
@@ -1138,8 +1156,11 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             // Set to true if you are one of those rare cases.
             preserveNull: false,
 
-            // Allow "profileURL" to be set with "profileUrl" when set to false
+            // Allow "profileURL" to be set with "profileUrl" when set to true
             keysIgnoreCase: false,
+
+            // Allow "schéma" to be set with "schema" when set to true
+            keysAutoNormalized: false,
 
             // Inherit root object "this" context from parent SchemaObject.
             inheritRootThis: false,
@@ -1164,6 +1185,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             }
             if (options.keysIgnoreCase) {
                 throw new Error('[schema-object] Keys ignore case support requires --harmony flag.');
+            }
+            if (options.keysAutoNormalized) {
+                throw new Error('[schema-object] Keys auto normalized support requires --harmony flag.');
             }
         }
 
@@ -1391,8 +1415,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                                 return _.set(_this23[_privateKey]._this, name, value);
                             }
 
-                            // Find real keyname if case sensitivity is off.
-                            if (options.keysIgnoreCase && !schema[name]) {
+                            // Find real keyname if case sensitivity is off or auto normalization is on.
+                            if ((options.keysIgnoreCase || options.keysAutoNormalized) && !schema[name]) {
                                 name = getIndex.call(_this23, name);
                             }
 
