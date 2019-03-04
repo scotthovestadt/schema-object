@@ -509,6 +509,40 @@ user.firstname = 'Scott';
 { firstName: 'Scott' }
 ```
 
+## keysAutoNormalized
+
+keysAutoNormalized (default: false) allows you to set indexes without worrying about the normalization or accents of the key.
+
+With keys auto normalized off (default):
+```js
+var User = new SchemaObject({
+  prénom: String
+}, {
+  keysAutoNormalized: false
+});
+
+var user = new User();
+user.prenom = 'Scott';
+
+// Prints:
+{}
+```
+
+With keys auto normalized on:
+```js
+var User = new SchemaObject({
+  prénom: String
+}, {
+  keysAutoNormalized: true
+});
+
+var user = new User();
+user.prenom = 'Scott';
+
+// Prints:
+{ prénom: 'Scott' }
+```
+
 
 ## onBeforeValueSet(value, key) / onValueSet(value, key)
 
