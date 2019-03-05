@@ -84,9 +84,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 for (var key in this[_privateKey]._schema) {
                     if (typeof key === 'string') {
                         var modifiedKey = key;
-                        // TODO optimize this by keeping the modified keys in a cache, for example this[_privateKey]._modifiedSchema in order to avoid this foreach loop each time a key is searched
                         if (this[_privateKey]._options.keysAutoNormalized) {
-                            modifiedKey = modifiedKey.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                            modifiedKey = modifiedKey.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); // remove all accents thanks to https://stackoverflow.com/a/37511463/535203
                         }
                         if (this[_privateKey]._options.keysIgnoreCase) {
                             modifiedKey = modifiedKey.toLowerCase();

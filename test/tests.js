@@ -188,6 +188,11 @@ describe('SchemaObject construction options', function () {
             var o = new SO();
             o.schéma = 'a string';
             o.schema.should.equal('a string');
+            should.equal(o.schéma, null);
+
+            o.schema = 'new string';
+            o.schema.should.equal('new string');
+            should.equal(o.schéma, null);
         });
 
         it('keysAutoNormalized: true + keysIgnoreCase: true should normalize schéma to key Schema', function () {
