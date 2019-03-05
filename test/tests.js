@@ -178,6 +178,36 @@ describe('SchemaObject construction options', function () {
             obj.profileURL.should.equal('PROFILEURL_3');
         });
 
+        it('keysAutoNormalized: true should normalize schéma to key schema', function () {
+            var SO = new SchemaObject({
+                schema: String
+            }, {
+                keysAutoNormalized: true
+            });
+
+            var o = new SO();
+            o.schéma = 'a string';
+            o.schema.should.equal('a string');
+            should.equal(o.schéma, null);
+
+            o.schema = 'new string';
+            o.schema.should.equal('new string');
+            should.equal(o.schéma, null);
+        });
+
+        it('keysAutoNormalized: true + keysIgnoreCase: true should normalize schéma to key Schema', function () {
+            var SO = new SchemaObject({
+                Schema: String
+            }, {
+                keysIgnoreCase: true,
+                keysAutoNormalized: true
+            });
+
+            var o = new SO();
+            o.schéma = 'a string';
+            o.Schema.should.equal('a string');
+        });
+
         it('strict: true should not allow you to set any index', function () {
             var SO = new SchemaObject({}, {
                 strict: true
